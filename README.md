@@ -69,6 +69,8 @@ Held by the Pusher and is given via `GiveAbility` to the Pushee to apply a force
 
 Different Pushers can have their own versions of this ability.
 
+This is where you define what actually happens, you could play a root motion animation when pushed back instead, or simply change the strength or duration of the push, or change other settings to get the behaviour you desire.
+
 ## LyraShooter
 *Or anyone not using `UGameplayAbility` as an allowed base class*
 
