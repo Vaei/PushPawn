@@ -23,6 +23,8 @@ Here is the preview from a minimal Third Person Example project (see "How to Use
 ## Difficulty
 This is very advanced C++ use, if you are a beginner you will struggle with this and dedicated support isn't available. It will benefit you if you understand how LyraShooter's interaction system works though it isn't a requirement. There may be some redundancy that came from duplicating that system as a starting point which may lead to confusion.
 
+If you are not an advanced user, you may be able to succeed in using this effectively by looking at the "How to Use" section and going through the example project.
+
 ## Terminology
 *The most confusing yet important aspect to wrap your head around is this: The ability `Instigator` is the one who gets pushed, and not the one who does the pushing.*
 
