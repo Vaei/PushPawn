@@ -1,7 +1,7 @@
 # PushPawn
 ***Due to the use of Git LFS, do NOT download a zip or your content will be missing.*** You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git`
 
-Allows pawns to push each other, uses GAS to prevent desyncs that often occur when colliding with AI due to lack of net prediction between Characters.
+Provides a net predicted solution for Pawns to Push each other. Uses GAS to prevent desyncs that often occur when colliding with AI.
 
 The primary purpose is to overcome desync when players collide with AI, but does provide a nice "soft collision" result instead of the rigid "hard collision" that most games have.
 
