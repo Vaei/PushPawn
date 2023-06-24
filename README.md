@@ -40,7 +40,7 @@ This is the Pawn that is getting pushed by another Pawn. Implementing `IPusheeIn
 
 This Pawn is the ability Instigator. Due to the inversion, this term was avoided because it could cause confusion.
 
-This Pawn searches for anyone who should push them, effectively a psuedo collision detection, and then "Instigates" by handing the colliding Pawn the ability that is used to push them back.
+This Pawn searches for anyone who should push them (Pusher), effectively a psuedo collision detection, the Pusher then hands us their ability that is used to push us back.
 
 This means that if a massive world boss needs to push a player back, they can push a player back in their own distinct way especially factoring their unique collision properties, instead of a single universal method for pushing back.
 
@@ -56,6 +56,16 @@ The content is only supported by Unreal Engine 5.2 and up. However, there is pro
 If the capsule dimensions change between prediction frames it can desync. For most of us sending this data is an unnecessary cost, but if you need to do it, add the capsule `HalfHeight` and/or `Radius` to `FPushOption` and send it along with `IPusheeInstigator::GatherPushOptions`, however this may not be sufficient on it's own! Check where the `UCapsuleComponent` getters are being used and replace these too. Any data NOT send through the `FPushOption` is very unlikely to be predicted.
 
 This may also not be sufficient as it remains untested.
+
+## Abilities
+
+### `GA_Push_Scan`
+Held by the Pushee and used to find nearby Pushers. Here you can set a `ScanRate` and change how the `ScanRange` is computed as well as assign the `TraceChannel` used. You can also `Show Debug` to see what it is doing.
+
+### `GA_Push_Action`
+Held by the Pusher and is given via `GiveAbility` to the Pushee to apply a force to them. There are many ways this can be implemented, look at the blueprint for more information.
+
+Different Pushers can have their own versions of this ability.
 
 ## LyraShooter
 *Or anyone not using `UGameplayAbility` as an allowed base class*
