@@ -65,7 +65,7 @@ Add to the ctor of duplicated ability: `ActivationPolicy = ELyraAbilityActivatio
 *This how to was written from the viewpoint of a brand new 5.2 "Third Person" template. Many of these steps may be unnecessary for your project, this is for the purpose of documenting the entire process without leaving anything out.*
 
 ### Create New Project
-1. Launch Unreal 5.2 and create C++ Third Person template
+1. Launch Unreal 5.2 and create C++ Third Person template named `PushPawnProject`
 1. Close the editor and IDE
 
 ### Install Plugin
@@ -96,6 +96,7 @@ Add to the ctor of duplicated ability: `ActivationPolicy = ELyraAbilityActivatio
 
 ### AI Setup
 1. Duplicate `BP_ThirdPersonCharacter` and name it `BP_ThirdPersonBot`
+1. Change it's MaxWalkSpeed to 100cm/s for easier testing
 1. Add a `Nav Mesh Bounds Volume` to the level
 1. Press "P" to visualize
 1. Scale the volume to fill the level
@@ -108,53 +109,74 @@ The AI now runs around the level when simulating.
 ### AbilitySystem
 1. Close Editor
 1. Add `GameplayAbilities` to Build.cs `PrivateDependencyModuleNames`
-1. Extend `IAbilitySystemInterface` from `MyCharacter`
+1. Extend `IAbilitySystemInterface` from `PushPawnProjectCharacter`
   * This is confirmed working with `UAbilitySystemComponent` on `APlayerState`
-1. Add `UAbilitySystemComponent* AbilitySystemComponent` to `MyCharacter`
-  * `AbilitySystemComponent->CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));`
+1. Add `UAbilitySystemComponent* AbilitySystemComponent` to `PushPawnProjectCharacter`
+  * `AbilitySystemComponent = ObjectInitializer.CreateDefaultSubobject<UAbilitySystemComponent>(this, TEXT("AbilitySystemComponent"));`
+  * `AbilitySystemComponent->SetIsReplicated(true);`
+  * `AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);`
 1. Override `virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;` to return `AbilitySystemComponent`
 1. Create `PushPawnAssetManager` derived from `UAssetManager`
 1. Override `virtual void StartInitialLoading() override;` and call `UAbilitySystemGlobals::Get().InitGlobalData();`
 
 ### PushPawn
-1. Extend `MyCharacter` to `MyPlayerCharacter` and also `MyBotCharacter`
+1. Extend `PushPawnProjectCharacter` to `MyPlayerCharacter` and also `MyBotCharacter`
 1. `MyBotCharacter` extend `IPusherTarget`
 1. `MyPlayerCharacter` extend `IPusheeInstigator`
 
 #### MyBotCharacter
 ```cpp
-// .h
-public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayAbility> PushAbilityToGrant;
 
-protected:
 	//~ Begin IPusherTarget Interface
-	virtual void GatherPushOptions(const FPushQuery& PushQuery, FPushOptionBuilder& OptionBuilder) override;
+	virtual void GatherPushOptions(const FPushQuery& PushQuery, FPushOptionBuilder& OptionBuilder) override
+	{
+		if (PushQuery.RequestingAvatar.IsValid())
+		{
+			FPushOption Push;
+			Push.PushAbilityToGrant = PushAbilityToGrant;
+			Push.PusheeActorLocation = PushQuery.RequestingAvatar->GetActorLocation();
+			Push.PusheeForwardVector = GetActorForwardVector();
+			Push.PusherActorLocation = GetActorLocation();
+			OptionBuilder.AddPushOption(Push);
+		}
+	}
 	virtual void CustomizePushEventData(const FGameplayTag& PushEventTag, FGameplayEventData& InOutEventData) override {}
-	virtual bool CanPush(const AActor* PusheeActor) const override;
+	virtual bool CanPush(const AActor* PusheeActor) const override { return !IsPendingKillPending(); }
 	//~ End IPusherTarget Interface
 ```
-```cpp
-// .cpp
-void AMyBotCharacter::GatherPushOptions(const FPushQuery& PushQuery, FPushOptionBuilder& OptionBuilder)
-{
-	if (PushQuery.RequestingAvatar.IsValid())
-	{
-		FPushOption Push;
-		Push.PushAbilityToGrant = PushAbilityToGrant;
-		Push.PusheeActorLocation = PushQuery.RequestingAvatar->GetActorLocation();
-		Push.PusheeForwardVector = GetActorForwardVector();
-		Push.PusherActorLocation = GetActorLocation();
-		OptionBuilder.AddPushOption(Push);
-	}
-}
 
-bool AMyBotCharacter::CanPush(const AActor* PusheeActor) const
-{
-	return !IsPendingKillPending();
-}
+#### MyPlayerCharacter
+```cpp
+	//~ Begin IPusherTarget Interface
+	virtual bool CanBePushed(const AActor* PusherActor) const override { return !IsPendingKillPending(); }
+	//~ End IPusherTarget Interface
 ```
+
+### Ability
+1. Add `UPROPERTY(EditDefaultsOnly, BlueprintReadOnly) TSubclassOf<UGameplayAbility> PushScanAbilityClass;` to `AMyPlayerCharacter`
+1. Override `PossessedBy` and call:
+  * `AbilitySystemComponent->InitAbilityActorInfo(this, this);`
+  * `AbilitySystemComponent->K2_GiveAbility(PushScanAbilityClass);`
+1. Compile and launch editor
+
+### Assignments
+1. Reparent `BP_ThirdPersonCharacter` to `AMyPlayerCharacter`
+1. Assign `PushScanAbilityClass` -> `GA_Push_Scan`
+1. Reparent `BP_ThirdPersonBot` to `AMyBotCharacter`
+1. Assign `PushAbilityToGrant` -> `GA_Push_Action`
+1. Open `GA_Push_Scan` and change `TraceChannel` to `PushPawn`
+  * You probably want to duplicate `GA_Push_Scan` instead of modifying the original
+
+### Asset Manager
+1. Open Project Settings and change `Asset Manager Class` to `PushPawnAssetManager`
+1. Restart Editor
+
+### Activate Ability
+1. Open `BP_ThirdPersonCharacter` and add a `Sequence` before `Is Locally Controlled`
+1. `Sequence` -> `1` -> `Delay 2.0` -> `Try Activate Ability by Class` -> `Push Scan Ability Class`
+  * No sane game uses a `Delay` node to ensure initialization, this is only for testing, if the PIE initialization takes too long this will never activate
 
 ### Optional
 Duplicate the gameplay ability from the content folder to your project and extend as required. If you don't need to extend it, no need to do this step.
