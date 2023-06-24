@@ -67,7 +67,7 @@ Add to the ctor of duplicated ability: `ActivationPolicy = ELyraAbilityActivatio
 ## How to Use
 *This how to was written from the viewpoint of a brand new 5.2 "Third Person" template. Many of these steps may be unnecessary for your project, this is for the purpose of documenting the entire process without leaving anything out.*
 
-[You can download the completed demo project here](https://github.com/Vaei/repo_files/blob/main/PushPawn/PushPawnProjectExample.zip), keep in mind it is using version `1.0.0.0` of this plugin and will never be updated. Please note all textures and high poly meshes are removed for file size reasons.
+[You can download the completed demo project here](https://github.com/Vaei/repo_files/raw/main/PushPawn/PushPawnProjectExample.zip), keep in mind it is using version `1.0.0.0` of this plugin and will never be updated. Please note all textures and high poly meshes are removed for file size reasons.
 
 ### Create New Project
 1. Launch Unreal 5.2 and create C++ Third Person template named `PushPawnProject`
