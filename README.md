@@ -12,7 +12,9 @@ Summary: When a pawn that can be pushed (pushee) finds a nearby pawn that can pu
 Tested >200ms without problematic desync.
 
 ## Example
-This was initially created for the upcoming project with the working title "Isekai" and is offered freely under the MIT License. This game also makes the AI play a push animation and yell at the player, which is not included, however the helper functions for building this are included.
+This was initially created for the upcoming project with the working title "Isekai". This game also makes the AI play a push animation and yell at the player, which is not included, however the helper functions for building this are included.
+
+![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview_isekai.gif)
 
 Here is the preview from a minimal Third Person Example project (see "How to Use" to obtain this). This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't desync abnormally.
 
