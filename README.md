@@ -1,5 +1,5 @@
 # PushPawn
-***Due to the use of Git LFS, do NOT download a zip or your content will be missing.*** You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git` .
+***Due to the use of Git LFS, do NOT download a zip or your content will be missing.*** You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git`
 
 Allows pawns to push each other, uses GAS to prevent desyncs that often occur when colliding with AI due to lack of net prediction between Characters.
 
@@ -62,15 +62,99 @@ LyraShooter requires that `GameplayAbilities` extend `ULyraGameplayAbility`; you
 Add to the ctor of duplicated ability: `ActivationPolicy = ELyraAbilityActivationPolicy::OnSpawn;` and add to the appropriate attribute sets so that it always runs. Don't forget to change the `PUSHPAWN_API` macro to your own!
 
 ## How to Use
-*This how to was written from the viewpoint of a brand new 5.2 "Third Person" template. Many of these steps may be unnecessary for your project.*
+*This how to was written from the viewpoint of a brand new 5.2 "Third Person" template. Many of these steps may be unnecessary for your project, this is for the purpose of documenting the entire process without leaving anything out.*
 
-### Obtain Plugin
-Clone to your project's plugin folder and build from source. Due to the use of Git LFS, do NOT download a zip or your content will be missing. You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git` .
-
-### Prerequisite Setup
+### Create New Project
 1. Launch Unreal 5.2 and create C++ Third Person template
-1. Add a navmesh
-1. 
+1. Close the editor and IDE
+
+### Install Plugin
+1. Create a "Plugins" folder in the project root folder
+1. Clone using `git clone https://github.com/Vaei/PushPawn.git`.
+  * Due to the use of Git LFS, do NOT download a zip or your content will be missing. You must clone!
+1. Delete project Binaries & Intermediate folder
+1. Right click .uproject and `Generate Visual Studio project files`
+1. Open it in your IDE
+1. Add `PushPawn` to your .uproject plugins and enable it
+1. Add `PushPawn` to your .build.cs `PublicDependencyModuleNames`
+1. Compile and launch the editor
+
+### Collision Setup
+1. Change `Pawn` profile and `CharacterMesh` profile to ignore `ECC_Camera`
+  * Gets in the way when testing
+1. Add trace channel `PushPawn` and set Default Response to `Ignore`
+1. Change `Pawn` profile to block `PushPawn` and ignore `Pawn`
+
+### Testing Settings
+1. Open Editor Preferences and select `Level Editor` -> `Play`
+1. Change `Play Net Mode` to `Play As Client`
+1. Enable `Enable Network Emulation`
+1. Set `Minimum Latency` to `90` and `Maximum Latency` to `110` for both `Incoming Traffic` and `Outgoing Traffic`
+  * This ensures real-world networking conditions with considerable latency of over 200ms
+1. Open `BP_ThirdPersonCharacter` and `Event BeginPlay` -> `Is Locally Controlled` -> `Execute Console Command` -> `p.netshowcorrections 1`
+  * Any time your character desyncs, it will draw red/green capsules representing the correction, we now know if this plugin can desync us or not and how it handles desync when it should occur
+
+### AI Setup
+1. Duplicate `BP_ThirdPersonCharacter` and name it `BP_ThirdPersonBot`
+1. Add a `Nav Mesh Bounds Volume` to the level
+1. Press "P" to visualize
+1. Scale the volume to fill the level
+1. Delete the `Is Locally Controlled` and `Execute Console Command`
+1. `Begin Play` -> `Switch Has Authority` -> `Authority` -> `AI MoveTo` -> (`Destination`) -> `GetRandomReachablePointInRadius` -> Set `Origin` to center of scene roughly & `Radius` to `3000`
+1. Connect both `On Success` and `On Fail` to the same `AI MoveTo` node resulting in an infinite execution
+
+The AI now runs around the level when simulating.
+
+### AbilitySystem
+1. Close Editor
+1. Add `GameplayAbilities` to Build.cs `PrivateDependencyModuleNames`
+1. Extend `IAbilitySystemInterface` from `MyCharacter`
+  * This is confirmed working with `UAbilitySystemComponent` on `APlayerState`
+1. Add `UAbilitySystemComponent* AbilitySystemComponent` to `MyCharacter`
+  * `AbilitySystemComponent->CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));`
+1. Override `virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;` to return `AbilitySystemComponent`
+1. Create `PushPawnAssetManager` derived from `UAssetManager`
+1. Override `virtual void StartInitialLoading() override;` and call `UAbilitySystemGlobals::Get().InitGlobalData();`
+
+### PushPawn
+1. Extend `MyCharacter` to `MyPlayerCharacter` and also `MyBotCharacter`
+1. `MyBotCharacter` extend `IPusherTarget`
+1. `MyPlayerCharacter` extend `IPusheeInstigator`
+
+#### MyBotCharacter
+```cpp
+// .h
+public:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGameplayAbility> PushAbilityToGrant;
+
+protected:
+	//~ Begin IPusherTarget Interface
+	virtual void GatherPushOptions(const FPushQuery& PushQuery, FPushOptionBuilder& OptionBuilder) override;
+	virtual void CustomizePushEventData(const FGameplayTag& PushEventTag, FGameplayEventData& InOutEventData) override {}
+	virtual bool CanPush(const AActor* PusheeActor) const override;
+	//~ End IPusherTarget Interface
+```
+```cpp
+// .cpp
+void AMyBotCharacter::GatherPushOptions(const FPushQuery& PushQuery, FPushOptionBuilder& OptionBuilder)
+{
+	if (PushQuery.RequestingAvatar.IsValid())
+	{
+		FPushOption Push;
+		Push.PushAbilityToGrant = PushAbilityToGrant;
+		Push.PusheeActorLocation = PushQuery.RequestingAvatar->GetActorLocation();
+		Push.PusheeForwardVector = GetActorForwardVector();
+		Push.PusherActorLocation = GetActorLocation();
+		OptionBuilder.AddPushOption(Push);
+	}
+}
+
+bool AMyBotCharacter::CanPush(const AActor* PusheeActor) const
+{
+	return !IsPendingKillPending();
+}
+```
 
 ### Optional
 Duplicate the gameplay ability from the content folder to your project and extend as required. If you don't need to extend it, no need to do this step.
