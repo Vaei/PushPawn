@@ -13,7 +13,8 @@ Tested >200ms without problematic desync.
 
 ## Example
 This was initially created for the upcoming project with the working title "Isekai" and is offered freely under the MIT License. This game also makes the AI play a push animation and yell at the player, which is not included, however the helper functions for building this are included.
-![example usage](https://github.com/Vaei/PlayWidgetAnimation/blob/examples/Example1.png)
+
+![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/video_preview.mp4)
 
 ## Difficulty
 This is very advanced C++ use, if you are a beginner you will struggle with this and dedicated support isn't available. It will benefit you if you understand how LyraShooter's interaction system works though it isn't a requirement. There may be some redundancy that came from duplicating that system as a starting point which may lead to confusion.
@@ -63,6 +64,8 @@ Add to the ctor of duplicated ability: `ActivationPolicy = ELyraAbilityActivatio
 
 ## How to Use
 *This how to was written from the viewpoint of a brand new 5.2 "Third Person" template. Many of these steps may be unnecessary for your project, this is for the purpose of documenting the entire process without leaving anything out.*
+
+You can download the completed demo project here, keep in mind it is using version `1.0.0.0` of this plugin and will never be updated.
 
 ### Create New Project
 1. Launch Unreal 5.2 and create C++ Third Person template named `PushPawnProject`
