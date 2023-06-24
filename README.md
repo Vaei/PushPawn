@@ -14,6 +14,8 @@ Tested >200ms without problematic desync.
 ## Example
 This was initially created for the upcoming project with the working title "Isekai" and is offered freely under the MIT License. This game also makes the AI play a push animation and yell at the player, which is not included, however the helper functions for building this are included.
 
+Here is the preview from a minimal Third Person Example project (see "How to Use" to obtain this). This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't desync abnormally.
+
 ![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview.gif)
 
 ## Difficulty
@@ -65,7 +67,7 @@ Add to the ctor of duplicated ability: `ActivationPolicy = ELyraAbilityActivatio
 ## How to Use
 *This how to was written from the viewpoint of a brand new 5.2 "Third Person" template. Many of these steps may be unnecessary for your project, this is for the purpose of documenting the entire process without leaving anything out.*
 
-You can download the completed demo project here, keep in mind it is using version `1.0.0.0` of this plugin and will never be updated.
+[You can download the completed demo project here](https://github.com/Vaei/repo_files/blob/main/PushPawn/PushPawnProjectExample.zip), keep in mind it is using version `1.0.0.0` of this plugin and will never be updated. Please note all textures and high poly meshes are removed for file size reasons.
 
 ### Create New Project
 1. Launch Unreal 5.2 and create C++ Third Person template named `PushPawnProject`
