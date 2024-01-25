@@ -3,6 +3,8 @@
 #include "PushStatics.h"
 #include "IPush.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PushStatics)
+
 UPushStatics::UPushStatics()
 	: Super(FObjectInitializer::Get())
 {

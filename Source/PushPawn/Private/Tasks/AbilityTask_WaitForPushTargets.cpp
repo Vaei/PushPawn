@@ -5,6 +5,8 @@
 #include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_WaitForPushTargets)
+
 UAbilityTask_WaitForPushTargets::UAbilityTask_WaitForPushTargets(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 	, TraceChannel(ECC_Visibility)

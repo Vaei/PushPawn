@@ -3,6 +3,8 @@
 
 #include "GameplayAbility_Push_Action.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(GameplayAbility_Push_Action)
+
 UGameplayAbility_Push_Action::UGameplayAbility_Push_Action(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
