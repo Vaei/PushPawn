@@ -208,5 +208,6 @@ Any character that can do the pushing must implement the IPusherTarget interface
 In `GA_Push_Action`, assign a trace channel. You probably do not want to leave this as `ECC_Visibility`, but instead setup a channel that only valid Pushers will block.
 
 ## Changelog
-### 1.0.0.0
+
+### 1.0.0
 Initial Release
