@@ -24,7 +24,7 @@ void UAbilityTask_GrantNearbyPush::OnDestroy(bool bInOwnerFinished)
 
 void UAbilityTask_GrantNearbyPush::QueryPushs()
 {
-	UWorld* World = GetWorld();
+	const UWorld* World = GetWorld();
 	AActor* ActorOwner = GetAvatarActor();
 	
 	if (World && ActorOwner)
@@ -44,7 +44,7 @@ void UAbilityTask_GrantNearbyPush::QueryPushs()
 			PushQuery.RequestingAvatar = ActorOwner;
 
 			TArray<FPushOption> Options;
-			for (TScriptInterface<IPusherTarget>& InteractiveTarget : PushTargets)
+			for (const TScriptInterface<IPusherTarget>& InteractiveTarget : PushTargets)
 			{
 				FPushOptionBuilder PushBuilder(InteractiveTarget, Options);
 				InteractiveTarget->GatherPushOptions(PushQuery, PushBuilder);

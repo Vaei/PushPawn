@@ -17,3 +17,10 @@ enum class EPushCardinal : uint8
 	BackwardLeft,
 	BackwardRight
 };
+
+UENUM(BlueprintType)
+enum class EValidPushDirection : uint8
+{
+	ValidDirection,
+	InvalidDirection
+};

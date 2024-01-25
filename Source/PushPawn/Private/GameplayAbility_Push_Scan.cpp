@@ -7,7 +7,7 @@
 #include "IPush.h"
 #include "PushStatics.h"
 #include "Components/CapsuleComponent.h"
-#include "GameplayTags/Public/NativeGameplayTags.h"
+#include "NativeGameplayTags.h"
 #include "Tasks/AbilityTask_GrantNearbyPush.h"
 
 UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Ability_Push_Activate, "Ability.Push.Activate");
@@ -18,6 +18,8 @@ UGameplayAbility_Push_Scan::UGameplayAbility_Push_Scan(const FObjectInitializer&
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
 	bServerRespectsRemoteAbilityCancellation = false;
+
+	bDirectionIs2D = false;
 }
 
 void UGameplayAbility_Push_Scan::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
