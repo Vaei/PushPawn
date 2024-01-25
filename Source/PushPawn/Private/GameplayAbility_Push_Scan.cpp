@@ -10,6 +10,8 @@
 #include "NativeGameplayTags.h"
 #include "Tasks/AbilityTask_GrantNearbyPush.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(GameplayAbility_Push_Scan)
+
 UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Ability_Push_Activate, "Ability.Push.Activate");
 
 UGameplayAbility_Push_Scan::UGameplayAbility_Push_Scan(const FObjectInitializer& ObjectInitializer)

@@ -8,6 +8,8 @@
 #include "PushQuery.h"
 #include "PushStatics.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_GrantNearbyPush)
+
 void UAbilityTask_GrantNearbyPush::Activate()
 {
 	SetWaitingOnAvatar();

@@ -9,6 +9,8 @@
 #include "TimerManager.h"
 #include "Components/CapsuleComponent.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_WaitForPushTargets_CapsuleTrace)
+
 UAbilityTask_WaitForPushTargets_CapsuleTrace::UAbilityTask_WaitForPushTargets_CapsuleTrace(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
