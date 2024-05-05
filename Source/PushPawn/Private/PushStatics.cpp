@@ -2,6 +2,7 @@
 
 #include "PushStatics.h"
 #include "IPush.h"
+#include "Engine/OverlapResult.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PushStatics)
 
