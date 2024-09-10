@@ -7,6 +7,7 @@
 #include "IPush.h"
 #include "PushQuery.h"
 #include "PushStatics.h"
+#include "Engine/OverlapResult.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_GrantNearbyPush)
 
@@ -35,12 +36,12 @@ void UAbilityTask_GrantNearbyPush::QueryPushs()
 		Params.AddIgnoredActor(ActorOwner);
 		
 		TArray<FOverlapResult> OverlapResults;
-		World->OverlapMultiByChannel(OUT OverlapResults, ActorOwner->GetActorLocation(), FQuat::Identity, TraceChannel, FCollisionShape::MakeSphere(PushScanRange), Params);
+		World->OverlapMultiByChannel(OverlapResults, ActorOwner->GetActorLocation(), FQuat::Identity, TraceChannel, FCollisionShape::MakeSphere(PushScanRange), Params);
 
 		if (OverlapResults.Num() > 0)
 		{
 			TArray<TScriptInterface<IPusherTarget>> PushTargets;
-			UPushStatics::AppendPushTargetsFromOverlapResults(OverlapResults, OUT PushTargets);
+			UPushStatics::AppendPushTargetsFromOverlapResults(OverlapResults, PushTargets);
 			
 			FPushQuery PushQuery;
 			PushQuery.RequestingAvatar = ActorOwner;

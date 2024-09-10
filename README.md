@@ -209,6 +209,9 @@ In `GA_Push_Action`, assign a trace channel. You probably do not want to leave t
 
 ## Changelog
 
+### 1.1.1
+* Add missing include
+
 ### 1.1.0
 * Move static helpers from `GameplayAbility_Push_Action` to `PushStatics`
 * Fix include paths and const correctness
