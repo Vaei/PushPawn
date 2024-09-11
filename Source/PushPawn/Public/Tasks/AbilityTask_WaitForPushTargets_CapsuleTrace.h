@@ -17,7 +17,7 @@ class PUSHPAWN_API UAbilityTask_WaitForPushTargets_CapsuleTrace : public UAbilit
 
 	/** Wait until we trace new set of Pushs.  This task automatically loops. */
 	UFUNCTION(BlueprintCallable, Category="Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static UAbilityTask_WaitForPushTargets_CapsuleTrace* WaitForPushTargets_CapsuleTrace(UGameplayAbility* OwningAbility, FPushQuery PushQuery, ECollisionChannel TraceChannel, FGameplayAbilityTargetingLocationInfo StartLocation, float PushScanRange = 100, float PushScanRate = 0.100, bool bShowDebug = false);
+	static UAbilityTask_WaitForPushTargets_CapsuleTrace* WaitForPushTargets_CapsuleTrace(UGameplayAbility* OwningAbility, FPushQuery PushQuery, ECollisionChannel TraceChannel, FGameplayAbilityTargetingLocationInfo StartLocation, float PushScanRange = 100, float PushScanRate = 0.100);
 
 private:
 
@@ -33,7 +33,6 @@ private:
 
 	float PushScanRange = 100;
 	float PushScanRate = 0.100;
-	bool bShowDebug = false;
 
 	FTimerHandle TimerHandle;
 };
