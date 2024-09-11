@@ -11,12 +11,25 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_WaitForPushTargets_CapsuleTrace)
 
+namespace FPushPawn
+{
+#if ENABLE_DRAW_DEBUG
+	static int32 PushPawnScanDebugDraw = 0;
+	FAutoConsoleVariableRef CVarPushPawnScanDebugDraw(
+		TEXT("p.PushPawn.Scan.Debug.Draw"),
+		PushPawnScanDebugDraw,
+		TEXT("Optionally draw debug for PushPawn Scan.\n")
+		TEXT("0: Disable, 1: Enable"),
+		ECVF_Cheat);
+#endif
+}
+
 UAbilityTask_WaitForPushTargets_CapsuleTrace::UAbilityTask_WaitForPushTargets_CapsuleTrace(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 }
 
-UAbilityTask_WaitForPushTargets_CapsuleTrace* UAbilityTask_WaitForPushTargets_CapsuleTrace::WaitForPushTargets_CapsuleTrace(UGameplayAbility* OwningAbility, FPushQuery PushQuery, ECollisionChannel TraceChannel, FGameplayAbilityTargetingLocationInfo StartLocation, float PushScanRange, float PushScanRate, bool bShowDebug)
+UAbilityTask_WaitForPushTargets_CapsuleTrace* UAbilityTask_WaitForPushTargets_CapsuleTrace::WaitForPushTargets_CapsuleTrace(UGameplayAbility* OwningAbility, FPushQuery PushQuery, ECollisionChannel TraceChannel, FGameplayAbilityTargetingLocationInfo StartLocation, float PushScanRange, float PushScanRate)
 {
 	UAbilityTask_WaitForPushTargets_CapsuleTrace* MyObj = NewAbilityTask<UAbilityTask_WaitForPushTargets_CapsuleTrace>(OwningAbility);
 	MyObj->PushScanRange = PushScanRange;
@@ -24,7 +37,6 @@ UAbilityTask_WaitForPushTargets_CapsuleTrace* UAbilityTask_WaitForPushTargets_Ca
 	MyObj->StartLocation = StartLocation;
 	MyObj->PushQuery = PushQuery;
 	MyObj->TraceChannel = TraceChannel;
-	MyObj->bShowDebug = bShowDebug;
 
 	return MyObj;
 }
@@ -84,7 +96,7 @@ void UAbilityTask_WaitForPushTargets_CapsuleTrace::PerformTrace()
 	UpdatePushOptions(PushQuery, PushTargets);
 
 #if ENABLE_DRAW_DEBUG
-	if (bShowDebug)
+	if (FPushPawn::PushPawnScanDebugDraw)
 	{
 		FColor DebugColor = Hit.bBlockingHit ? FColor::Red : FColor::Green;
 		DrawDebugCapsule(World, TraceStart, HalfHeight, Radius, FQuat::Identity, DebugColor, false, PushScanRate);

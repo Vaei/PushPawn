@@ -209,6 +209,9 @@ In `GA_Push_Action`, assign a trace channel. You probably do not want to leave t
 
 ## Changelog
 
+### 1.1.2
+* Switch to Cvar to show debug
+
 ### 1.1.1
 * Add missing include
 
