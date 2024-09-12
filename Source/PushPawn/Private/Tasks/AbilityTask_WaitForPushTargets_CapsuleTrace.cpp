@@ -8,6 +8,8 @@
 #include "AbilitySystemComponent.h"
 #include "TimerManager.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_WaitForPushTargets_CapsuleTrace)
 
@@ -29,11 +31,24 @@ UAbilityTask_WaitForPushTargets_CapsuleTrace::UAbilityTask_WaitForPushTargets_Ca
 {
 }
 
-UAbilityTask_WaitForPushTargets_CapsuleTrace* UAbilityTask_WaitForPushTargets_CapsuleTrace::WaitForPushTargets_CapsuleTrace(UGameplayAbility* OwningAbility, FPushQuery PushQuery, ECollisionChannel TraceChannel, FGameplayAbilityTargetingLocationInfo StartLocation, float PushScanRange, float PushScanRate)
+UAbilityTask_WaitForPushTargets_CapsuleTrace* UAbilityTask_WaitForPushTargets_CapsuleTrace::WaitForPushTargets_CapsuleTrace(
+	UGameplayAbility* OwningAbility,
+	FPushQuery PushQuery,
+	ECollisionChannel TraceChannel,
+	FGameplayAbilityTargetingLocationInfo StartLocation,
+	float RadiusScalar,
+	float RadiusAccelScalar,
+	UCurveFloat* VelocityRadiusScalar,
+	float PushScanRate,
+	float PushScanRateAccel
+	)
 {
 	UAbilityTask_WaitForPushTargets_CapsuleTrace* MyObj = NewAbilityTask<UAbilityTask_WaitForPushTargets_CapsuleTrace>(OwningAbility);
-	MyObj->PushScanRange = PushScanRange;
+	MyObj->RadiusScalar = RadiusScalar;
+	MyObj->RadiusAccelScalar = RadiusAccelScalar;
+	MyObj->VelocityRadiusScalar = VelocityRadiusScalar;
 	MyObj->PushScanRate = PushScanRate;
+	MyObj->PushScanRateAccel = PushScanRateAccel;
 	MyObj->StartLocation = StartLocation;
 	MyObj->PushQuery = PushQuery;
 	MyObj->TraceChannel = TraceChannel;
@@ -41,11 +56,16 @@ UAbilityTask_WaitForPushTargets_CapsuleTrace* UAbilityTask_WaitForPushTargets_Ca
 	return MyObj;
 }
 
+void UAbilityTask_WaitForPushTargets_CapsuleTrace::ActivateTimer(bool bHasAccel)
+{
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::PerformTrace, (bHasAccel ? PushScanRateAccel : PushScanRate), true);
+}
+
 void UAbilityTask_WaitForPushTargets_CapsuleTrace::Activate()
 {
 	SetWaitingOnAvatar();
 
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::PerformTrace, PushScanRate, true);
+	ActivateTimer();
 }
 
 void UAbilityTask_WaitForPushTargets_CapsuleTrace::OnDestroy(bool AbilityEnded)
@@ -60,10 +80,23 @@ void UAbilityTask_WaitForPushTargets_CapsuleTrace::PerformTrace()
 	AActor* AvatarActor = Ability->GetCurrentActorInfo()->AvatarActor.Get();
 	if (!AvatarActor)
 	{
+		ActivateTimer();
 		return;
 	}
 
 	UWorld* World = GetWorld();
+	if (!World)
+	{
+		ActivateTimer();
+		return;
+	}
+
+	// This can realistically occur before initialization passes
+	if (!AvatarActor->HasActorBegunPlay())
+	{
+		ActivateTimer();
+		return;
+	}
 
 	// Search around us
 	const UCapsuleComponent* CapsuleComponent = AvatarActor && AvatarActor->GetRootComponent() ?
@@ -71,10 +104,29 @@ void UAbilityTask_WaitForPushTargets_CapsuleTrace::PerformTrace()
 
 	if (!CapsuleComponent)
 	{
+		ActivateTimer();
 		return;
 	}
 
-	const float Radius = CapsuleComponent->GetScaledCapsuleRadius();
+	bool bHasAcceleration = false;
+	float VelocityScalar = 1.f;
+	if (ACharacter* Character = Cast<ACharacter>(AvatarActor))
+	{
+		if (UCharacterMovementComponent* Movement = Character->GetCharacterMovement())
+		{
+			bHasAcceleration = !Movement->GetCurrentAcceleration().IsNearlyZero(10.f);
+		}
+
+		if (VelocityRadiusScalar)
+		{
+			const float VelocityMag = Character->GetVelocity().Size2D();
+			VelocityScalar = VelocityRadiusScalar->GetFloatValue(VelocityMag);
+		}
+	}
+
+	ActivateTimer(bHasAcceleration);
+
+	const float Radius = CapsuleComponent->GetScaledCapsuleRadius() * (bHasAcceleration ? RadiusAccelScalar : RadiusScalar) * VelocityScalar;
 	const float HalfHeight = CapsuleComponent->GetScaledCapsuleHalfHeight();
 	FCollisionShape CapsuleShape = FCollisionShape::MakeCapsule(Radius, HalfHeight);
 
