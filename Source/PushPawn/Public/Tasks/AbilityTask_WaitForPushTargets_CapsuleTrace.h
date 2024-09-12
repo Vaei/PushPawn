@@ -13,11 +13,14 @@ class PUSHPAWN_API UAbilityTask_WaitForPushTargets_CapsuleTrace : public UAbilit
 {
 	GENERATED_UCLASS_BODY()
 
+	void ActivateTimer(bool bHasAccel = false);
+
 	virtual void Activate() override;
 
 	/** Wait until we trace new set of Pushs.  This task automatically loops. */
 	UFUNCTION(BlueprintCallable, Category="Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static UAbilityTask_WaitForPushTargets_CapsuleTrace* WaitForPushTargets_CapsuleTrace(UGameplayAbility* OwningAbility, FPushQuery PushQuery, ECollisionChannel TraceChannel, FGameplayAbilityTargetingLocationInfo StartLocation, float PushScanRange = 100, float PushScanRate = 0.100);
+	static UAbilityTask_WaitForPushTargets_CapsuleTrace* WaitForPushTargets_CapsuleTrace(UGameplayAbility* OwningAbility, FPushQuery PushQuery, ECollisionChannel TraceChannel,
+		FGameplayAbilityTargetingLocationInfo StartLocation, float RadiusScalar = 1.f, float RadiusAccelScalar = 1.f, UCurveFloat* VelocityRadiusScalar = nullptr, float PushScanRate = 0.1f, float PushScanRateAccel = 0.05f);
 
 private:
 
@@ -31,8 +34,14 @@ private:
 	UPROPERTY()
 	FGameplayAbilityTargetingLocationInfo StartLocation;
 
-	float PushScanRange = 100;
-	float PushScanRate = 0.100;
+	float RadiusScalar = 0.f;
+	float RadiusAccelScalar = 0.f;
+
+	UPROPERTY()
+	UCurveFloat* VelocityRadiusScalar = nullptr;
+
+	float PushScanRate = 0.1f;
+	float PushScanRateAccel = 0.1f;
 
 	FTimerHandle TimerHandle;
 };

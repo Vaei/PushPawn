@@ -209,6 +209,15 @@ In `GA_Push_Action`, assign a trace channel. You probably do not want to leave t
 
 ## Changelog
 
+### 1.2.0
+* Fix major init order bug
+* Add radius scaling under acceleration
+* Add radius scaling under velocity
+* Add separate scan rate under acceleration
+* Remove unused scan range
+* Fix starting ability before actor has begun play
+
+
 ### 1.1.2
 * Switch to Cvar to show debug
 
