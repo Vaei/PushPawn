@@ -209,6 +209,9 @@ In `GA_Push_Action`, assign a trace channel. You probably do not want to leave t
 
 ## Changelog
 
+### 1.3.1
+* Add Icon
+
 ### 1.3.0
 _If you're on 1.2.0 you need to update_
 
