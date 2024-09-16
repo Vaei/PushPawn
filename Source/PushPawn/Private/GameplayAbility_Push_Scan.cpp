@@ -22,14 +22,14 @@ UGameplayAbility_Push_Scan::UGameplayAbility_Push_Scan(const FObjectInitializer&
 	bServerRespectsRemoteAbilityCancellation = false;
 
 	bDirectionIs2D = false;
+
+	TraceChannel = ECC_Visibility;
 }
 
 void UGameplayAbility_Push_Scan::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
 	const AActor* AvatarActor = ActorInfo->AvatarActor.IsValid() ? ActorInfo->AvatarActor.Get() : nullptr;
 	ScanRange = GetScanRange(AvatarActor);
 	ScanRate = GetScanRate(AvatarActor);
@@ -40,6 +40,8 @@ void UGameplayAbility_Push_Scan::ActivateAbility(const FGameplayAbilitySpecHandl
 		UAbilityTask_GrantNearbyPush* Task = UAbilityTask_GrantNearbyPush::GrantAbilitiesForNearbyPushers(this, TraceChannel, ScanRange, ScanRate);
 		Task->ReadyForActivation();
 	}
+	
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
 void UGameplayAbility_Push_Scan::UpdatePushs(const TArray<FPushOption>& PushOptions)
@@ -100,7 +102,7 @@ void UGameplayAbility_Push_Scan::TriggerPush()
 			// we want to dictate the direction to something that makes sense for our use-case
 			DirectionHit.Normal = -PushOption.PusheeForwardVector;
 		}
-
+		
 		// Allow the target to customize the event data we're about to pass in, in case the ability needs custom data
 		// that only the actor knows.
 		FGameplayEventData Payload;
@@ -122,7 +124,7 @@ void UGameplayAbility_Push_Scan::TriggerPush()
 		ActorInfo.InitFromActor(PusherTargetActor, TargetActor, PushOption.TargetAbilitySystem);
 
 		// Trigger the ability using event tag.
-		const bool bSuccess = PushOption.TargetAbilitySystem->TriggerAbilityFromGameplayEvent(
+		PushOption.TargetAbilitySystem->TriggerAbilityFromGameplayEvent(
 			PushOption.TargetPushAbilityHandle,
 			&ActorInfo,
 			TAG_Ability_Push_Activate,

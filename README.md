@@ -210,7 +210,15 @@ In `GA_Push_Action`, assign a trace channel. You probably do not want to leave t
 ## Changelog
 
 ### 1.3.0
+_If you're on 1.2.0 you need to update_
+
+* Refactor GA_Push_x to GA_PushPawn_x
+* Push force curve no longer normalized, better defaults set
 * Fixed bug where valid direction wasn't obtained when on top of each other
+* Update blueprint content with changes
+* Brought forward fixes from 1.2.0 that were accidentally not fully implemented or missed - if on 1.2.0 you must update
+* Enabled gravity during root motion force by default
+* Added helper functions to GA_PushPawn_Action
 
 ### 1.2.0
 * Fix major init order bug
@@ -219,7 +227,6 @@ In `GA_Push_Action`, assign a trace channel. You probably do not want to leave t
 * Add separate scan rate under acceleration
 * Remove unused scan range
 * Fix starting ability before actor has begun play
-
 
 ### 1.1.2
 * Switch to Cvar to show debug

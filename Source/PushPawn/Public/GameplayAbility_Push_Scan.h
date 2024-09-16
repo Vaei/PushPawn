@@ -22,14 +22,30 @@ public:
 
 	/** Channel to use when tracing for Pawns that can push us back */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Push)
-	TEnumAsByte<ECollisionChannel> TraceChannel = ECC_Visibility;
+	TEnumAsByte<ECollisionChannel> TraceChannel;
 
 	UPROPERTY(BlueprintReadOnly, Category=Push)
-	float ScanRange = 100.f;
+	float ScanRange = 0.f;
+
+	/** Modifies scan range */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Push)
+	float RadiusScalar = 0.8f;
+
+	/** Modifies scan range under acceleration */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Push)
+	float RadiusAccelScalar = 1.1f;
+
+	/** Scale radius by velocity */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Push)
+	UCurveFloat* RadiusVelocityScalar = nullptr;
 	
 	/** How often to test for overlaps */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Push)
 	float ScanRate = 0.1f;
+
+	/** How often to test for overlaps under acceleration */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Push)
+	float ScanRateAccel = 0.05f;
 	
 protected:
 	UPROPERTY(BlueprintReadWrite, Category=Push)
