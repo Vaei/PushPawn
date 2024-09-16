@@ -79,11 +79,22 @@ void UGameplayAbility_Push_Scan::TriggerPush()
 		// Use this to pass a Push direction, if we compute this later from the Payload Instigator or Target, it will
 		// result in desync
 		FHitResult DirectionHit;
-		DirectionHit.Normal = PushOption.PusheeActorLocation - PushOption.PusherActorLocation;
-		DirectionHit.Normal = bDirectionIs2D ? DirectionHit.Normal.GetUnsafeNormal2D() : DirectionHit.Normal.GetUnsafeNormal();
+		const FVector Direction = PushOption.PusheeActorLocation - PushOption.PusherActorLocation;
+		DirectionHit.Normal = bDirectionIs2D ? Direction.GetSafeNormal2D() : Direction.GetSafeNormal();
 
-		// @todo test this!
-		if (!DirectionHit.Normal.IsNormalized())
+		// Way too close to get a valid difference in direction
+		if (Direction.IsNearlyZero(2.5f))
+		{
+			// This typically occurs on spawning, when their location is the exact same, if we move them back along their
+			// forward vectors - they may just push forever in the same direction
+			float RandomDegrees = FMath::RandRange(0.f, 360.f);
+			const float RandAngle = FMath::DegreesToRadians(RandomDegrees);
+			FVector NewDirection { FMath::Cos(RandAngle), FMath::Sin(RandAngle), 0.f };
+			DirectionHit.Normal = NewDirection.GetSafeNormal();
+		}
+
+		// If we still don't have a valid direction, just push backwards
+		if (!DirectionHit.Normal.IsNormalized() || !DirectionHit.Normal.IsUnit())
 		{
 			// Push the actor backwards if no valid direction was obtained, we don't use GetSafeNormal() because
 			// we want to dictate the direction to something that makes sense for our use-case

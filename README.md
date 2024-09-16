@@ -209,6 +209,9 @@ In `GA_Push_Action`, assign a trace channel. You probably do not want to leave t
 
 ## Changelog
 
+### 1.3.0
+* Fixed bug where valid direction wasn't obtained when on top of each other
+
 ### 1.2.0
 * Fix major init order bug
 * Add radius scaling under acceleration
