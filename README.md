@@ -18,7 +18,7 @@ This has been tested in the following cases:
 * Player controlled ACharacter pushing an AI controlled ACharacter
 
 Tested in environments:
-* >200ms latency without problematic desync
+* \>200ms latency without problematic desync
 * Shippable production-ready multiplayer game tested with high player counts with lots of NPCs
 
 ## Requirements
