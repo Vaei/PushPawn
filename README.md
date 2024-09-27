@@ -1,29 +1,47 @@
 # PushPawn
 ***Due to the use of Git LFS, do NOT download a zip or your content will be missing.*** You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git`
 
-Provides a net predicted solution for Pawns to Push each other. Uses GAS to prevent desyncs that often occur when colliding with AI.
-
-The primary purpose is to overcome desync when players collide with AI, but does provide a nice "soft collision" result instead of the rigid "hard collision" that most games have.
+Provides:
+* Net predicted Pawn vs. Pawn collisions via GAS to prevent desync
+* Soft organic collisions instead of the engine's brick wall collisions
+* Abilities that can respond to gameplay events, e.g. playing a push animation, or yelling at the other Pawn
+* Exceptionally customizable
 
 Initially created based on the 5.1 LyraShooter interaction system. Please note that some of the code comments are left-overs from LyraShooter's interaction system and may not make sense in this context.
 
 Summary: When a pawn that can be pushed (pushee) finds a nearby pawn that can push them (pusher), the pushee will request the push options from the pusher, and apply those to itself via a `UGameplayAbility`.
 
-Tested >200ms without problematic desync.
+## Foreword
+This has been tested in the following cases:
+* AI Controlled ACharacter pushing a player controlled ACharacter
+* Player controlled ACharacter pushing a player controlled ACharacter
+* Player controlled ACharacter pushing an AI controlled ACharacter
+
+Tested in environments:
+* >200ms latency without problematic desync
+* Shippable production-ready multiplayer game tested with high player counts with lots of NPCs
+
+## Requirements
+The content is only supported by Unreal Engine 5.2 and up. However, there is probably nothing stopping you from recreating the blueprints and only making use of the source code.
+
+## Limitations
+If the capsule dimensions change between prediction frames it can desync. For most of us sending this data is an unnecessary cost, but if you need to do it, add the capsule `HalfHeight` and/or `Radius` to `FPushOption` and send it along with `IPusheeInstigator::GatherPushOptions`, however this may not be sufficient on it's own! Check where the `UCapsuleComponent` getters are being used and replace these too. Any data NOT send through the `FPushOption` is very unlikely to be predicted.
+
+This may also not be sufficient as it remains untested.
+
+## Difficulty
+This is very advanced C++ use, if you are a beginner you will struggle with this and dedicated support isn't available.
+
+If you are not an advanced user, you may be able to succeed in using this effectively by looking at the "How to Use" section and going through the example project.
 
 ## Example
-This was initially created for the upcoming project with the working title "Isekai". This game also makes the AI play a push animation and yell at the player, which is not included, however the helper functions for building this are included.
+This was initially created for a personal project that would make the AI play a push animation and yell at the player, which is not included, however the helper functions for building this are included.
 
 ![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview_isekai.gif)
 
 Here is the preview from a minimal Third Person Example project (see "How to Use" to obtain this). This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't desync abnormally.
 
 ![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview.gif)
-
-## Difficulty
-This is very advanced C++ use, if you are a beginner you will struggle with this and dedicated support isn't available. It will benefit you if you understand how LyraShooter's interaction system works though it isn't a requirement. There may be some redundancy that came from duplicating that system as a starting point which may lead to confusion.
-
-If you are not an advanced user, you may be able to succeed in using this effectively by looking at the "How to Use" section and going through the example project.
 
 ## Terminology
 *The most confusing yet important aspect to wrap your head around is this: The ability `Instigator` is the one who gets pushed, and not the one who does the pushing.*
@@ -48,16 +66,6 @@ This means that if a massive world boss needs to push a player back, they can pu
 
 ### Pusher
 This is the Pawn that is pushing the other player. Implementing `IPusherTarget`. Under the Standard Use Case this is an AI Character.
-
-## Warning
-This has only been tested for a single use case: An AI controlled ACharacter pushing a player controlled ACharacter. No other use-case has currently been tested as of the time of writing this.
-
-The content is only supported by Unreal Engine 5.2 and up. However, there is probably nothing stopping you from mimicking the blueprints and only making use of the source code.
-
-## Limitations
-If the capsule dimensions change between prediction frames it can desync. For most of us sending this data is an unnecessary cost, but if you need to do it, add the capsule `HalfHeight` and/or `Radius` to `FPushOption` and send it along with `IPusheeInstigator::GatherPushOptions`, however this may not be sufficient on it's own! Check where the `UCapsuleComponent` getters are being used and replace these too. Any data NOT send through the `FPushOption` is very unlikely to be predicted.
-
-This may also not be sufficient as it remains untested.
 
 ## Abilities
 
