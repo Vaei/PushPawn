@@ -29,7 +29,7 @@ If the capsule dimensions change between prediction frames it can desync. For mo
 
 This may also not be sufficient as it remains untested.
 
-**CMC Changes Required**
+## CMC Changes Required
 By default, CMC does not allow root motion sources, used by PushPawn, to apply root motion while montage root motion is active. This is very easy to fix. There are a couple of options here.
 
 [The fix has been PR'd](https://github.com/EpicGames/UnrealEngine/pull/12366) in hopes of making UE5.6, and has been posted to UDN with the same purpose. You can make the same changes in the commit.
