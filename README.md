@@ -25,9 +25,19 @@ Tested in environments:
 The content is only supported by Unreal Engine 5.2 and up. However, there is probably nothing stopping you from recreating the blueprints and only making use of the source code.
 
 ## Limitations
+### Changing Capsule Size
 If the capsule dimensions change between prediction frames it can desync. For most of us sending this data is an unnecessary cost, but if you need to do it, add the capsule `HalfHeight` and/or `Radius` to `FPushOption` and send it along with `IPusheeInstigator::GatherPushOptions`, however this may not be sufficient on it's own! Check where the `UCapsuleComponent` getters are being used and replace these too. Any data NOT send through the `FPushOption` is very unlikely to be predicted.
 
 This may also not be sufficient as it remains untested.
+
+### Large Character Counts
+There is no real limitation with large character counts and PushPawn, but it does need to be factored in and some additional work will be required to manage this. How you handle this will depend entirely on your project and use-case.
+
+With the standard implementation, the scan ability keeps the AbilitySystemComponent ticking due to it's `WaitForPushTargets` task. It would be better to activate and deactivate this ability based on significance and other such factors.
+
+There is no need to search for nearby characters if:
+* We're a Non-Player Character and no players are aware of us at all (when reactivating, they will eject each other if overlapping)
+* Other characters are sufficiently far away that they won't desync within their latency vs max velocity thresholds, meaning we can detect they're close enough and activate the ability sufficiently before they reach us and we actually need to push them
 
 ## CMC Changes Required
 By default, CMC does not allow root motion sources, used by PushPawn, to apply root motion while montage root motion is active. This is very easy to fix. There are a couple of options here.
