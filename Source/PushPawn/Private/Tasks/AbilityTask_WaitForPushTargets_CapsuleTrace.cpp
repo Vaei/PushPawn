@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright (c) Jared Taylor. All Rights Reserved
 
 #include "Tasks/AbilityTask_WaitForPushTargets_CapsuleTrace.h"
 #include "GameFramework/Actor.h"
