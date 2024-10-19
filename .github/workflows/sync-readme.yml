@@ -1,0 +1,30 @@
+name: Sync README to Wiki
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main repository
+        uses: actions/checkout@v2
+
+      - name: Checkout the wiki repository
+        run: |
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git
+
+      - name: Copy README to Wiki Home
+        run: |
+          cp ./README.md ./${{ github.repository }}.wiki/Home.md
+
+      - name: Commit and push changes to Wiki
+        working-directory: ./${{ github.repository }}.wiki
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add Home.md
+          git commit -m "Sync README to Wiki Home"
+          git push
