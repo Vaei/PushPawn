@@ -14,7 +14,14 @@ Provides:
 * Lets players push each other off cliffs, if you want that...
 * Exceptionally customizable
 
-Summary: When a pawn that can be pushed (pushee) finds a nearby pawn that can push them (pusher), the pushee will request the push options from the pusher, and apply those to itself via a `UGameplayAbility`.
+This has been tested successfully in the following cases:
+* AI Controlled ACharacter pushing a player controlled ACharacter
+* Player controlled ACharacter pushing a player controlled ACharacter
+* Player controlled ACharacter pushing an AI controlled ACharacter
+
+Tested in environments:
+* \>200ms latency without problematic de-sync
+* Shippable production-ready multiplayer game tested with high player counts with lots of NPCs
 
 ## Example
 _Examples are based on 1.0.0_
@@ -32,16 +39,6 @@ Example projects are not updated unless a new major version releases, so only th
 
 [1.0.0](https://github.com/Vaei/repo_files/raw/main/PushPawn/PushPawnProjectExample.zip)
 `[2.0.0](https://github.com/Vaei/repo_files/raw/main/PushPawn/PushPawnProjectExample_2.zip) COMING SOON`
-
-## Foreword
-This has been tested successfully in the following cases:
-* AI Controlled ACharacter pushing a player controlled ACharacter
-* Player controlled ACharacter pushing a player controlled ACharacter
-* Player controlled ACharacter pushing an AI controlled ACharacter
-
-Tested in environments:
-* \>200ms latency without problematic de-sync
-* Shippable production-ready multiplayer game tested with high player counts with lots of NPCs
 
 ## Requirements
 The content is only supported by Unreal Engine 5.2 and up. However, there is probably nothing stopping you from recreating the blueprints and only making use of the source code.
