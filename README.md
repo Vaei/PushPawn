@@ -12,7 +12,7 @@
 > <br>You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git` if you want the content
 > <br>Using C++ only is viable also as of `2.0.0`
 
-**Provides:**
+## Features
 * Net predicted Pawn vs. Pawn collisions via GAS to prevent de-sync
 * Soft organic collisions instead of the engine's brick wall collisions
 * Capsule, Box, Sphere collisions all supported for Pawn v Pawn collisions (even with CMC)
@@ -21,7 +21,7 @@
 * Lets players push each other off cliffs, if you want that...
 * Exceptionally customizable
 
-**Tested in environments:**
+## Test-Cases
 * \>200ms latency without problematic de-sync
 * Shippable production-ready multiplayer game tested with high player counts with lots of NPCs
 
