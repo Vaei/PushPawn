@@ -31,8 +31,8 @@ Here is the preview from the minimal Third Person Example project below. This fo
 ## Example Project
 Example projects are not updated unless a new major version releases, so only the earliest non-beta version is available in most cases. All textures and high poly meshes are removed for file size reasons.
 
-* [1.0.0](https://github.com/Vaei/repo_files/raw/main/PushPawn/PushPawnProjectExample.zip)
 * `[2.0.0](https://github.com/Vaei/repo_files/raw/main/PushPawn/PushPawnProjectExample_2.zip) COMING SOON`
+* [1.0.0](https://github.com/Vaei/repo_files/raw/main/PushPawn/PushPawnProjectExample.zip)
 
 ## Requirements
 The content is only supported by Unreal Engine 5.2 and up. However, there is probably nothing stopping you from recreating the blueprints and only making use of the source code.
