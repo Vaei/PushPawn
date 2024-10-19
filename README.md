@@ -1,5 +1,4 @@
-# PushPawn
-![logo_icon](https://github.com/Vaei/PushPawn/blob/main/Resources/Icon128.png)
+# Push Pawn <img align="right" width=128, height=128 src="https://github.com/Vaei/PushPawn/blob/main/Resources/Icon128.png">
 
 PushPawn provides net-predicted soft organic collisions for great game-feel and no de-syncing when running near other pawns in multiplayer games. This is aimed at both singleplayer and multiplayer games. Fully tested in production with both Player Characters and AI controlled NPCs.
 
