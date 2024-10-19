@@ -3,23 +3,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Abilities/GameplayAbility.h"
 #include "PushOption.h"
 #include "IPush.generated.h"
 
 class IPusherTarget;
 struct FPushQuery;
 
-/**  */
+DECLARE_DELEGATE_OneParam(FOnPushPawnScanPaused, bool /* bIsPaused */);
+
+/**
+ * Builder class for PushOptions
+ * This is used to fill an array of PushOptions with the necessary data
+ */
 class FPushOptionBuilder
 {
 public:
-	FPushOptionBuilder(TScriptInterface<IPusherTarget> InterfaceTargetScope, TArray<FPushOption>& InteractOptions)
+	FPushOptionBuilder(TScriptInterface<IPusherTarget> InterfaceTargetScope, TArray<FPushOption>& PushOptions)
 		: Scope(InterfaceTargetScope)
-		, Options(InteractOptions)
+		, Options(PushOptions)
 	{
 	}
 
+	/** Add a PushOption to the array */
 	void AddPushOption(const FPushOption& Option) const
 	{
 		FPushOption& OptionEntry = Options.Add_GetRef(Option);
@@ -27,7 +32,10 @@ public:
 	}
 
 private:
+	/** The interface of the target that is being pushed */
 	TScriptInterface<IPusherTarget> Scope;
+
+	/** The array of PushOptions to fill */
 	TArray<FPushOption>& Options;
 };
 
@@ -44,7 +52,30 @@ class IPusheeInstigator
 	GENERATED_BODY()
 
 public:
-	virtual bool CanBePushed(const AActor* PusherActor) const = 0;
+	/**
+	 * Prevents unnecessary ability activation
+	 * Check conditions such as !IsPendingKillPending(), MovementMode != MOVE_None, IsAlive(), etc.
+	 * @return True if we can be pushed by anyone at all 
+	 */
+	virtual bool IsPushable() const = 0;
+
+	/** @return True if we can currently be pushed by the PusherActor */
+	virtual bool CanBePushedBy(const AActor* PusherActor) const = 0;
+
+	/** GetCharacterMovement()->GetCurrentAcceleration() */
+	virtual FVector GetPusheeAcceleration() const { return FVector::ZeroVector; }
+
+	/**
+	 * Optionally, pause the scan when the pawn is in a state where it should not look for pushers
+	 * This is useful for optimizing performance, consider integrating with AI significance, spatial hashing,
+	 * proximity checks, rep graph relevance, etc.
+	 * 
+	 * To implement, add FOnPushPawnScanPauseStateChanged to your Pawn and return it here
+	 * Then, when the scan should be paused or resumed, call the delegate
+	 * 
+	 * @return Delegate for when the scan is paused or resumed
+	 */
+	virtual FOnPushPawnScanPaused* GetPushPawnScanPausedDelegate() { return nullptr; }
 };
 
 /** Interface for the target who does the pushing */
@@ -54,17 +85,25 @@ class UPusherTarget : public UInterface
 	GENERATED_BODY()
 };
 
-/**  */
+/** Interface for the target who does the pushing */
 class IPusherTarget
 {
 	GENERATED_BODY()
 
 public:
-	/**  */
+	/** Fills OptionBuilder with FPushOption, which contains data such as the push ability and useful vectors */
 	virtual void GatherPushOptions(const FPushQuery& PushQuery, FPushOptionBuilder& OptionBuilder) = 0;
 
-	/**  */
+	/** Optionally, allow the Pusher to manipulate the event data */
 	virtual void CustomizePushEventData(const FGameplayTag& PushEventTag, FGameplayEventData& InOutEventData) { }
 
-	virtual bool CanPush(const AActor* PusheeActor) const = 0;
+	/**
+	 * Prevents unnecessary ability activation
+	 * Check conditions such as !IsPendingKillPending(), MovementMode != MOVE_None, IsAlive(), etc.
+	 * @return True if we can push anyone at all 
+	 */
+	virtual bool IsPushCapable() const = 0;
+
+	/** @return True if we can currently push the PusheeActor */
+	virtual bool CanPushPawn(const AActor* PusheeActor) const = 0;
 };

@@ -1,16 +1,16 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.3.1",
+	"VersionName": "2.0.0",
 	"FriendlyName": "PushPawn",
-	"Description": "Allows pawns to push each other, uses GAS to prevent desyncs that often occur when colliding with AI due to lack of net prediction between Characters.",
+	"Description": "Net-predicted organic soft collisions for great game-feel and no de-syncing when running near other pawns.",
 	"Category": "Gameplay",
 	"CreatedBy": "Jared Taylor (Vaei)",
 	"CreatedByURL": "",
 	"DocsURL": "",
 	"MarketplaceURL": "",
 	"CanContainContent": true,
-	"IsBetaVersion": false,
+	"IsBetaVersion": true,
 	"IsExperimentalVersion": false,
 	"Installed": false,
 	"Modules": [
@@ -25,5 +25,6 @@
 			"Name": "GameplayAbilities",
 			"Enabled": true
 		}
-	]
+	],
+	"SupportURL": ""
 }
