@@ -13,11 +13,6 @@ PushPawn provides net-predicted soft organic collisions for great game-feel and 
 * Lets players push each other off cliffs, if you want that...
 * Exceptionally customizable
 
-**Successful Test Cases:**
-* AI Controlled ACharacter pushing a player controlled ACharacter
-* Player controlled ACharacter pushing a player controlled ACharacter
-* Player controlled ACharacter pushing an AI controlled ACharacter
-
 **Tested in environments:**
 * \>200ms latency without problematic de-sync
 * Shippable production-ready multiplayer game tested with high player counts with lots of NPCs
