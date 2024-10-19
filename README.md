@@ -2,8 +2,8 @@
 
 > [!IMPORTANT]
 > **PushPawn provides net-predicted soft organic collisions!**
-> <br>Provides great game feel
-> <br>And eliminates inappropriate de-syncing when running near other pawns in multiplayer games
+> <br>Which eliminates inappropriate de-syncing when running near other pawns in multiplayer games
+> <br>And results in great game feel!
 > <br>PushPawn is aimed at both singleplayer and multiplayer games
 > <br>Fully tested in production with both Player-Controlled Characters and AI-Controlled Characters.
 
