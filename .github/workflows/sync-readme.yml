@@ -14,14 +14,14 @@ jobs:
 
       - name: Checkout the wiki repository
         run: |
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}/wiki.git
 
       - name: Copy README to Wiki Home
         run: |
-          cp ./README.md ./${{ github.repository }}.wiki/Home.md
+          cp ./README.md ./${{ github.repository }}/wiki/Home
 
       - name: Commit and push changes to Wiki
-        working-directory: ./${{ github.repository }}.wiki
+        working-directory: ./${{ github.repository }}/wiki
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
