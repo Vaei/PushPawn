@@ -6,12 +6,13 @@ PushPawn provides net-predicted soft organic collisions for great game-feel and 
 ***Due to the use of Git LFS, do not download a zip or your content will be missing.*** You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git` if you want the content - using C++ only is viable also as of `2.0.0`.
 
 Provides:
-* Net predicted Pawn vs. Pawn collisions via GAS to prevent desync
+* Net predicted Pawn vs. Pawn collisions via GAS to prevent de-sync
 * Soft organic collisions instead of the engine's brick wall collisions
+* Capsule, Box, Sphere collisions all supported for Pawn v Pawn collisions (even with CMC)
 * Abilities that can respond to gameplay events, e.g. playing a push animation, procedural skeletal physics, or yelling at the other Pawn, etc.
-* Exceptionally customizable
 * Allows pawns to push each other out of the way - great for groups of NPCs attacking a player
 * Lets players push each other off cliffs, if you want that...
+* Exceptionally customizable
 
 Summary: When a pawn that can be pushed (pushee) finds a nearby pawn that can push them (pusher), the pushee will request the push options from the pusher, and apply those to itself via a `UGameplayAbility`.
 
@@ -22,7 +23,7 @@ This was initially created for a personal project that would make the AI play a 
 
 ![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview_isekai.gif)
 
-Here is the preview from the minimal Third Person Example project below. This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't desync abnormally.
+Here is the preview from the minimal Third Person Example project below. This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't de-sync abnormally.
 
 ![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview.gif)
 
@@ -39,17 +40,17 @@ This has been tested successfully in the following cases:
 * Player controlled ACharacter pushing an AI controlled ACharacter
 
 Tested in environments:
-* \>200ms latency without problematic desync
+* \>200ms latency without problematic de-sync
 * Shippable production-ready multiplayer game tested with high player counts with lots of NPCs
 
 ## Requirements
 The content is only supported by Unreal Engine 5.2 and up. However, there is probably nothing stopping you from recreating the blueprints and only making use of the source code.
 
 ## Limitations
-### Changing Capsule Size
-If the capsule dimensions change between prediction frames it can desync. For most of us sending this data is an unnecessary cost, but if you need to do it, add the capsule `HalfHeight` and/or `Radius` to `FPushOption` and send it along with `IPusheeInstigator::GatherPushOptions`, however this may not be sufficient on it's own! Check where the `UCapsuleComponent` getters are being used and replace these too. Any data NOT sent through the `FPushOption` is very unlikely to be predicted.
+### Changing Collision Size
+If the collision dimensions change between prediction frames it can de-sync. For most of us sending this data is an unnecessary cost and can be ignored, behaviour is still reasonable because its not a 'brick wall' collision.
 
-This may also not be sufficient as it remains untested.
+Adding this is completely untested, but adding the shape dimensions to `FPushOption` through `IPusheeInstigator::GatherPushOptions` is the first thing you will want to do.
 
 ## Performance
 PushPawn can very frequently activate abilities. As of 2.0.0 abilities with lightweight implementations and C++ only are available for this purpose. Furthermore for the sake of maximizing performance, classes have been marked with `final` but you may fork/remove this yourself.
@@ -68,7 +69,7 @@ With the standard implementation, the scan ability keeps the AbilitySystemCompon
 
 There is no need to search for nearby characters if:
 * We're a Non-Player Character and no players are aware of us at all (when reactivating, they will eject each other if overlapping)
-* Other characters are sufficiently far away that they won't desync within their latency vs max velocity thresholds, meaning we can detect they're close enough and activate the ability sufficiently before they reach us and we actually need to push them
+* Other characters are sufficiently far away that they won't de-sync within their latency vs max velocity thresholds, meaning we can detect they're close enough and activate the ability sufficiently before they reach us and we actually need to push them
 
 You can disable the scan using `IPusheeInstigator::GetPushPawnScanPausedDelegate()`.
 
@@ -159,7 +160,7 @@ _These instructions are based on 1.0.0 but should be similar for 2.0.0_
 1. Set `Minimum Latency` to `90` and `Maximum Latency` to `110` for both `Incoming Traffic` and `Outgoing Traffic`
   * This ensures real-world networking conditions with considerable latency of over 200ms
 1. Open `BP_ThirdPersonCharacter` and `Event BeginPlay` -> `Is Locally Controlled` -> `Execute Console Command` -> `p.netshowcorrections 1`
-  * Any time your character desyncs, it will draw red/green capsules representing the correction, we now know if this plugin can desync us or not and how it handles desync when it should occur
+  * Any time your character de-syncs, it will draw red/green capsules representing the correction, we now know if this plugin can de-sync us or not and how it handles de-sync when it should occur
 
 ### AI Setup
 1. Duplicate `BP_ThirdPersonCharacter` and name it `BP_ThirdPersonBot`
