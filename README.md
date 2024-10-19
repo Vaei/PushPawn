@@ -1,11 +1,11 @@
 # PushPawn
-![logo_icon](https://github.com/Vaei/PushPawn/blob/main/Resources/Icon256.png)
+![logo_icon](https://github.com/Vaei/PushPawn/blob/main/Resources/Icon128.png)
 
 PushPawn provides net-predicted soft organic collisions for great game-feel and no de-syncing when running near other pawns in multiplayer games. This is aimed at both singleplayer and multiplayer games. Fully tested in production with both Player Characters and AI controlled NPCs.
 
 ***Due to the use of Git LFS, do not download a zip or your content will be missing.*** You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git` if you want the content - using C++ only is viable also as of `2.0.0`.
 
-Provides:
+**Provides:**
 * Net predicted Pawn vs. Pawn collisions via GAS to prevent de-sync
 * Soft organic collisions instead of the engine's brick wall collisions
 * Capsule, Box, Sphere collisions all supported for Pawn v Pawn collisions (even with CMC)
@@ -14,12 +14,12 @@ Provides:
 * Lets players push each other off cliffs, if you want that...
 * Exceptionally customizable
 
-This has been tested successfully in the following cases:
+**Successful Test Cases:**
 * AI Controlled ACharacter pushing a player controlled ACharacter
 * Player controlled ACharacter pushing a player controlled ACharacter
 * Player controlled ACharacter pushing an AI controlled ACharacter
 
-Tested in environments:
+**Tested in environments:**
 * \>200ms latency without problematic de-sync
 * Shippable production-ready multiplayer game tested with high player counts with lots of NPCs
 
