@@ -170,6 +170,7 @@ void UAbilityTask_WaitForPushTargets_CapsuleTrace::OnDestroy(bool bInOwnerFinish
 		OnPushPawnScanPauseStateChangedDelegate->Unbind();
 		OnPushPawnScanPauseStateChangedDelegate = nullptr;
 	}
+	
 	Super::OnDestroy(bInOwnerFinished);
 }
 
@@ -296,9 +297,11 @@ void UAbilityTask_WaitForPushTargets_CapsuleTrace::OnScanPaused(bool bIsPaused)
 		{
 			GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 		}
+		Pause();
 	}
 	else
 	{
+		Resume();
 		ActivateTimer();
 	}
 }
