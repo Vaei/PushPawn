@@ -14,7 +14,7 @@ jobs:
 
       - name: Checkout the wiki repository
         run: |
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}/wiki.git
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git
 
       - name: Copy README to Wiki Home
         run: |
