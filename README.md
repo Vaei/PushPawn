@@ -47,7 +47,7 @@ The content is only supported by Unreal Engine 5.2 and up. However, there is pro
 
 ## Limitations
 ### Changing Capsule Size
-If the capsule dimensions change between prediction frames it can desync. For most of us sending this data is an unnecessary cost, but if you need to do it, add the capsule `HalfHeight` and/or `Radius` to `FPushOption` and send it along with `IPusheeInstigator::GatherPushOptions`, however this may not be sufficient on it's own! Check where the `UCapsuleComponent` getters are being used and replace these too. Any data NOT send through the `FPushOption` is very unlikely to be predicted.
+If the capsule dimensions change between prediction frames it can desync. For most of us sending this data is an unnecessary cost, but if you need to do it, add the capsule `HalfHeight` and/or `Radius` to `FPushOption` and send it along with `IPusheeInstigator::GatherPushOptions`, however this may not be sufficient on it's own! Check where the `UCapsuleComponent` getters are being used and replace these too. Any data NOT sent through the `FPushOption` is very unlikely to be predicted.
 
 This may also not be sufficient as it remains untested.
 
