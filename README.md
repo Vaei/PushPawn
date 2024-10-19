@@ -1,18 +1,39 @@
 # PushPawn
-***Due to the use of Git LFS, do NOT download a zip or your content will be missing.*** You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git`
+![logo_icon](https://github.com/Vaei/PushPawn/blob/main/Resources/Icon256.png)
+
+PushPawn provides net-predicted soft organic collisions for great game-feel and no de-syncing when running near other pawns in multiplayer games. This is aimed at both singleplayer and multiplayer games. Fully tested in production with both Player Characters and AI controlled NPCs.
+
+***Due to the use of Git LFS, do not download a zip or your content will be missing.*** You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git` if you want the content - using C++ only is viable also as of `2.0.0`.
 
 Provides:
 * Net predicted Pawn vs. Pawn collisions via GAS to prevent desync
 * Soft organic collisions instead of the engine's brick wall collisions
-* Abilities that can respond to gameplay events, e.g. playing a push animation, or yelling at the other Pawn
+* Abilities that can respond to gameplay events, e.g. playing a push animation, procedural skeletal physics, or yelling at the other Pawn, etc.
 * Exceptionally customizable
-
-Initially created based on the 5.1 LyraShooter interaction system. Please note that some of the code comments are left-overs from LyraShooter's interaction system and may not make sense in this context.
+* Allows pawns to push each other out of the way - great for groups of NPCs attacking a player
+* Lets players push each other off cliffs, if you want that...
 
 Summary: When a pawn that can be pushed (pushee) finds a nearby pawn that can push them (pusher), the pushee will request the push options from the pusher, and apply those to itself via a `UGameplayAbility`.
 
+## Example
+_Examples are based on 1.0.0_
+
+This was initially created for a personal project that would make the AI play a push animation and yell at the player, which is not included, however the helper functions for building this are included.
+
+![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview_isekai.gif)
+
+Here is the preview from a minimal Third Person Example project (see "How to Use" to obtain this). This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't desync abnormally.
+
+![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview.gif)
+
+## Example Project
+Example projects are not updated unless a new major version releases, so only the first version is available in most cases. All textures and high poly meshes are removed for file size reasons.
+
+[1.0.0](https://github.com/Vaei/repo_files/raw/main/PushPawn/PushPawnProjectExample.zip)
+`[2.0.0](https://github.com/Vaei/repo_files/raw/main/PushPawn/PushPawnProjectExample_2.zip) COMING SOON`
+
 ## Foreword
-This has been tested in the following cases:
+This has been tested successfully in the following cases:
 * AI Controlled ACharacter pushing a player controlled ACharacter
 * Player controlled ACharacter pushing a player controlled ACharacter
 * Player controlled ACharacter pushing an AI controlled ACharacter
@@ -29,6 +50,16 @@ The content is only supported by Unreal Engine 5.2 and up. However, there is pro
 If the capsule dimensions change between prediction frames it can desync. For most of us sending this data is an unnecessary cost, but if you need to do it, add the capsule `HalfHeight` and/or `Radius` to `FPushOption` and send it along with `IPusheeInstigator::GatherPushOptions`, however this may not be sufficient on it's own! Check where the `UCapsuleComponent` getters are being used and replace these too. Any data NOT send through the `FPushOption` is very unlikely to be predicted.
 
 This may also not be sufficient as it remains untested.
+
+## Performance
+PushPawn can very frequently activate abilities. As of 2.0.0 abilities with lightweight implementations and C++ only are available for this purpose. Furthermore for the sake of maximizing performance, classes have been marked with `final` but you may fork/remove this yourself.
+
+Easy wins for performance:
+	* Reduce the scan rates
+	* Use varying radiuses between character types, so that two overlaps don't occur simultaneously
+
+Not-so-easy wins for performance:
+	* Use the included C++ classes instead of blueprint - its fine to subclass as blueprint to change properties but avoid overriding functions and implementing logic
 
 ### Large Character Counts
 There is no real limitation with large character counts and PushPawn, but it does need to be factored in and some additional work will be required to manage this. How you handle this will depend entirely on your project and use-case.
@@ -50,15 +81,6 @@ The simplest solution currently, is to derive from `UCharacterMovementComponent`
 This is very advanced C++ use, if you are a beginner you will struggle with this and dedicated support isn't available.
 
 If you are not an advanced user, you may be able to succeed in using this effectively by looking at the "How to Use" section and going through the example project.
-
-## Example
-This was initially created for a personal project that would make the AI play a push animation and yell at the player, which is not included, however the helper functions for building this are included.
-
-![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview_isekai.gif)
-
-Here is the preview from a minimal Third Person Example project (see "How to Use" to obtain this). This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't desync abnormally.
-
-![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview.gif)
 
 ## Terminology
 *The most confusing yet important aspect to wrap your head around is this: The ability `Instigator` is the one who gets pushed, and not the one who does the pushing.*
@@ -101,14 +123,14 @@ This is where you define what actually happens, you could play a root motion ani
 
 *This has been tested and is confirmed working with LyraShooter's framework*
 
-LyraShooter requires that `GameplayAbilities` extend `ULyraGameplayAbility`; you will likely need to duplicate `UGameplayAbility_Push_Scan` into your project and have it inherit `ULyraGameplayAbility` and then duplicate the `GA_Push_Scan` ability in the content folder and reparent it under this one.
+LyraShooter requires that `GameplayAbilities` extend `ULyraGameplayAbility`; you will likely need to duplicate the included abilities into your project and have it inherit `ULyraGameplayAbility`. This will also mean reparenting the blueprint content to your new classes, if you're using those (recommend using C++ versions instead).
 
 Add to the ctor of duplicated ability: `ActivationPolicy = ELyraAbilityActivationPolicy::OnSpawn;` and add to the appropriate attribute sets so that it always runs. Don't forget to change the `PUSHPAWN_API` macro to your own!
 
 ## How to Use
-*This how to was written from the viewpoint of a brand new 5.2 "Third Person" template. Many of these steps may be unnecessary for your project, this is for the purpose of documenting the entire process without leaving anything out.*
+_This how to was written from the viewpoint of a brand new 5.2 "Third Person" template. Many of these steps may be unnecessary for your project, this is for the purpose of documenting the entire process without leaving anything out._
 
-[You can download the completed demo project here](https://github.com/Vaei/repo_files/raw/main/PushPawn/PushPawnProjectExample.zip), keep in mind it is using version `1.0.0` of this plugin and will never be updated. Please note all textures and high poly meshes are removed for file size reasons.
+_These instructions are based on 1.0.0 but should be similar for 2.0.0_
 
 ### Create New Project
 1. Launch Unreal 5.2 and create C++ Third Person template named `PushPawnProject`
@@ -209,11 +231,11 @@ The AI now runs around the level when simulating.
 
 ### Assignments
 1. Reparent `BP_ThirdPersonCharacter` to `AMyPlayerCharacter`
-1. Assign `PushScanAbilityClass` -> `GA_Push_Scan`
+1. Assign `PushScanAbilityClass` -> `GA_PushPawn_Scan`
 1. Reparent `BP_ThirdPersonBot` to `AMyBotCharacter`
-1. Assign `PushAbilityToGrant` -> `GA_Push_Action`
-1. Open `GA_Push_Scan` and change `TraceChannel` to `PushPawn`
-  * You probably want to duplicate `GA_Push_Scan` instead of modifying the original
+1. Assign `PushAbilityToGrant` -> `GA_PushPawn_Action`
+1. Open `GA_PushPawn_Scan` and change `TraceChannel` to `PushPawn`
+  * You probably want to duplicate `GA_PushPawn_Scan` instead of modifying the original
 
 ### Asset Manager
 1. Open Project Settings and change `Asset Manager Class` to `PushPawnAssetManager`
@@ -233,6 +255,41 @@ Any character that can do the pushing must implement the IPusherTarget interface
 In `GA_Push_Action`, assign a trace channel. You probably do not want to leave this as `ECC_Visibility`, but instead setup a channel that only valid Pushers will block.
 
 ## Changelog
+
+### 2.0.0-beta
+_BREAKING CHANGES_
+_Significant perf improvements_
+
+* Overhauled the internal system
+	* Created lightweight ability classes with details customization to reduce perf overhead
+		* PushPawn_Ability as the parent class for all abilities
+		* PushPawn_Scan_Base
+		* PushPawn_Ability_Base
+	* Created C++ variations of classes to remove overhead from BP VM
+		* PushPawn_Scan
+		* PushPawn_Ability
+		* Content is included primarily for example purposes and non-C++ users
+	* Previous ability classes have been removed, including the corresponding content
+		* GameplayAbility_Push_Scan removed in favour of PushPawn_Scan_Base, UPushPawn_Scan_Core, and PushPawn_Scan
+	* Instead of sending the direction as an FHitResult's Normal, a lighter class with only a normal vector has been added (FPushPawnAbilityTargetData)
+	* Added pre-activation interface checks that don't require pusher - use to check if alive, etc. to prevent activation entirely
+		* IPusheeInstigator: CanBePushed() refactored to CanBePushedBy(), and IsPushable() added
+		* IPusherTarget: CanPush() refactored to CanPushPawn(), and IsPushCapable() added
+	* Added TRACE_CPUPROFILER_EVENT_SCOPE throughout for profiling
+	* Added IPusheeInstigator::GetPushPawnScanPausedDelegate() that can be used to conditionally disable scanning when no one is nearby
+
+* Improved synchronization
+	* Scan task awaits net sync intermittently, see UPushPawn_Scan_Base::ShouldWaitForNetSync() and ConsumeWaitForNetSync() to customize behaviour
+
+* Quality of life changes
+	* Improved overall feel of default values
+	* Added FPushPawnActionParams & FPushPawnScanParams structs
+	* Improved handling for runtime parameters
+	* Overhauled handling of scan rate and range to allow for runtime changes based on acceleration
+	* Added PushPawnTags to better define reusable native gameplay tags
+	* Categories changed from Push to PushPawn
+	* General refactoring to improve readability
+	* Improved code comments throughout
 
 ### 1.3.1
 * Add Icon

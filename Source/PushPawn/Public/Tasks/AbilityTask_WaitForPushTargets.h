@@ -9,12 +9,17 @@
 #include "IPush.h"
 #include "AbilityTask_WaitForPushTargets.generated.h"
 
+class UPushPawn_Scan_Base;
 class AActor;
 class UPrimitiveComponent;
 class UGameplayAbility;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPushObjectsChangedEvent, const TArray<FPushOption>&, PushOptions);
 
+/**
+ * Waits for push targets to be available.
+ * Base class for other scanning tasks.
+ */
 UCLASS(Abstract)
 class PUSHPAWN_API UAbilityTask_WaitForPushTargets : public UAbilityTask
 {
@@ -24,6 +29,10 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FPushObjectsChangedEvent PushObjectsChanged;
 
+	/** GameplayAbility that created us */
+	UPROPERTY()
+	TObjectPtr<UPushPawn_Scan_Base> PushScanAbility;
+	
 protected:
 	ECollisionChannel TraceChannel;
 
@@ -32,7 +41,8 @@ protected:
 protected:
 	static void ShapeTrace(FHitResult& OutHitResult, const UWorld* World, const FVector& Center, const ECollisionChannel ChannelName, const FCollisionQueryParams& Params, const FCollisionShape& Shape);
 
-	void DetectNearbyTargets(const AActor* InSourceActor, FCollisionQueryParams Params, const FVector& TraceStart, float MaxRange, FVector& OutTraceEnd) const;
-
 	void UpdatePushOptions(const FPushQuery& PushQuery, const TArray<TScriptInterface<IPusherTarget>>& PushTargets);
+
+	virtual void BeginDestroy() override;
+	virtual void OnDestroy(bool bInOwnerFinished) override;
 };

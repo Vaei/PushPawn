@@ -1,47 +1,72 @@
 // Copyright (c) Jared Taylor. All Rights Reserved
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "AbilityTask_WaitForPushTargets.h"
+#include "PushTypes.h"
 #include "AbilityTask_WaitForPushTargets_CapsuleTrace.generated.h"
 
-class AActor;
-class UPrimitiveComponent;
-
+/**
+ * Implemented by the PushPawn Scan ability.
+ * 
+ * This task loops automatically until the ability is deactivated.
+ * 
+ * This task intermittently waits for a net sync to occur to prevent server/client de-sync.
+ *
+ * Activation failures are handled by a delay, thus so long as the conditions are eventually met it will activate.
+ */
 UCLASS()
 class PUSHPAWN_API UAbilityTask_WaitForPushTargets_CapsuleTrace : public UAbilityTask_WaitForPushTargets
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 
-	void ActivateTimer(bool bHasAccel = false);
+public:
+	UFUNCTION()
+	void OnNetSync();
+	
+	void ActivateTimer(EPushPawnPauseType PauseType = EPushPawnPauseType::NotPaused);
 
 	virtual void Activate() override;
 
-	/** Wait until we trace new set of Pushs.  This task automatically loops. */
+	/**
+	 * Wait until we trace new set of Pushes. This task automatically loops.
+	 * @param OwningAbility The ability that owns this task
+	 * @param PushQuery The query to use for the trace
+	 * @param StartLocation The location to start the trace from
+	 * @param ScanParams The parameters to use for the scan
+	 * @param ActivationFailureDelay The delay to wait before activating the ability again if the scan fails to activate due to invalid data
+	 */
 	UFUNCTION(BlueprintCallable, Category="Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static UAbilityTask_WaitForPushTargets_CapsuleTrace* WaitForPushTargets_CapsuleTrace(UGameplayAbility* OwningAbility, FPushQuery PushQuery, ECollisionChannel TraceChannel,
-		FGameplayAbilityTargetingLocationInfo StartLocation, float RadiusScalar = 1.f, float RadiusAccelScalar = 1.f, UCurveFloat* VelocityRadiusScalar = nullptr, float PushScanRate = 0.1f, float PushScanRateAccel = 0.05f);
+	static UAbilityTask_WaitForPushTargets_CapsuleTrace* WaitForPushTargets_CapsuleTrace(
+		UGameplayAbility* OwningAbility, FPushQuery PushQuery,
+		FGameplayAbilityTargetingLocationInfo StartLocation, const FPushPawnScanParams& ScanParams,
+		float ActivationFailureDelay = 0.2f);
 
 private:
-
-	virtual void OnDestroy(bool AbilityEnded) override;
+	virtual void OnDestroy(bool bInOwnerFinished) override;
 
 	void PerformTrace();
 
-	UPROPERTY()
+	void OnScanPaused(bool bIsPaused);
+	
+	UPROPERTY(Transient, DuplicateTransient)
+	FPushPawnScanParams ScanParams;
+
+	UPROPERTY(Transient, DuplicateTransient)
+	FGameplayAbilityTargetingLocationInfo StartLocation;
+	
+	UPROPERTY(Transient, DuplicateTransient)
 	FPushQuery PushQuery;
 
-	UPROPERTY()
-	FGameplayAbilityTargetingLocationInfo StartLocation;
+	UPROPERTY(Transient, DuplicateTransient)
+	float ActivationFailureDelay;
 
-	float RadiusScalar = 0.f;
-	float RadiusAccelScalar = 0.f;
-
-	UPROPERTY()
-	UCurveFloat* VelocityRadiusScalar = nullptr;
-
-	float PushScanRate = 0.1f;
-	float PushScanRateAccel = 0.1f;
+private:
+	UPROPERTY(Transient, DuplicateTransient)
+	float CurrentScanRate;
 
 	FTimerHandle TimerHandle;
+
+	FOnPushPawnScanPaused* OnPushPawnScanPauseStateChangedDelegate = nullptr;
 };

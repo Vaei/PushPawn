@@ -21,71 +21,45 @@ void UAbilityTask_WaitForPushTargets::ShapeTrace(FHitResult& OutHitResult, const
 	// Make it move so the sweep registers
 	const FVector End = Center + FVector::UpVector * -0.1f;
 
+	// Perform the trace
 	OutHitResult = FHitResult();
 	TArray<FHitResult> HitResults;
 	World->SweepMultiByChannel(HitResults, Center, End, FQuat::Identity, ChannelName, Shape, Params);
 
+	// Set the trace start and end
 	OutHitResult.TraceStart = Center;
 	OutHitResult.TraceEnd = End;
 
+	// If we hit something, set the first hit result
 	if (HitResults.Num() > 0)
 	{
 		OutHitResult = HitResults[0];
 	}
 }
 
-void UAbilityTask_WaitForPushTargets::DetectNearbyTargets(const AActor* InSourceActor, FCollisionQueryParams Params,
-	const FVector& TraceStart, float MaxRange, FVector& OutTraceEnd) const
-{
-	if (!Ability) // Server and launching client only
-	{
-		return;
-	}
-
-	// Search around us
-	const UCapsuleComponent* CapsuleComponent = InSourceActor && InSourceActor->GetRootComponent() ?
-		Cast<UCapsuleComponent>(InSourceActor->GetRootComponent()) : nullptr;
-
-	if (!CapsuleComponent)
-	{
-		return;
-	}
-
-	const float Radius = CapsuleComponent->GetScaledCapsuleRadius();
-	const float HalfHeight = CapsuleComponent->GetScaledCapsuleHalfHeight();
-	FCollisionShape CapsuleShape = FCollisionShape::MakeCapsule(Radius, HalfHeight);
-
-	FHitResult Hit;
-	ShapeTrace(Hit, InSourceActor->GetWorld(), CapsuleComponent->GetComponentLocation(),
-		TraceChannel, Params, CapsuleShape);
-
-	const bool bUseTraceResult = Hit.bBlockingHit &&
-		(FVector::DistSquared(TraceStart, Hit.Location) <= (MaxRange * MaxRange));
-
-	Hit.bBlockingHit &= bUseTraceResult;
-}
-
 void UAbilityTask_WaitForPushTargets::UpdatePushOptions(const FPushQuery& PushQuery, const TArray<TScriptInterface<IPusherTarget>>& PushTargets)
 {
+	// Iterate over all the push targets and gather their push options
 	TArray<FPushOption> NewOptions;
-
-	for (const TScriptInterface<IPusherTarget>& PushiveTarget : PushTargets)
+	for (const TScriptInterface<IPusherTarget>& PushTarget : PushTargets)
 	{
-		TArray<FPushOption> TempOptions;
-		FPushOptionBuilder PushBuilder(PushiveTarget, TempOptions);
-		PushiveTarget->GatherPushOptions(PushQuery, PushBuilder);
+		// Gather the push options
+		TArray<FPushOption> PushOptions;
+		FPushOptionBuilder PushBuilder(PushTarget, PushOptions);
+		PushTarget->GatherPushOptions(PushQuery, PushBuilder);
 
-		for (FPushOption& Option : TempOptions)
+		// Iterate over the options and update their parameters and filter out any that can't be activated
+		for (FPushOption& Option : PushOptions)
 		{
 			const FGameplayAbilitySpec* PushAbilitySpec = nullptr;
 
-			// if there is a handle an a target ability system, we're triggering the ability on the target.
+			// If there is a handle and a target ability system, we're triggering the ability on the target
 			if (Option.TargetAbilitySystem && Option.TargetPushAbilityHandle.IsValid())
 			{
 				// Find the spec
 				PushAbilitySpec = Option.TargetAbilitySystem->FindAbilitySpecFromHandle(Option.TargetPushAbilityHandle);
 			}
-			// If there's an Push ability then we're activating it on ourselves.
+			// If there's a Push ability then we're activating it on ourselves
 			else if (Option.PushAbilityToGrant)
 			{
 				// Find the spec
@@ -93,15 +67,15 @@ void UAbilityTask_WaitForPushTargets::UpdatePushOptions(const FPushQuery& PushQu
 
 				if (PushAbilitySpec)
 				{
-					// update the option
+					// Update the option
 					Option.TargetAbilitySystem = AbilitySystemComponent.Get();
 					Option.TargetPushAbilityHandle = PushAbilitySpec->Handle;
 				}
 			}
 
+			// Filter any options that we can't activate right now for whatever reason
 			if (PushAbilitySpec)
 			{
-				// Filter any options that we can't activate right now for whatever reason.
 				if (PushAbilitySpec->Ability->CanActivateAbility(PushAbilitySpec->Handle, AbilitySystemComponent->AbilityActorInfo.Get()))
 				{
 					NewOptions.Add(Option);
@@ -110,12 +84,13 @@ void UAbilityTask_WaitForPushTargets::UpdatePushOptions(const FPushQuery& PushQu
 		}
 	}
 
+	// Sort the options
 	bool bOptionsChanged = false;
 	if (NewOptions.Num() == CurrentOptions.Num())
 	{
 		NewOptions.Sort();
 
-		for (int OptionIndex = 0; OptionIndex < NewOptions.Num(); OptionIndex++)
+		for (int32 OptionIndex = 0; OptionIndex < NewOptions.Num(); OptionIndex++)
 		{
 			const FPushOption& NewOption = NewOptions[OptionIndex];
 			const FPushOption& CurrentOption = CurrentOptions[OptionIndex];
@@ -132,9 +107,26 @@ void UAbilityTask_WaitForPushTargets::UpdatePushOptions(const FPushQuery& PushQu
 		bOptionsChanged = true;
 	}
 
+	// If the options have changed, update the options and broadcast the change
 	if (bOptionsChanged)
 	{
 		CurrentOptions = NewOptions;
 		PushObjectsChanged.Broadcast(CurrentOptions);
 	}
+}
+
+void UAbilityTask_WaitForPushTargets::BeginDestroy()
+{
+	// Engine crashes if we exit while the task is still active
+	EndTask();
+	
+	Super::BeginDestroy();
+}
+
+void UAbilityTask_WaitForPushTargets::OnDestroy(bool bInOwnerFinished)
+{
+	// #KillPendingKill Clear ability reference so we don't hold onto it and GC can delete it.
+	PushScanAbility = nullptr;
+
+	Super::OnDestroy(bInOwnerFinished);
 }
