@@ -1,6 +1,6 @@
 // Copyright (c) Jared Taylor. All Rights Reserved
 
-#include "Tasks/AbilityTask_WaitForPushTargets_CapsuleTrace.h"
+#include "Tasks/AbilityTask_PushPawnScan.h"
 #include "GameFramework/Actor.h"
 #include "IPush.h"
 #include "PushStatics.h"
@@ -10,7 +10,11 @@
 #include "Abilities/Tasks/AbilityTask_NetworkSyncPoint.h"
 #include "Components/CapsuleComponent.h"
 
-#include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_WaitForPushTargets_CapsuleTrace)
+#if UE_BUILD_SHIPPING
+#include "AbilitySystemLog.h"
+#endif
+
+#include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_PushPawnScan)
 
 namespace FPushPawn
 {
@@ -43,13 +47,13 @@ namespace FPushPawn
 #endif
 }
 
-UAbilityTask_WaitForPushTargets_CapsuleTrace* UAbilityTask_WaitForPushTargets_CapsuleTrace::WaitForPushTargets_CapsuleTrace(
+UAbilityTask_PushPawnScan* UAbilityTask_PushPawnScan::PushPawnScan(
 	UGameplayAbility* OwningAbility,
 	FPushQuery PushQuery,
 	FGameplayAbilityTargetingLocationInfo StartLocation, const FPushPawnScanParams& ScanParams, float ActivationFailureDelay
 )
 {
-	UAbilityTask_WaitForPushTargets_CapsuleTrace* MyObj = NewAbilityTask<UAbilityTask_WaitForPushTargets_CapsuleTrace>(OwningAbility);
+	UAbilityTask_PushPawnScan* MyObj = NewAbilityTask<UAbilityTask_PushPawnScan>(OwningAbility);
 	MyObj->ScanParams = ScanParams;
 	MyObj->StartLocation = StartLocation;
 	MyObj->PushQuery = PushQuery;
@@ -58,12 +62,12 @@ UAbilityTask_WaitForPushTargets_CapsuleTrace* UAbilityTask_WaitForPushTargets_Ca
 	return MyObj;
 }
 
-void UAbilityTask_WaitForPushTargets_CapsuleTrace::OnNetSync()
+void UAbilityTask_PushPawnScan::OnNetSync()
 {
 	ActivateTimer();
 }
 
-void UAbilityTask_WaitForPushTargets_CapsuleTrace::ActivateTimer(EPushPawnPauseType PauseType)
+void UAbilityTask_PushPawnScan::ActivateTimer(EPushPawnPauseType PauseType)
 {
 	TRACE_CPUPROFILER_EVENT_SCOPE(UAbilityTask_WaitForPushTargets_CapsuleTrace::ActivateTimer);
 
@@ -149,14 +153,14 @@ void UAbilityTask_WaitForPushTargets_CapsuleTrace::ActivateTimer(EPushPawnPauseT
 	}
 }
 
-void UAbilityTask_WaitForPushTargets_CapsuleTrace::Activate()
+void UAbilityTask_PushPawnScan::Activate()
 {
 	SetWaitingOnAvatar();
 
 	ActivateTimer();
 }
 
-void UAbilityTask_WaitForPushTargets_CapsuleTrace::OnDestroy(bool bInOwnerFinished)
+void UAbilityTask_PushPawnScan::OnDestroy(bool bInOwnerFinished)
 {
 	// Clear the timer
 	if (TimerHandle.IsValid())
@@ -174,7 +178,7 @@ void UAbilityTask_WaitForPushTargets_CapsuleTrace::OnDestroy(bool bInOwnerFinish
 	Super::OnDestroy(bInOwnerFinished);
 }
 
-void UAbilityTask_WaitForPushTargets_CapsuleTrace::PerformTrace()
+void UAbilityTask_PushPawnScan::PerformTrace()
 {
 	TRACE_CPUPROFILER_EVENT_SCOPE(UAbilityTask_WaitForPushTargets_CapsuleTrace);
 
@@ -201,37 +205,47 @@ void UAbilityTask_WaitForPushTargets_CapsuleTrace::PerformTrace()
 		return;
 	}
 
-	// If we don't have a capsule component, we can't scan
-	const UCapsuleComponent* CapsuleComponent = AvatarActor && AvatarActor->GetRootComponent() ?
-		Cast<UCapsuleComponent>(AvatarActor->GetRootComponent()) : nullptr;
-	
-	if (!CapsuleComponent)
+	const IPusheeInstigator* Pushee = Cast<IPusheeInstigator>(AvatarActor);
+	if (!Pushee)
+    {
+		const FString ErrorString = FString::Printf(TEXT("PushPawn: Avatar actor %s does not implement IPusheeInstigator!"), *AvatarActor->GetName());
+#if !UE_BUILD_SHIPPING
+		if (IsInGameThread())
+		{
+			FMessageLog("PIE").Error(FText::FromString(ErrorString));
+		}
+#else
+		ABILITY_LOG(Error, TEXT("%s"), *ErrorString);
+#endif
+        return;
+    }
+
+	// If we don't have a valid capsule, we can't scan
+	FPushPawnCapsuleShape Capsule = Pushee->GetPusheeCapsuleShape();
+	if (!Capsule)
 	{
 		ActivateTimer(EPushPawnPauseType::ActivationFailed);
 		return;
 	}
 
 	// Increase the capsule size based on the pushee's speed and acceleration
-	bool bHasAcceleration = false;
 	float VelocityScalar = 1.f;
-	if (APawn* AvatarPawn = Cast<APawn>(AvatarActor))
-	{
-		// Check if the pushee is accelerating
-		bHasAcceleration = UPushStatics::IsPusheeAccelerating(AvatarPawn);
+	
+	// Check if the pushee is accelerating
+	const bool bHasAcceleration = UPushStatics::IsPusheeAccelerating(Pushee);
 
-		// Get the velocity scalar from the curve
-		if (ScanParams.RadiusVelocityScalar)
-		{
-			VelocityScalar = ScanParams.RadiusVelocityScalar->GetFloatValue(UPushStatics::GetPawnGroundSpeed(AvatarPawn));
-		}
+	// Get the velocity scalar from the curve
+	if (ScanParams.RadiusVelocityScalar)
+	{
+		VelocityScalar = ScanParams.RadiusVelocityScalar->GetFloatValue(UPushStatics::GetPusheeGroundSpeed(Pushee));
 	}
 
 	// Calculate the radius scalar
 	const float RadiusScalar = bHasAcceleration ? ScanParams.PusherRadiusAccelScalar : ScanParams.PusherRadiusScalar;
 
 	// Create a capsule to trace with
-	const float Radius = CapsuleComponent->GetScaledCapsuleRadius() * RadiusScalar * VelocityScalar;
-	const float HalfHeight = CapsuleComponent->GetScaledCapsuleHalfHeight();
+	const float Radius = Capsule.Radius * RadiusScalar * VelocityScalar;
+	const float HalfHeight = Capsule.HalfHeight;
 	FCollisionShape CapsuleShape = FCollisionShape::MakeCapsule(Radius, HalfHeight);
 
 	// Initialize trace params
@@ -270,7 +284,7 @@ void UAbilityTask_WaitForPushTargets_CapsuleTrace::PerformTrace()
 	ActivateTimer();
 }
 
-void UAbilityTask_WaitForPushTargets_CapsuleTrace::OnScanPaused(bool bIsPaused)
+void UAbilityTask_PushPawnScan::OnScanPaused(bool bIsPaused)
 {
 #if !UE_BUILD_SHIPPING
 	if (FPushPawn::PushPawnPrintScanPaused > 0)

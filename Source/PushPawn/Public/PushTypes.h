@@ -35,6 +35,35 @@ enum class EPushPawnPauseType : uint8
 	ActivationFailed,
 };
 
+USTRUCT(BlueprintType)
+struct PUSHPAWN_API FPushPawnCapsuleShape
+{
+	GENERATED_BODY()
+
+	FPushPawnCapsuleShape(float InRadius = 0.f, float InHalfHeight = 0.f)
+		: Radius(InRadius)
+		, HalfHeight(InHalfHeight)
+	{}
+
+	/** The radius of the capsule */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn)
+	float Radius;
+
+	/** The half-height of the capsule */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn)
+	float HalfHeight;
+
+	explicit operator bool() const
+	{
+		return IsValid();
+	}
+
+	bool IsValid() const
+	{
+		return Radius > 0.f && HalfHeight > 0.f;
+	}
+};
+
 /**
  * Customize the behavior of the pawn when it is pushed
  */

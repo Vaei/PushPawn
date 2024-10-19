@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "PushTypes.h"
 #include "Abilities/Tasks/AbilityTask.h"
-#include "AbilityTask_GrantNearbyPush.generated.h"
+#include "AbilityTask_GrantPushAbility.generated.h"
 
 /**
  * Used by the PushPawn Scan Ability to grant Push abilities to nearby pushees.
  */
 UCLASS()
-class PUSHPAWN_API UAbilityTask_GrantNearbyPush final : public UAbilityTask
+class PUSHPAWN_API UAbilityTask_GrantPushAbility final : public UAbilityTask
 {
 	GENERATED_BODY()
 
@@ -20,7 +20,7 @@ private:
 	FPushPawnScanParams ScanParams;
 
 	UPROPERTY()
-	float BaseScanRange = 100.f;
+	float BaseScanRange = 0.f;
 	
 	FTimerHandle TimerHandle;
 
@@ -41,5 +41,5 @@ private:
 public:
 	/** Wait until an overlap occurs. */
 	UFUNCTION(BlueprintCallable, Category="Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static UAbilityTask_GrantNearbyPush* GrantAbilitiesForNearbyPushers(UGameplayAbility* OwningAbility, const FPushPawnScanParams& InScanParams, float InBaseScanRange);
+	static UAbilityTask_GrantPushAbility* GrantAbilitiesForNearbyPushers(UGameplayAbility* OwningAbility, const FPushPawnScanParams& InScanParams, float InBaseScanRange);
 };

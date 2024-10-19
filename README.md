@@ -255,6 +255,20 @@ In `GA_Push_Action`, assign a trace channel. You probably do not want to leave t
 
 ## Changelog
 
+### 2.1.0-beta
+* Remove dependency on ACharacter/UCharacterMovementComponent
+	* Built-in Push ability still maintains this dependency because it uses root motion sources
+	* Acceleration is normalized 
+	* Remove searching for UCapsuleComponent* as root
+* Add UPushStatic getters using IPusheeInstigator instead of APawn to reduce casting
+* Add IPusheeInstigator::GetPusheeCapsuleShape() allowing non-capsule root components, as well as using a capsule that doesn't represent the collision
+* Add IPusheeInstigator::GetPusheeVelocity() to remove need to casting to Pawn to get it
+* Added sanity checks for 0 scan range
+* Refactor ability tasks
+	* AbilityTask_WaitForPushTargets ➜ UAbilityTask_PushPawnScan_Base
+	* UAbilityTask_WaitForPushTargets_CapsuleTrace ➜ UAbilityTask_PushPawnScan
+	* UAbilityTask_GrantNearbyPush ➜ UAbilityTask_GrantPushAbility
+
 ### 2.0.1-beta
 * Ability itself pauses along with the scan ability, aimed at preventing ASC from continuing to tick, pending testing
 * Possible engine crash fix for ability tasks

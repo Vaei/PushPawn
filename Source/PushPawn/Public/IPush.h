@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PushOption.h"
+#include "PushTypes.h"
 #include "IPush.generated.h"
 
 class IPusherTarget;
@@ -62,11 +63,38 @@ public:
 	/** @return True if we can currently be pushed by the PusherActor */
 	virtual bool CanBePushedBy(const AActor* PusherActor) const = 0;
 
-	/** GetCharacterMovement()->GetCurrentAcceleration() */
+	/**
+	 * Get the acceleration of the Pushee, will be normalized post-retrieval
+	 * UCharacterMovementComponent::GetCurrentAcceleration()
+	 */
 	virtual FVector GetPusheeAcceleration() const { return FVector::ZeroVector; }
+	
+	/**
+	 * Get the velocity of the Pushee
+	 * AActor::GetVelocity()
+	 */
+	virtual FVector GetPusheeVelocity() const { return FVector::ZeroVector; }
 
 	/**
-	 * Optionally, pause the scan when the pawn is in a state where it should not look for pushers
+	 * Whether the pushee is moving on the ground (not in the air)
+	 * UPawnMovementComponent::IsMovingOnGround()
+	 */
+	virtual bool IsPusheeMovingOnGround() const = 0;
+
+	/**
+	 * Get the capsule shape of the pushee.
+	 * 
+	 * If the capsule size changes during runtime, it can de-sync -- i.e. use the default capsule shape.
+	 * This means crouch, prone, etc. consideration is not supported by default. It may be possible to extend this.
+	 * 
+	 * Generally you should use UPushStatics::GetDefaultCapsuleShape() to get the capsule shape, unless you have a
+	 * non-capsule root component, or want to use a different capsule size than the collision capsule.
+	 */
+	virtual FPushPawnCapsuleShape GetPusheeCapsuleShape() const = 0;
+
+	/**
+	 * Optionally, pause the scan when the pawn is in a state where it should not look for pushers.
+	 * 
 	 * This is useful for optimizing performance, consider integrating with AI significance, spatial hashing,
 	 * proximity checks, rep graph relevance, etc.
 	 * 

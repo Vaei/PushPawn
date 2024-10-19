@@ -7,7 +7,7 @@
 #include "PushOption.h"
 #include "PushQuery.h"
 #include "IPush.h"
-#include "AbilityTask_WaitForPushTargets.generated.h"
+#include "AbilityTask_PushPawnScan_Base.generated.h"
 
 class UPushPawn_Scan_Base;
 class AActor;
@@ -21,7 +21,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPushObjectsChangedEvent, const TArr
  * Base class for other scanning tasks.
  */
 UCLASS(Abstract)
-class PUSHPAWN_API UAbilityTask_WaitForPushTargets : public UAbilityTask
+class PUSHPAWN_API UAbilityTask_PushPawnScan_Base : public UAbilityTask
 {
 	GENERATED_UCLASS_BODY()
 

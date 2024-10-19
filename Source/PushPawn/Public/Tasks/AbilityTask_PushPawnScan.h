@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilityTask_WaitForPushTargets.h"
+#include "AbilityTask_PushPawnScan_Base.h"
 #include "PushTypes.h"
-#include "AbilityTask_WaitForPushTargets_CapsuleTrace.generated.h"
+#include "AbilityTask_PushPawnScan.generated.h"
 
 /**
  * Implemented by the PushPawn Scan ability.
@@ -17,7 +17,7 @@
  * Activation failures are handled by a delay, thus so long as the conditions are eventually met it will activate.
  */
 UCLASS()
-class PUSHPAWN_API UAbilityTask_WaitForPushTargets_CapsuleTrace : public UAbilityTask_WaitForPushTargets
+class PUSHPAWN_API UAbilityTask_PushPawnScan : public UAbilityTask_PushPawnScan_Base
 {
 	GENERATED_BODY()
 
@@ -38,7 +38,7 @@ public:
 	 * @param ActivationFailureDelay The delay to wait before activating the ability again if the scan fails to activate due to invalid data
 	 */
 	UFUNCTION(BlueprintCallable, Category="Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static UAbilityTask_WaitForPushTargets_CapsuleTrace* WaitForPushTargets_CapsuleTrace(
+	static UAbilityTask_PushPawnScan* PushPawnScan(
 		UGameplayAbility* OwningAbility, FPushQuery PushQuery,
 		FGameplayAbilityTargetingLocationInfo StartLocation, const FPushPawnScanParams& ScanParams,
 		float ActivationFailureDelay = 0.2f);
