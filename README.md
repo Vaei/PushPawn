@@ -255,7 +255,7 @@ In `GA_Push_Action`, assign a trace channel. You probably do not want to leave t
 
 ## Changelog
 
-### 2.1.0-beta
+### 2.0.2-beta
 * Remove dependency on ACharacter/UCharacterMovementComponent
 	* Built-in Push ability still maintains this dependency because it uses root motion sources
 	* Acceleration is normalized 
