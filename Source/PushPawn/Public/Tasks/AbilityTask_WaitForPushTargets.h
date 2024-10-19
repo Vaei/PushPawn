@@ -43,6 +43,5 @@ protected:
 
 	void UpdatePushOptions(const FPushQuery& PushQuery, const TArray<TScriptInterface<IPusherTarget>>& PushTargets);
 
-	virtual void BeginDestroy() override;
 	virtual void OnDestroy(bool bInOwnerFinished) override;
 };

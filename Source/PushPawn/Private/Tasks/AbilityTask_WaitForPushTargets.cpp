@@ -115,14 +115,6 @@ void UAbilityTask_WaitForPushTargets::UpdatePushOptions(const FPushQuery& PushQu
 	}
 }
 
-void UAbilityTask_WaitForPushTargets::BeginDestroy()
-{
-	// Engine crashes if we exit while the task is still active
-	EndTask();
-	
-	Super::BeginDestroy();
-}
-
 void UAbilityTask_WaitForPushTargets::OnDestroy(bool bInOwnerFinished)
 {
 	// #KillPendingKill Clear ability reference so we don't hold onto it and GC can delete it.

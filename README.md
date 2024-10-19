@@ -256,6 +256,10 @@ In `GA_Push_Action`, assign a trace channel. You probably do not want to leave t
 
 ## Changelog
 
+### 2.0.1-beta
+* Ability itself pauses along with the scan ability, aimed at preventing ASC from continuing to tick, pending testing
+* Possible engine crash fix for ability tasks
+
 ### 2.0.0-beta
 _BREAKING CHANGES_
 _Significant perf improvements_
