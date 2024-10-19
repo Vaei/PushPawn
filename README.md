@@ -22,12 +22,12 @@ This was initially created for a personal project that would make the AI play a 
 
 ![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview_isekai.gif)
 
-Here is the preview from a minimal Third Person Example project (see "How to Use" to obtain this). This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't desync abnormally.
+Here is the preview from the minimal Third Person Example project below. This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't desync abnormally.
 
 ![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview.gif)
 
 ## Example Project
-Example projects are not updated unless a new major version releases, so only the first version is available in most cases. All textures and high poly meshes are removed for file size reasons.
+Example projects are not updated unless a new major version releases, so only the earliest non-beta version is available in most cases. All textures and high poly meshes are removed for file size reasons.
 
 [1.0.0](https://github.com/Vaei/repo_files/raw/main/PushPawn/PushPawnProjectExample.zip)
 `[2.0.0](https://github.com/Vaei/repo_files/raw/main/PushPawn/PushPawnProjectExample_2.zip) COMING SOON`
