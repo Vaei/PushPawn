@@ -1,8 +1,16 @@
 # Push Pawn <img align="right" width=128, height=128 src="https://github.com/Vaei/PushPawn/blob/main/Resources/Icon128.png">
 
-PushPawn provides net-predicted soft organic collisions for great game-feel and no de-syncing when running near other pawns in multiplayer games. This is aimed at both singleplayer and multiplayer games. Fully tested in production with both Player Characters and AI controlled NPCs.
+> [!IMPORTANT]
+> PushPawn provides net-predicted soft organic collisions!
+> <br>Provides great game feel
+> <br>And eliminates inappropriate de-syncing when running near other pawns in multiplayer games
+> <br>PushPawn is aimed at both singleplayer and multiplayer games
+> <br>Fully tested in production with both Player-Controlled Characters and AI-Controlled Characters.
 
-***Due to the use of Git LFS, do not download a zip or your content will be missing.*** You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git` if you want the content - using C++ only is viable also as of `2.0.0`.
+> [!TIP]
+> ***Due to the use of Git LFS, do not download a zip or your content will be missing***
+> <br>You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git` if you want the content
+> <br>Using C++ only is viable also as of `2.0.0`
 
 **Provides:**
 * Net predicted Pawn vs. Pawn collisions via GAS to prevent de-sync
@@ -27,15 +35,6 @@ This was initially created for a personal project that would make the AI play a 
 Here is the preview from the minimal Third Person Example project below. This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't de-sync abnormally.
 
 ![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview.gif)
-
-## Example Project
-Example projects are not updated unless a new major version releases, so only the earliest non-beta version is available in most cases. All textures and high poly meshes are removed for file size reasons.
-
-* `[2.0.0](https://github.com/Vaei/repo_files/raw/main/PushPawn/PushPawnProjectExample_2.zip) COMING SOON`
-* [1.0.0](https://github.com/Vaei/repo_files/raw/main/PushPawn/PushPawnProjectExample.zip)
-
-## Requirements
-The content is only supported by Unreal Engine 5.2 and up. However, there is probably nothing stopping you from recreating the blueprints and only making use of the source code.
 
 ## Limitations
 ### Changing Collision Size
@@ -63,51 +62,6 @@ There is no need to search for nearby characters if:
 * Other characters are sufficiently far away that they won't de-sync within their latency vs max velocity thresholds, meaning we can detect they're close enough and activate the ability sufficiently before they reach us and we actually need to push them
 
 You can disable the scan using `IPusheeInstigator::GetPushPawnScanPausedDelegate()`.
-
-## CMC Changes Required
-By default, CMC does not allow root motion sources, used by PushPawn, to apply root motion while montage root motion is active. This is very easy to fix. There are a couple of options here.
-
-[The fix has been PR'd](https://github.com/EpicGames/UnrealEngine/pull/12366) in hopes of making UE5.6, and has been posted to UDN with the same purpose. You can make the same changes in the commit.
-
-The simplest solution currently, is to derive from `UCharacterMovementComponent`, and override `ApplyRootMotionToVelocity`, and comment away the first `return;` statement - this is what aborts prior to appending root motion sources to velocity.
-
-## Difficulty
-This is very advanced C++ use, if you are a beginner you will struggle with this and dedicated support isn't available.
-
-If you are not an advanced user, you may be able to succeed in using this effectively by looking at the "How to Use" section and going through the example project.
-
-## Terminology
-*The most confusing yet important aspect to wrap your head around is this: The ability `Instigator` is the one who gets pushed, and not the one who does the pushing.*
-
-### AICharacter
-An AI controlled `ACharacter` (possesed by `AAIController`)
-
-### PlayerCharacter
-A player controlled `ACharacter` (possesed by `APlayerController`)
-
-### Pushee
-This is the Pawn that is getting pushed by another Pawn. Implementing `IPusheeInstigator`.
-
-This Pawn is the ability Instigator.
-
-This Pawn searches for anyone who can push them (known as the Pusher). The Pusher then hands us their ability that we apply to ourselves to push us back.
-
-This means that unique characters can have character-specific functionality with unique behaviour, instead of a single universal method for pushing back
-
-### Pusher
-This is the Pawn that is pushing the other player. Implementing `IPusherTarget`.
-
-## Abilities
-
-### `GA_Push_Scan`
-Held by the Pushee and used to find nearby Pushers. Here you can set a `ScanRate` and change how the `ScanRange` is computed as well as assign the `TraceChannel` used. You can also `Show Debug` to see what it is doing.
-
-### `GA_Push_Action`
-Held by the Pusher and is given via `GiveAbility` to the Pushee to apply a force to them. There are many ways this can be implemented, look at the blueprint for more information.
-
-Different Pushers can have their own versions of this ability.
-
-This is where you define what actually happens, you could play a root motion animation when pushed back instead, or simply change the strength or duration of the push, or change other settings to get the behaviour you desire.
 
 ## LyraShooter
 *Or anyone not using `UGameplayAbility` as an allowed base class*
