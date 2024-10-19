@@ -12,15 +12,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Checkout Wiki
+        run: |
+          git clone https://github.com/${{ github.repository }}.wiki.git
+
       - name: Copy README to Wiki
         run: |
-          mkdir -p ./wiki
-          cp ./README.md ./wiki/Home.md
+          cp ./README.md ./${{ github.repository }}.wiki/Home.md
 
-      - name: Push changes to Wiki
+      - name: Commit and push changes to Wiki
+        working-directory: ./${{ github.repository }}.wiki
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          repository: ${{ github.repository }}.wiki
           commit_message: "Sync README to Wiki"
           commit_user_name: "GitHub Action"
           commit_user_email: "action@github.com"
