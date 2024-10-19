@@ -63,6 +63,11 @@ bool UPushStatics::IsPawnMovingOnGround(const APawn* Pawn)
 	return Pawn->GetMovementComponent() ? Pawn->GetMovementComponent()->IsMovingOnGround() : false;
 }
 
+bool UPushStatics::IsPusheeMovingOnGround(const IPusheeInstigator* Pushee)
+{
+	return Pushee->IsPusheeMovingOnGround();
+}
+
 FVector UPushStatics::GetPawnGroundVelocity(const APawn* Pawn)
 {
 	// Factor incline into the velocity when on the ground
@@ -70,11 +75,22 @@ FVector UPushStatics::GetPawnGroundVelocity(const APawn* Pawn)
 	return IsPawnMovingOnGround(Pawn) ? Velocity : FVector(Velocity.X, Velocity.Y, 0.f);
 }
 
+FVector UPushStatics::GetPusheeGroundVelocity(const IPusheeInstigator* Pushee)
+{
+	const FVector& Velocity = Pushee->GetPusheeVelocity();
+	return Pushee->IsPusheeMovingOnGround() ? Velocity : FVector(Velocity.X, Velocity.Y, 0.f);
+}
+
 float UPushStatics::GetPawnGroundSpeed(const APawn* Pawn)
 {
 	// Factor incline into the velocity when on the ground
-	const FVector& Velocity = GetPawnGroundVelocity(Pawn);
-	return IsPawnMovingOnGround(Pawn) ? Velocity.Size() : Velocity.Size2D();
+	return GetPawnGroundVelocity(Pawn).Size();
+}
+
+float UPushStatics::GetPusheeGroundSpeed(const IPusheeInstigator* Pushee)
+{
+	// Factor incline into the velocity when on the ground
+	return GetPusheeGroundVelocity(Pushee).Size();
 }
 
 float UPushStatics::GetPushStrength(const APawn* Pushee, const FPushPawnActionParams& Params)
@@ -188,10 +204,20 @@ EPushCardinal UPushStatics::GetPushDirection(const AActor* FromActor, const AAct
 	return EPushCardinal::Forward;
 }
 
+FVector UPushStatics::GetPushPawnAcceleration(const IPusheeInstigator* Pushee)
+{
+	return Pushee ? Pushee->GetPusheeAcceleration().GetSafeNormal() : FVector::ZeroVector;
+}
+
 FVector UPushStatics::GetPushPawnAcceleration(APawn* Pushee)
 {
 	const IPusheeInstigator* PusheeInstigator = Pushee ? Cast<IPusheeInstigator>(Pushee) : nullptr;
-	return PusheeInstigator ? PusheeInstigator->GetPusheeAcceleration() : FVector::ZeroVector;
+	return PusheeInstigator ? PusheeInstigator->GetPusheeAcceleration().GetSafeNormal() : FVector::ZeroVector;
+}
+
+bool UPushStatics::IsPusheeAccelerating(const IPusheeInstigator* Pushee)
+{
+	return IsPusheeAccelerating(GetPushPawnAcceleration(Pushee));
 }
 
 bool UPushStatics::IsPusheeAccelerating(APawn* Pushee)
@@ -201,8 +227,12 @@ bool UPushStatics::IsPusheeAccelerating(APawn* Pushee)
 
 bool UPushStatics::IsPusheeAccelerating(const FVector& Acceleration)
 {
-	static constexpr float AccelThresholdSq = 100.f;  // Note: Acceleration is not normalized
-	return Acceleration.SizeSquared() > AccelThresholdSq;
+	return !Acceleration.GetSafeNormal().IsNearlyZero(0.1f);
+}
+
+const float& UPushStatics::GetPushPawnScanRate(const IPusheeInstigator* Pushee, const FPushPawnScanParams& ScanParams)
+{
+	return GetPushPawnScanRate(GetPushPawnAcceleration(Pushee), ScanParams);
 }
 
 const float& UPushStatics::GetPushPawnScanRate(APawn* Pushee, const FPushPawnScanParams& ScanParams)
@@ -213,6 +243,12 @@ const float& UPushStatics::GetPushPawnScanRate(APawn* Pushee, const FPushPawnSca
 const float& UPushStatics::GetPushPawnScanRate(const FVector& Acceleration, const FPushPawnScanParams& ScanParams)
 {
 	return IsPusheeAccelerating(Acceleration) ? ScanParams.ScanRateAccel : ScanParams.ScanRate;
+}
+
+float UPushStatics::GetPushPawnScanRange(const IPusheeInstigator* Pushee, float BaseScanRange,
+	const FPushPawnScanParams& ScanParams)
+{
+	return GetPushPawnScanRange(GetPushPawnAcceleration(Pushee), BaseScanRange, ScanParams);
 }
 
 float UPushStatics::GetPushPawnScanRange(APawn* Pushee, float BaseScanRange,
@@ -228,17 +264,28 @@ float UPushStatics::GetPushPawnScanRange(const FVector& Acceleration, float Base
 	return BaseScanRange * IsPusheeAccelerating(Acceleration) ? ScanParams.ScanRangeAccelScalar : ScanParams.ScanRangeScalar;
 }
 
+FPushPawnCapsuleShape UPushStatics::GetDefaultCapsuleShape(const AActor* Actor)
+{
+	// Default capsule properties to ignore crouching or anything changing capsule height/radius
+	const UCapsuleComponent* CapsuleComponent = Actor->GetRootComponent() ?
+		Cast<UCapsuleComponent>(Actor->GetClass()->GetDefaultObject<AActor>()->GetRootComponent()) : nullptr;
+
+	if (!CapsuleComponent)
+	{
+		return {};
+	}
+	
+	return { CapsuleComponent->GetUnscaledCapsuleRadius(), CapsuleComponent->GetUnscaledCapsuleHalfHeight() };
+}
+
 float UPushStatics::GetMaxCapsuleSize(const AActor* Actor)
 {
 	if (Actor)
 	{
-		// Default capsule properties to ignore crouching or anything changing capsule height/radius
-		const UCapsuleComponent* CapsuleComponent = Actor->GetRootComponent() ?
-			Cast<UCapsuleComponent>(Actor->GetClass()->GetDefaultObject<AActor>()->GetRootComponent()) : nullptr;
-		
-		if (CapsuleComponent)
+		FPushPawnCapsuleShape CapsuleShape = GetDefaultCapsuleShape(Actor);
+		if (CapsuleShape)
 		{
-			return FMath::Max<float>(CapsuleComponent->GetScaledCapsuleHalfHeight(), CapsuleComponent->GetScaledCapsuleRadius());
+			return FMath::Max<float>(CapsuleShape.Radius, CapsuleShape.HalfHeight);
 		}
 	}
 	return 0.f;

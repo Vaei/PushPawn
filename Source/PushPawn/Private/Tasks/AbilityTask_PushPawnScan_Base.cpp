@@ -1,19 +1,19 @@
 // Copyright (c) Jared Taylor. All Rights Reserved
 
-#include "Tasks/AbilityTask_WaitForPushTargets.h"
+#include "Tasks/AbilityTask_PushPawnScan_Base.h"
 #include "GameFramework/Actor.h"
 #include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
 
-#include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_WaitForPushTargets)
+#include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_PushPawnScan_Base)
 
-UAbilityTask_WaitForPushTargets::UAbilityTask_WaitForPushTargets(const FObjectInitializer& ObjectInitializer)
+UAbilityTask_PushPawnScan_Base::UAbilityTask_PushPawnScan_Base(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 	, TraceChannel(ECC_Visibility)
 {
 }
 
-void UAbilityTask_WaitForPushTargets::ShapeTrace(FHitResult& OutHitResult, const UWorld* World, const FVector& Center,
+void UAbilityTask_PushPawnScan_Base::ShapeTrace(FHitResult& OutHitResult, const UWorld* World, const FVector& Center,
 	ECollisionChannel ChannelName, const FCollisionQueryParams& Params, const FCollisionShape& Shape)
 {
 	check(World);
@@ -37,7 +37,7 @@ void UAbilityTask_WaitForPushTargets::ShapeTrace(FHitResult& OutHitResult, const
 	}
 }
 
-void UAbilityTask_WaitForPushTargets::UpdatePushOptions(const FPushQuery& PushQuery, const TArray<TScriptInterface<IPusherTarget>>& PushTargets)
+void UAbilityTask_PushPawnScan_Base::UpdatePushOptions(const FPushQuery& PushQuery, const TArray<TScriptInterface<IPusherTarget>>& PushTargets)
 {
 	// Iterate over all the push targets and gather their push options
 	TArray<FPushOption> NewOptions;
@@ -115,7 +115,7 @@ void UAbilityTask_WaitForPushTargets::UpdatePushOptions(const FPushQuery& PushQu
 	}
 }
 
-void UAbilityTask_WaitForPushTargets::OnDestroy(bool bInOwnerFinished)
+void UAbilityTask_PushPawnScan_Base::OnDestroy(bool bInOwnerFinished)
 {
 	// #KillPendingKill Clear ability reference so we don't hold onto it and GC can delete it.
 	PushScanAbility = nullptr;

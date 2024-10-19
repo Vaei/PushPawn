@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Jared Taylor. All Rights Reserved
 
 
-#include "Tasks/AbilityTask_GrantNearbyPush.h"
+#include "Tasks/AbilityTask_GrantPushAbility.h"
 
 #include "AbilitySystemComponent.h"
 #include "IPush.h"
@@ -9,16 +9,16 @@
 #include "PushStatics.h"
 #include "Engine/OverlapResult.h"
 
-#include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_GrantNearbyPush)
+#include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_GrantPushAbility)
 
-void UAbilityTask_GrantNearbyPush::Activate()
+void UAbilityTask_GrantPushAbility::Activate()
 {
 	SetWaitingOnAvatar();
 
 	ActivateTimer();
 }
 
-void UAbilityTask_GrantNearbyPush::OnDestroy(bool bInOwnerFinished)
+void UAbilityTask_GrantPushAbility::OnDestroy(bool bInOwnerFinished)
 {
 	Super::OnDestroy(bInOwnerFinished);
 
@@ -28,11 +28,19 @@ void UAbilityTask_GrantNearbyPush::OnDestroy(bool bInOwnerFinished)
 	}
 }
 
-void UAbilityTask_GrantNearbyPush::ActivateTimer()
+void UAbilityTask_GrantPushAbility::ActivateTimer()
 {
-	// If we don't have an ability, we can't do anything
+	// If we don't have an ability, we can't do anything, we will _never_ succeed so this should only trigger when being destroyed
 	if (!Ability)
 	{
+		return;
+	}
+
+	// If we don't have any scan range, we can't do anything, we will _never_ succeed
+	// We should never get here because we should not trigger this ability at all in this case
+	if (!ensureMsgf(!FMath::IsNearlyZero(BaseScanRange), TEXT("BaseScanRange is zero, this will cause the scan to fail.")))
+	{
+		EndTask();
 		return;
 	}
 
@@ -51,7 +59,7 @@ void UAbilityTask_GrantNearbyPush::ActivateTimer()
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::QueryPushes, ScanRate, false);
 }
 
-void UAbilityTask_GrantNearbyPush::QueryPushes()
+void UAbilityTask_GrantPushAbility::QueryPushes()
 {
 	const UWorld* World = GetWorld();
 	AActor* AvatarActor = GetAvatarActor();
@@ -110,10 +118,10 @@ void UAbilityTask_GrantNearbyPush::QueryPushes()
 	ActivateTimer();
 }
 
-UAbilityTask_GrantNearbyPush* UAbilityTask_GrantNearbyPush::GrantAbilitiesForNearbyPushers(
+UAbilityTask_GrantPushAbility* UAbilityTask_GrantPushAbility::GrantAbilitiesForNearbyPushers(
 	UGameplayAbility* OwningAbility, const FPushPawnScanParams& InScanParams, float InBaseScanRange)
 {
-	UAbilityTask_GrantNearbyPush* MyObj = NewAbilityTask<UAbilityTask_GrantNearbyPush>(OwningAbility);
+	UAbilityTask_GrantPushAbility* MyObj = NewAbilityTask<UAbilityTask_GrantPushAbility>(OwningAbility);
 	MyObj->ScanParams = InScanParams;
 	MyObj->BaseScanRange = InBaseScanRange;
 	return MyObj;

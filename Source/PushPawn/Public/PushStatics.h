@@ -6,6 +6,7 @@
 #include "PushTypes.h"
 #include "PushStatics.generated.h"
 
+class IPusheeInstigator;
 struct FGameplayEventData;
 struct FGameplayAbilityTargetDataHandle;
 struct FPushPawnAbilityTargetData;
@@ -60,14 +61,20 @@ public:
 	/** @return True if the pawn is moving on the ground */
 	UFUNCTION(BlueprintPure, Category=PushPawn)
 	static bool IsPawnMovingOnGround(const APawn* Pawn);
+	
+	static bool IsPusheeMovingOnGround(const IPusheeInstigator* Pushee);
 
 	/** @return The velocity of the pawn factoring incline if on ground */
 	UFUNCTION(BlueprintPure, Category=PushPawn)
 	static FVector GetPawnGroundVelocity(const APawn* Pawn);
+	
+	static FVector GetPusheeGroundVelocity(const IPusheeInstigator* Pushee);
 
 	/** @return The speed of the pawn factoring incline if on ground */
 	UFUNCTION(BlueprintPure, Category=PushPawn)
 	static float GetPawnGroundSpeed(const APawn* Pawn);
+	
+	static float GetPusheeGroundSpeed(const IPusheeInstigator* Pushee);
 
 public:
 	/** 
@@ -106,16 +113,22 @@ public:
 	// INTERNAL PUSH PAWN HELPER METHODS
 	//--------------------------------------------------------------
 
+	static FVector GetPushPawnAcceleration(const IPusheeInstigator* Pushee);
 	static FVector GetPushPawnAcceleration(APawn* Pushee);
+	static bool IsPusheeAccelerating(const IPusheeInstigator* Pushee);
 	static bool IsPusheeAccelerating(APawn* Pushee);
 	static bool IsPusheeAccelerating(const FVector& Acceleration);
 	
+	static const float& GetPushPawnScanRate(const IPusheeInstigator* Pushee, const FPushPawnScanParams& ScanParams);
 	static const float& GetPushPawnScanRate(APawn* Pushee, const FPushPawnScanParams& ScanParams);
 	static const float& GetPushPawnScanRate(const FVector& Acceleration, const FPushPawnScanParams& ScanParams);
 
+	static float GetPushPawnScanRange(const IPusheeInstigator* Pushee, float BaseScanRange, const FPushPawnScanParams& ScanParams);
 	static float GetPushPawnScanRange(APawn* Pushee, float BaseScanRange, const FPushPawnScanParams& ScanParams);
 	static float GetPushPawnScanRange(const FVector& Acceleration, float BaseScanRange, const FPushPawnScanParams& ScanParams);
 
+	static FPushPawnCapsuleShape GetDefaultCapsuleShape(const AActor* ActorWithCapsuleRootComponent);
+	
 	/**
 	 * @return ScaledCapsuleHalfHeight or ScaledCapsuleRadius - whichever is larger - taken from class defaults (i.e. ignores crouching character)
 	 * @see ActivateAbility - this does not update if changed after ActivateAbility

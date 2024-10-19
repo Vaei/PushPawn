@@ -7,23 +7,23 @@
 #include "NativeGameplayTags.h"
 #include "PushPawnTags.h"
 #include "Abilities/PushPawnAbilityTargetData.h"
-#include "Tasks/AbilityTask_GrantNearbyPush.h"
+#include "Tasks/AbilityTask_GrantPushAbility.h"
 #include "AbilitySystemComponent.h"
-#include "Tasks/AbilityTask_WaitForPushTargets_CapsuleTrace.h"
+#include "Tasks/AbilityTask_PushPawnScan.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PushPawn_Scan_Base)
 
 UPushPawn_Scan_Base::UPushPawn_Scan_Base(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	BaseScanRange = 100.f;
+	BaseScanRange = 0.f;
 }
 
 void UPushPawn_Scan_Base::OnGameplayTaskInitialized(UGameplayTask& Task)
 {
 	// If the task is a WaitForPushTargets_CapsuleTrace, set the PushScanAbility to this
 	// Allows the task to call back to this ability, specifically ShouldWaitForNetSync()
-	if (auto* AbilityTask = Cast<UAbilityTask_WaitForPushTargets_CapsuleTrace>(&Task))
+	if (auto* AbilityTask = Cast<UAbilityTask_PushPawnScan>(&Task))
 	{
 		AbilityTask->PushScanAbility = this;
 	}
@@ -41,13 +41,20 @@ void UPushPawn_Scan_Base::ActivatePushPawnAbility(const FGameplayAbilitySpecHand
 	// Get the base scan range
 	BaseScanRange = GetBaseScanRange(AvatarActor);
 
+	// If we don't have any scan range, we can't do anything, we will _never_ succeed.
+	if (!ensureMsgf(!FMath::IsNearlyZero(BaseScanRange), TEXT("BaseScanRange is zero, this will cause the scan to fail.")))
+	{
+		CancelAbility(Handle, ActorInfo, ActivationInfo, false);
+		return;
+	}
+
 	// Get the ability system component
 	const UAbilitySystemComponent* AbilitySystem = GetAbilitySystemComponentFromActorInfo();
 
 	// If we have an ability system, and we're the authority, create the task to grant abilities for nearby pushers
 	if (AbilitySystem && AbilitySystem->GetOwnerRole() == ROLE_Authority)
 	{
-		UAbilityTask_GrantNearbyPush* Task = UAbilityTask_GrantNearbyPush::GrantAbilitiesForNearbyPushers(this, ScanParams, BaseScanRange);
+		UAbilityTask_GrantPushAbility* Task = UAbilityTask_GrantPushAbility::GrantAbilitiesForNearbyPushers(this, ScanParams, BaseScanRange);
 		Task->ReadyForActivation();
 	}
 }

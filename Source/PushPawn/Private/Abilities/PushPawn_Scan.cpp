@@ -4,7 +4,7 @@
 #include "Abilities/PushPawn_Scan.h"
 
 #include "PushQuery.h"
-#include "Tasks/AbilityTask_WaitForPushTargets_CapsuleTrace.h"
+#include "Tasks/AbilityTask_PushPawnScan.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PushPawn_Scan)
 
@@ -21,11 +21,11 @@ void UPushPawn_Scan::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Ha
 	FGameplayAbilityTargetingLocationInfo StartLocation = MakeTargetLocationInfoFromOwnerActor();
 
 	// Create the task
-	UAbilityTask_WaitForPushTargets_CapsuleTrace* Task = UAbilityTask_WaitForPushTargets_CapsuleTrace::WaitForPushTargets_CapsuleTrace(
+	UAbilityTask_PushPawnScan* Task = UAbilityTask_PushPawnScan::PushPawnScan(
 		this, Query, StartLocation, ScanParams);
 
 	// Bind the event
-	Task->PushObjectsChanged.AddDynamic(this, &UPushPawn_Scan::OnPushObjectsChanged);
+	Task->PushObjectsChanged.AddDynamic(this, &ThisClass::OnPushObjectsChanged);
 
 	// Activate the task
 	Task->ReadyForActivation();
