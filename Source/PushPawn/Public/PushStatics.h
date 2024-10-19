@@ -127,14 +127,22 @@ public:
 	static float GetPushPawnScanRange(APawn* Pushee, float BaseScanRange, const FPushPawnScanParams& ScanParams);
 	static float GetPushPawnScanRange(const FVector& Acceleration, float BaseScanRange, const FPushPawnScanParams& ScanParams);
 
-	static FPushPawnCapsuleShape GetDefaultCapsuleShape(const AActor* ActorWithCapsuleRootComponent);
+	static EPushCollisionType GetPusheeCollisionShapeType(const AActor* Actor);
+
+	/** 
+	 * @return The default collision shape for the pushee
+	 * @param Actor				The actor to get the collision shape for
+	 * @param OptionalShapeType	The optional shape type to use
+	 * @param OptionalComponent	The optional component to use - if not supplied, the root component from the Actor's defaults will be used
+	 */
+	static FCollisionShape GetDefaultPusheeCollisionShape(const AActor* Actor, EPushCollisionType OptionalShapeType = EPushCollisionType::None, USceneComponent* OptionalComponent = nullptr);
 	
 	/**
-	 * @return ScaledCapsuleHalfHeight or ScaledCapsuleRadius - whichever is larger - taken from class defaults (i.e. ignores crouching character)
+	 * @return The max of the collision shape size. For ACharacter: ScaledCapsuleHalfHeight or ScaledCapsuleRadius - whichever is larger - taken from class defaults (i.e. ignores crouching character)
 	 * @see ActivateAbility - this does not update if changed after ActivateAbility
 	 */
 	UFUNCTION(BlueprintPure, Category=PushPawn)
-	static float GetMaxCapsuleSize(const AActor* ActorWithCapsuleRootComponent);
+	static float GetMaxDefaultCollisionShapeSize(const AActor* ActorWithSuitableRootComponent, EPushCollisionType SpecificShapeType = EPushCollisionType::None);
 	
 	/**
 	 * Retrieves the AActor associated with the given PushTarget

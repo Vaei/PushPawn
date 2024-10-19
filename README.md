@@ -255,6 +255,9 @@ In `GA_Push_Action`, assign a trace channel. You probably do not want to leave t
 
 ## Changelog
 
+### 2.1.0-beta
+* Support non-capsule collision shapes to allow for Pawn v Pawn collisions to use custom shape types such as boxes
+
 ### 2.0.2-beta
 * Remove dependency on ACharacter/UCharacterMovementComponent
 	* Built-in Push ability still maintains this dependency because it uses root motion sources

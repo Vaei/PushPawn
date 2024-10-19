@@ -8,7 +8,6 @@
 #include "AbilitySystemComponent.h"
 #include "Abilities/PushPawn_Scan_Base.h"
 #include "Abilities/Tasks/AbilityTask_NetworkSyncPoint.h"
-#include "Components/CapsuleComponent.h"
 
 #if UE_BUILD_SHIPPING
 #include "AbilitySystemLog.h"
@@ -220,15 +219,16 @@ void UAbilityTask_PushPawnScan::PerformTrace()
         return;
     }
 
-	// If we don't have a valid capsule, we can't scan
-	FPushPawnCapsuleShape Capsule = Pushee->GetPusheeCapsuleShape();
-	if (!Capsule)
-	{
-		ActivateTimer(EPushPawnPauseType::ActivationFailed);
-		return;
-	}
+	// If we don't have a valid collision shape, we can't scan
+	FCollisionShape CollisionShape = Pushee->GetPusheeCollisionShape();
+	const bool bValidShape = !CollisionShape.IsLine() && !CollisionShape.IsNearlyZero();
+	if (!ensureMsgf(bValidShape, TEXT("PushPawn: Pushee %s has an invalid collision shape!"), *AvatarActor->GetName()))
+    {
+        ActivateTimer(EPushPawnPauseType::ActivationFailed);
+        return;
+    }
 
-	// Increase the capsule size based on the pushee's speed and acceleration
+	// Increase the collision size based on the pushee's speed and acceleration
 	float VelocityScalar = 1.f;
 	
 	// Check if the pushee is accelerating
@@ -243,10 +243,28 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 	// Calculate the radius scalar
 	const float RadiusScalar = bHasAcceleration ? ScanParams.PusherRadiusAccelScalar : ScanParams.PusherRadiusScalar;
 
-	// Create a capsule to trace with
-	const float Radius = Capsule.Radius * RadiusScalar * VelocityScalar;
-	const float HalfHeight = Capsule.HalfHeight;
-	FCollisionShape CapsuleShape = FCollisionShape::MakeCapsule(Radius, HalfHeight);
+	// Create a collision shape to trace with
+	const float ShapeScalar = RadiusScalar * VelocityScalar;
+	switch (CollisionShape.ShapeType)
+	{
+		case ECollisionShape::Box:
+		{
+			CollisionShape.Box.HalfExtentX *= ShapeScalar;
+			CollisionShape.Box.HalfExtentY *= ShapeScalar;
+		}
+		break;
+		case ECollisionShape::Sphere:
+		{
+			CollisionShape.Sphere.Radius *= ShapeScalar;
+		}
+		break;
+		case ECollisionShape::Capsule:
+		{
+			CollisionShape.Capsule.Radius *= ShapeScalar;
+		}
+		break;
+		default: break;
+	}
 
 	// Initialize trace params
 	TArray<AActor*> ActorsToIgnore;
@@ -259,7 +277,7 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 	// Perform the trace
 	FVector TraceStart = StartLocation.GetTargetingTransform().GetLocation();
 	FHitResult Hit;
-	ShapeTrace(Hit, GetWorld(), TraceStart, ScanParams.TraceChannel, Params, CapsuleShape);
+	ShapeTrace(Hit, GetWorld(), TraceStart, ScanParams.TraceChannel, Params, CollisionShape);
 
 	// Append the push targets
 	TArray<TScriptInterface<IPusherTarget>> PushTargets;
@@ -272,7 +290,27 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 	if (FPushPawn::PushPawnScanDebugDraw)
 	{
 		FColor DebugColor = Hit.bBlockingHit ? FColor::Red : FColor::Green;
-		DrawDebugCapsule(World, TraceStart, HalfHeight, Radius, FQuat::Identity, DebugColor, false, CurrentScanRate);
+		
+		switch (CollisionShape.ShapeType)
+		{
+			case ECollisionShape::Box:
+			{
+				DrawDebugBox(World, TraceStart, CollisionShape.GetExtent(), FQuat::Identity, DebugColor, false, CurrentScanRate);
+			}
+			break;
+			case ECollisionShape::Sphere:
+			{
+				DrawDebugSphere(World, TraceStart, CollisionShape.GetCapsuleRadius(), 16, DebugColor, false, CurrentScanRate);
+			}
+			break;
+			case ECollisionShape::Capsule:
+			{
+				DrawDebugCapsule(World, TraceStart, CollisionShape.GetCapsuleHalfHeight(), CollisionShape.GetCapsuleRadius(), FQuat::Identity, DebugColor, false, CurrentScanRate);
+			}
+			break;
+			default: break;
+		}
+		
 		if (Hit.bBlockingHit)
 		{
 			DrawDebugSphere(World, Hit.Location, 5, 16, DebugColor, false, CurrentScanRate);
