@@ -2,6 +2,8 @@
 
 PushPawn provides net-predicted soft organic collisions for great game-feel and no de-syncing when running near other pawns in multiplayer games. This is aimed at both singleplayer and multiplayer games. Fully tested in production with both Player Characters and AI controlled NPCs.
 
+s
+
 ***Due to the use of Git LFS, do not download a zip or your content will be missing.*** You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git` if you want the content - using C++ only is viable also as of `2.0.0`.
 
 **Provides:**
