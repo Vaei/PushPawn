@@ -1,0 +1,26 @@
+name: Sync README to Wiki
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Copy README to Wiki
+        run: |
+          mkdir -p ./wiki
+          cp ./README.md ./wiki/Home.md
+
+      - name: Push changes to Wiki
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          repository: ${{ github.repository }}.wiki
+          commit_message: "Sync README to Wiki"
+          commit_user_name: "GitHub Action"
+          commit_user_email: "action@github.com"
