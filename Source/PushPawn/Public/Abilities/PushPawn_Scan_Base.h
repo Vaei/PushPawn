@@ -85,19 +85,19 @@ protected:
 protected:
 	/**
 	 * Get the base scan range for the pawn
-	 * This is the largest size (halfheight vs radius) of our capsule
+	 * This is the largest size of our collision shape (i.e. half height vs radius if capsule)
 	 * Only used if bAllowBlueprintImplementation is FALSE
 	 * 
-	 * @see UPushStatics::GetMaxCapsuleSize() - default return value
+	 * @see UPushStatics::GetMaxDefaultCollisionShapeSize() - default return value
 	 */
 	virtual float GetBaseScanRange(const AActor* AvatarActor) const;
 	
 	/**
 	 * Get the base scan range for the pawn
-	 * This is the largest size (halfheight vs radius) of our capsule
+	 * This is the largest size of our collision shape (i.e. half height vs radius if capsule)
 	 * Only used if bAllowBlueprintImplementation is TRUE
 	 * 
-	 * @see UPushStatics::GetMaxCapsuleSize() - default return value
+	 * @see UPushStatics::GetMaxDefaultCollisionShapeSize() - default return value
 	 */
 	UFUNCTION(BlueprintNativeEvent, Category=PushPawn, meta=(DisplayName="Get Base Scan Range"))
 	float K2_GetBaseScanRange(const AActor* AvatarActor) const;

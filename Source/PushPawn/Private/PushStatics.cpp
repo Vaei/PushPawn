@@ -3,7 +3,9 @@
 #include "PushStatics.h"
 #include "IPush.h"
 #include "Abilities/PushPawnAbilityTargetData.h"
+#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "Engine/OverlapResult.h"
 #include "GameFramework/PawnMovementComponent.h"
 
@@ -264,28 +266,68 @@ float UPushStatics::GetPushPawnScanRange(const FVector& Acceleration, float Base
 	return BaseScanRange * IsPusheeAccelerating(Acceleration) ? ScanParams.ScanRangeAccelScalar : ScanParams.ScanRangeScalar;
 }
 
-FPushPawnCapsuleShape UPushStatics::GetDefaultCapsuleShape(const AActor* Actor)
+EPushCollisionType UPushStatics::GetPusheeCollisionShapeType(const AActor* Actor)
 {
-	// Default capsule properties to ignore crouching or anything changing capsule height/radius
-	const UCapsuleComponent* CapsuleComponent = Actor->GetRootComponent() ?
-		Cast<UCapsuleComponent>(Actor->GetClass()->GetDefaultObject<AActor>()->GetRootComponent()) : nullptr;
-
-	if (!CapsuleComponent)
+	const USceneComponent* RootComponent = Actor->GetRootComponent();
+	if (RootComponent->IsA<UCapsuleComponent>())
 	{
-		return {};
+		return EPushCollisionType::Capsule;
 	}
-	
-	return { CapsuleComponent->GetUnscaledCapsuleRadius(), CapsuleComponent->GetUnscaledCapsuleHalfHeight() };
+	else if (RootComponent->IsA<UBoxComponent>())
+	{
+		return EPushCollisionType::Box;
+	}
+	else if (RootComponent->IsA<USphereComponent>())
+	{
+		return EPushCollisionType::Sphere;
+	}
+	return EPushCollisionType::None;
 }
 
-float UPushStatics::GetMaxCapsuleSize(const AActor* Actor)
+FCollisionShape UPushStatics::GetDefaultPusheeCollisionShape(const AActor* Actor, EPushCollisionType OptionalShapeType, USceneComponent* OptionalComponent)
+{
+	if (OptionalShapeType == EPushCollisionType::None)
+	{
+		OptionalShapeType = GetPusheeCollisionShapeType(Actor);
+	}
+
+	// Use the default root component if no specific component is supplied
+	USceneComponent* Component = OptionalComponent ? OptionalComponent : Actor->GetClass()->GetDefaultObject<AActor>()->GetRootComponent();
+	switch (OptionalShapeType)
+	{
+		case EPushCollisionType::Capsule:
+		{
+			const UCapsuleComponent* CapsuleComponent = CastChecked<UCapsuleComponent>(Component);
+			return FCollisionShape::MakeCapsule(CapsuleComponent->GetUnscaledCapsuleRadius(), CapsuleComponent->GetUnscaledCapsuleHalfHeight());
+		}
+		case EPushCollisionType::Box:
+		{
+			const UBoxComponent* BoxComponent = CastChecked<UBoxComponent>(Component);
+			return FCollisionShape::MakeBox(BoxComponent->GetUnscaledBoxExtent());
+		}
+		case EPushCollisionType::Sphere:
+		{
+			const USphereComponent* SphereComponent = CastChecked<USphereComponent>(Component);
+			return FCollisionShape::MakeSphere(SphereComponent->GetUnscaledSphereRadius());
+		}
+		default: return {};
+	}
+}
+
+float UPushStatics::GetMaxDefaultCollisionShapeSize(const AActor* Actor, EPushCollisionType SpecificShapeType)
 {
 	if (Actor)
 	{
-		FPushPawnCapsuleShape CapsuleShape = GetDefaultCapsuleShape(Actor);
-		if (CapsuleShape)
+		FCollisionShape CollisionShape = GetDefaultPusheeCollisionShape(Actor, SpecificShapeType, nullptr);
+		if (!CollisionShape.IsNearlyZero())
 		{
-			return FMath::Max<float>(CapsuleShape.Radius, CapsuleShape.HalfHeight);
+			switch (CollisionShape.ShapeType)
+			{
+				case ECollisionShape::Box: return CollisionShape.GetBox().GetAbsMax();
+				case ECollisionShape::Sphere: return CollisionShape.GetSphereRadius();
+				case ECollisionShape::Capsule: return FMath::Max<float>(CollisionShape.GetCapsuleRadius(), CollisionShape.GetCapsuleHalfHeight());
+				default: return 0.f;
+			}
 		}
 	}
 	return 0.f;

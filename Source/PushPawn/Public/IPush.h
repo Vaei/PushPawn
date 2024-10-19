@@ -82,15 +82,15 @@ public:
 	virtual bool IsPusheeMovingOnGround() const = 0;
 
 	/**
-	 * Get the capsule shape of the pushee.
+	 * Get the collision shape of the pushee.
 	 * 
-	 * If the capsule size changes during runtime, it can de-sync -- i.e. use the default capsule shape.
+	 * If the size changes during runtime, it can de-sync -- i.e. use the default shape size.
 	 * This means crouch, prone, etc. consideration is not supported by default. It may be possible to extend this.
 	 * 
-	 * Generally you should use UPushStatics::GetDefaultCapsuleShape() to get the capsule shape, unless you have a
-	 * non-capsule root component, or want to use a different capsule size than the collision capsule.
+	 * Generally you should use UPushStatics::GetDefaultPusheeCollisionShape() to get the shape, unless you want to use a
+	 * different shape size than the collision shape's.
 	 */
-	virtual FPushPawnCapsuleShape GetPusheeCapsuleShape() const = 0;
+	virtual FCollisionShape GetPusheeCollisionShape() const = 0;
 
 	/**
 	 * Optionally, pause the scan when the pawn is in a state where it should not look for pushers.

@@ -166,8 +166,8 @@ float UPushPawn_Scan_Base::GetBaseScanRange(const AActor* AvatarActor) const
 		return K2_GetBaseScanRange(AvatarActor);
 	}
 
-	// Default to max capsule size
-	return UPushStatics::GetMaxCapsuleSize(AvatarActor);
+	// Default to max collision shape size
+	return UPushStatics::GetMaxDefaultCollisionShapeSize(AvatarActor);
 }
 
 bool UPushPawn_Scan_Base::ShouldWaitForNetSync() const
@@ -202,6 +202,6 @@ void UPushPawn_Scan_Base::ConsumeWaitForNetSync()
 
 float UPushPawn_Scan_Base::K2_GetBaseScanRange_Implementation(const AActor* AvatarActor) const
 {
-	// Default to max capsule size
-	return UPushStatics::GetMaxCapsuleSize(AvatarActor);
+	// Default to max collision shape size
+	return UPushStatics::GetMaxDefaultCollisionShapeSize(AvatarActor);
 }
