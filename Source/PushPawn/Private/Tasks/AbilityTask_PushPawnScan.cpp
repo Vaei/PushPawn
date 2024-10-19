@@ -69,7 +69,7 @@ void UAbilityTask_PushPawnScan::OnNetSync()
 
 void UAbilityTask_PushPawnScan::ActivateTimer(EPushPawnPauseType PauseType)
 {
-	TRACE_CPUPROFILER_EVENT_SCOPE(UAbilityTask_WaitForPushTargets_CapsuleTrace::ActivateTimer);
+	TRACE_CPUPROFILER_EVENT_SCOPE(UAbilityTask_PushPawnScan::ActivateTimer);
 
 	// Wait for net sync if necessary, this prevents the ability from activating until the server has caught up
 	if (PushScanAbility && PushScanAbility->ShouldWaitForNetSync())
@@ -180,7 +180,7 @@ void UAbilityTask_PushPawnScan::OnDestroy(bool bInOwnerFinished)
 
 void UAbilityTask_PushPawnScan::PerformTrace()
 {
-	TRACE_CPUPROFILER_EVENT_SCOPE(UAbilityTask_WaitForPushTargets_CapsuleTrace);
+	TRACE_CPUPROFILER_EVENT_SCOPE(UAbilityTask_PushPawnScan::PerformTrace);
 
 	// Check if we have an avatar actor
 	AActor* AvatarActor = Ability->GetCurrentActorInfo()->AvatarActor.Get();
@@ -253,7 +253,7 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 	ActorsToIgnore.Add(AvatarActor);
 	
 	constexpr bool bTraceComplex = false;
-	FCollisionQueryParams Params(SCENE_QUERY_STAT(UAbilityTask_WaitForPushTargets_CapsuleTrace), bTraceComplex);
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(UAbilityTask_PushPawnScan_Trace), bTraceComplex);
 	Params.AddIgnoredActors(ActorsToIgnore);
 
 	// Perform the trace
