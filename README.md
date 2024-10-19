@@ -64,11 +64,13 @@ Not-so-easy wins for performance:
 ### Large Character Counts
 There is no real limitation with large character counts and PushPawn, but it does need to be factored in and some additional work will be required to manage this. How you handle this will depend entirely on your project and use-case.
 
-With the standard implementation, the scan ability keeps the AbilitySystemComponent ticking due to it's `WaitForPushTargets` task. It would be better to activate and deactivate this ability based on significance and other such factors.
+With the standard implementation, the scan ability keeps the AbilitySystemComponent ticking due to it's `WaitForPushTargets` task. You should pause or resume the scanning based on significance and other such factors.
 
 There is no need to search for nearby characters if:
 * We're a Non-Player Character and no players are aware of us at all (when reactivating, they will eject each other if overlapping)
 * Other characters are sufficiently far away that they won't desync within their latency vs max velocity thresholds, meaning we can detect they're close enough and activate the ability sufficiently before they reach us and we actually need to push them
+
+You can disable the scan using `IPusheeInstigator::GetPushPawnScanPausedDelegate()`.
 
 ## CMC Changes Required
 By default, CMC does not allow root motion sources, used by PushPawn, to apply root motion while montage root motion is active. This is very easy to fix. There are a couple of options here.
@@ -91,20 +93,17 @@ An AI controlled `ACharacter` (possesed by `AAIController`)
 ### PlayerCharacter
 A player controlled `ACharacter` (possesed by `APlayerController`)
 
-### Standard Use Case
-Refers to the use-case where an AICharacter is using this system specifically to push a PlayerCharacter.
-
 ### Pushee
-This is the Pawn that is getting pushed by another Pawn. Implementing `IPusheeInstigator`. Under the Standard Use Case this is a PlayerCharacter.
+This is the Pawn that is getting pushed by another Pawn. Implementing `IPusheeInstigator`.
 
-This Pawn is the ability Instigator. Due to the inversion, this term was avoided because it could cause confusion.
+This Pawn is the ability Instigator.
 
-This Pawn searches for anyone who should push them (Pusher), effectively a psuedo collision detection, the Pusher then hands us their ability that is used to push us back.
+This Pawn searches for anyone who can push them (known as the Pusher). The Pusher then hands us their ability that we apply to ourselves to push us back.
 
-This means that if a massive world boss needs to push a player back, they can push a player back in their own distinct way especially factoring their unique collision properties, instead of a single universal method for pushing back.
+This means that unique characters can have character-specific functionality with unique behaviour, instead of a single universal method for pushing back
 
 ### Pusher
-This is the Pawn that is pushing the other player. Implementing `IPusherTarget`. Under the Standard Use Case this is an AI Character.
+This is the Pawn that is pushing the other player. Implementing `IPusherTarget`.
 
 ## Abilities
 
