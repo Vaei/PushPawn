@@ -21,7 +21,7 @@ UPushPawn_Scan_Base::UPushPawn_Scan_Base(const FObjectInitializer& ObjectInitial
 
 void UPushPawn_Scan_Base::OnGameplayTaskInitialized(UGameplayTask& Task)
 {
-	// If the task is a WaitForPushTargets_CapsuleTrace, set the PushScanAbility to this
+	// If the task is a UPushPawn_Scan, set the PushScanAbility to this
 	// Allows the task to call back to this ability, specifically ShouldWaitForNetSync()
 	if (auto* AbilityTask = Cast<UAbilityTask_PushPawnScan>(&Task))
 	{
