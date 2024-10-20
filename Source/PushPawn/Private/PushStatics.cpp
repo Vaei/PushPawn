@@ -5,6 +5,7 @@
 #include "Abilities/PushPawnAbilityTargetData.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/PusheeComponent.h"
 #include "Components/SphereComponent.h"
 #include "Engine/OverlapResult.h"
 #include "GameFramework/PawnMovementComponent.h"
@@ -58,6 +59,24 @@ FVector UPushStatics::GetPushDirectionFromEventData(const FGameplayEventData& Ev
 		return PushTargetData.Direction.GetSafeNormal2D();
 	}
 	return PushTargetData.Direction.GetSafeNormal();
+}
+
+bool UPushStatics::GetDefaultCapsuleRootComponent(const AActor* Actor, float& CapsuleRadius, float& CapsuleHalfHeight)
+{
+	CapsuleRadius = 0.f;
+	CapsuleHalfHeight = 0.f;
+	
+	const AActor* DefaultActor = Actor ? Actor->GetClass()->GetDefaultObject<AActor>() : nullptr;
+	if (DefaultActor && DefaultActor->GetRootComponent())
+	{
+		if (const UCapsuleComponent* CapsuleComponent = Cast<UCapsuleComponent>(DefaultActor->GetRootComponent()))
+		{
+			CapsuleRadius = CapsuleComponent->GetUnscaledCapsuleRadius();
+			CapsuleHalfHeight = CapsuleComponent->GetUnscaledCapsuleHalfHeight();
+			return true;
+		}
+	}
+	return false;
 }
 
 bool UPushStatics::IsPawnMovingOnGround(const APawn* Pawn)
@@ -206,6 +225,46 @@ EPushCardinal UPushStatics::GetPushDirection(const AActor* FromActor, const AAct
 	return EPushCardinal::Forward;
 }
 
+IPusheeInstigator* UPushStatics::GetPusheeInstigator(AActor* Actor)
+{
+	if (!Actor)
+	{
+		return nullptr;
+	}
+	
+	if (IPusheeInstigator* Interface = Cast<IPusheeInstigator>(Actor))
+	{
+		return Interface;
+	}
+
+	if (auto* Component = Actor->GetComponentByClass<UPusheeComponent>())
+	{
+		return Cast<IPusheeInstigator>(Component);
+	}
+
+	return nullptr;
+}
+
+const IPusheeInstigator* UPushStatics::GetPusheeInstigator(const AActor* Actor)
+{
+	if (!Actor)
+	{
+		return nullptr;
+	}
+	
+	if (const IPusheeInstigator* Interface = Cast<IPusheeInstigator>(Actor))
+	{
+		return Interface;
+	}
+
+	if (auto* Component = Actor->GetComponentByClass<UPusheeComponent>())
+	{
+		return Cast<IPusheeInstigator>(Component);
+	}
+
+	return nullptr;
+}
+
 FVector UPushStatics::GetPushPawnAcceleration(const IPusheeInstigator* Pushee)
 {
 	return Pushee ? Pushee->GetPusheeAcceleration().GetSafeNormal() : FVector::ZeroVector;
@@ -213,7 +272,7 @@ FVector UPushStatics::GetPushPawnAcceleration(const IPusheeInstigator* Pushee)
 
 FVector UPushStatics::GetPushPawnAcceleration(APawn* Pushee)
 {
-	const IPusheeInstigator* PusheeInstigator = Pushee ? Cast<IPusheeInstigator>(Pushee) : nullptr;
+	const IPusheeInstigator* PusheeInstigator = GetPusheeInstigator(Pushee);
 	return PusheeInstigator ? PusheeInstigator->GetPusheeAcceleration().GetSafeNormal() : FVector::ZeroVector;
 }
 
