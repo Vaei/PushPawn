@@ -2,8 +2,8 @@
 
 > [!IMPORTANT]
 > **Net-predicted soft organic collisions!**
-> <br>Eliminates inappropriate de-syncing when running near other pawns in multiplayer games
-> <br>Provides great feeling collisions for the best player experience possible!
+> <br>Eliminate multiplayer de-sync when moving near other pawns
+> <br>Collisions that feel great for the best player experience possible!
 
 > [!TIP]
 > Suitable for both singleplayer and multiplayer games
