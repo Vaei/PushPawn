@@ -113,6 +113,7 @@ This was initially created for a personal project that would make the AI play a 
 
 ### 2.0.0-beta
 _BREAKING CHANGES_
+
 _Significant perf improvements_
 
 * Overhauled the internal system
