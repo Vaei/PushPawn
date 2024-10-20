@@ -1,7 +1,7 @@
 # Push Pawn <img align="right" width=128, height=128 src="https://github.com/Vaei/PushPawn/blob/main/Resources/Icon128.png">
 
 > [!IMPORTANT]
-> **PushPawn provides net-predicted soft organic collisions!**
+> **Net-predicted soft organic collisions!**
 > <br>Which eliminates inappropriate de-syncing when running near other pawns in multiplayer games
 > <br>And results in great game feel!
 > <br>PushPawn is aimed at both singleplayer and multiplayer games
