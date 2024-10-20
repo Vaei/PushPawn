@@ -165,6 +165,11 @@ In `GA_Push_Action`, assign a trace channel. You probably do not want to leave t
 
 ## Changelog
 
+### 2.1.1-beta
+* Add PushPawnEditor module
+* Add Details Customization to hide properties we removed support for in our lightweight base ability
+	* Or irrelevant properties
+
 ### 2.1.0-beta
 * Support non-capsule collision shapes to allow for Pawn v Pawn collisions to use custom shape types such as boxes
 
