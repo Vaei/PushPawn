@@ -9,6 +9,7 @@
 	"CreatedByURL": "",
 	"DocsURL": "",
 	"MarketplaceURL": "",
+	"SupportURL": "",
 	"CanContainContent": true,
 	"IsBetaVersion": true,
 	"IsExperimentalVersion": false,
@@ -31,5 +32,4 @@
 			"Enabled": true
 		}
 	],
-	"SupportURL": ""
 }
