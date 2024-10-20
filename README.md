@@ -96,7 +96,7 @@ This was initially created for a personal project that would make the AI play a 
 ### 2.0.2-beta
 * Remove dependency on ACharacter/UCharacterMovementComponent
 	* Built-in Push ability still maintains this dependency because it uses root motion sources
-	* Acceleration is normalized 
+	* Acceleration is always normalized with Mover's MovementIntent in mind
 	* Remove searching for UCapsuleComponent* as root
 * Add UPushStatic getters using IPusheeInstigator instead of APawn to reduce casting
 * Add IPusheeInstigator::GetPusheeCapsuleShape() allowing non-capsule root components, as well as using a capsule that doesn't represent the collision
