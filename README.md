@@ -28,13 +28,13 @@
 ## Example
 _Examples are based on 1.0.0_
 
-This was initially created for a personal project that would make the AI play a push animation and yell at the player, which is not included, however the helper functions for building this are included.
-
-![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview_isekai.gif)
-
 Here is the preview from the minimal Third Person Example project below. This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't de-sync abnormally.
 
 ![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview.gif)
+
+This was initially created for a personal project that would make the AI play a push animation and yell at the player, which is not included, however the helper functions for building this are included.
+
+![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview_isekai.gif)
 
 ## Changelog
 
