@@ -38,6 +38,13 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.1.2-beta
+* PushPawn now compatible with blueprint only projects
+* Added optional UPusheeComponent
+	* Extended UPusheeComponentHelper to implement BP-exposed IPusheeInstigator interface
+	* Added UPushStatics::GetPusheeInstigator as a central method for retrieving IPusheeInstigator
+* Rename BlueprintDemo folder to Blueprints
+
 ### 2.1.1-beta
 * Add PushPawnEditor module
 * Add Details Customization to hide properties we removed support for in our lightweight base ability

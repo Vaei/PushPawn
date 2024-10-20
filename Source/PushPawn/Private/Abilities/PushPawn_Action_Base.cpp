@@ -4,6 +4,7 @@
 #include "Abilities/PushPawn_Action_Base.h"
 
 #include "IPush.h"
+#include "PushStatics.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PushPawn_Action_Base)
 
@@ -14,7 +15,7 @@ bool UPushPawn_Action_Base::CanActivatePushPawnAbility(const AActor* AvatarActor
 		return false;
 	}
 	
-	if (const IPusheeInstigator* Interface = Cast<IPusheeInstigator>(AvatarActor))
+	if (const IPusheeInstigator* Interface = UPushStatics::GetPusheeInstigator(AvatarActor))
 	{
 		if (Interface->IsPushable())
 		{

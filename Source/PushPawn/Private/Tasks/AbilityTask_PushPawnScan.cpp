@@ -110,7 +110,7 @@ void UAbilityTask_PushPawnScan::ActivateTimer(EPushPawnPauseType PauseType)
 
 	if (!OnPushPawnScanPauseStateChangedDelegate)
 	{
-		IPusheeInstigator* Pushee = GetAvatarActor() ? Cast<IPusheeInstigator>(GetAvatarActor()) : nullptr;
+		IPusheeInstigator* Pushee = UPushStatics::GetPusheeInstigator(GetAvatarActor());
 		OnPushPawnScanPauseStateChangedDelegate = Pushee->GetPushPawnScanPausedDelegate();
 		if (OnPushPawnScanPauseStateChangedDelegate)
 		{
@@ -204,7 +204,7 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 		return;
 	}
 
-	const IPusheeInstigator* Pushee = Cast<IPusheeInstigator>(AvatarActor);
+	const IPusheeInstigator* Pushee = UPushStatics::GetPusheeInstigator(AvatarActor);
 	if (!Pushee)
     {
 		const FString ErrorString = FString::Printf(TEXT("PushPawn: Avatar actor %s does not implement IPusheeInstigator!"), *AvatarActor->GetName());

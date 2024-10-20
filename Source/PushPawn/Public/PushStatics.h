@@ -58,6 +58,10 @@ public:
 	// ABILITY HELPER METHODS
 	//--------------------------------------------------------------
 
+	/** @return Capsule with default CD0 values if root component is a UCapsuleComponent */
+	UFUNCTION(BlueprintPure, Category=PushPawn)
+	static bool GetDefaultCapsuleRootComponent(const AActor* Actor, float& CapsuleRadius, float& CapsuleHalfHeight);
+	
 	/** @return True if the pawn is moving on the ground */
 	UFUNCTION(BlueprintPure, Category=PushPawn)
 	static bool IsPawnMovingOnGround(const APawn* Pawn);
@@ -113,6 +117,9 @@ public:
 	// INTERNAL PUSH PAWN HELPER METHODS
 	//--------------------------------------------------------------
 
+	static IPusheeInstigator* GetPusheeInstigator(AActor* Actor);
+	static const IPusheeInstigator* GetPusheeInstigator(const AActor* Actor);
+	
 	static FVector GetPushPawnAcceleration(const IPusheeInstigator* Pushee);
 	static FVector GetPushPawnAcceleration(APawn* Pushee);
 	static bool IsPusheeAccelerating(const IPusheeInstigator* Pushee);
