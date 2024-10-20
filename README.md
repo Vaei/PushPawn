@@ -4,8 +4,9 @@
 > **Net-predicted soft organic collisions!**
 > <br>Which eliminates inappropriate de-syncing when running near other pawns in multiplayer games
 > <br>And results in great game feel!
-> <br>PushPawn is aimed at both singleplayer and multiplayer games
-> <br>Fully tested in production with both Player-Controlled Characters and AI-Controlled Characters and latency exceeding 200ms
+
+> [!TIP]
+> <br>Suitable for both singleplayer and multiplayer games
 
 ## Features
 * Net predicted Pawn vs. Pawn collisions via GAS to prevent de-sync
@@ -15,6 +16,9 @@
 * Allows pawns to push each other out of the way - great for groups of NPCs attacking a player
 * Lets players push each other off cliffs, if you want that...
 * Exceptionally customizable
+
+> [!NOTE]
+> Fully tested in production with both Player-Controlled Characters and AI-Controlled Characters and latency exceeding 200ms
 
 ## How To Use
 
