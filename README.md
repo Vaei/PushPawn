@@ -9,16 +9,51 @@
 > Suitable for both singleplayer and multiplayer games
 
 ## Features
-* Net predicted Pawn vs. Pawn collisions via GAS to prevent de-sync
-* Soft organic collisions instead of the engine's brick wall collisions
-* Capsule, Box, Sphere collisions all supported for Pawn v Pawn collisions (even with CMC)
-* Abilities that can respond to gameplay events, e.g. playing a push animation, procedural skeletal physics, or yelling at the other Pawn, etc.
-* Allows pawns to push each other out of the way - great for groups of NPCs attacking a player
-* Lets players push each other off cliffs, if you want that...
-* Exceptionally customizable
+
+### Net Predicted Collisions
+Push Pawn leverages GAS for net prediction.
+
+With the default Unreal implementation, if two characters touch on the server -- so you might not even see it! -- a drastic desync occurs. :dizzy_face:
+
+But with PushPawn, no desync occurs regardless of high latency! :star_struck:
 
 > [!NOTE]
-> Fully tested in production with both Player-Controlled Characters and AI-Controlled Characters and latency exceeding 200ms
+> Push Pawn has a lightweight and highly optimized implementation that is proven in production.
+
+### Soft Organic Collisions
+The included Push Ability applies a force over a short amount of time.
+
+Walking into another pawn is very much like walking into a human in the real world! We can push past them or push them out of the way. We can even make them get angry! :cursing_face:
+
+Most importantly, we're not experiencing the effect of running into a brick wall :persevere: which is Unreal's default collision for Pawns.
+
+### Custom Collision Shapes
+Capsule, Box, Sphere collisions are all supported for Pawn vs Pawn collisions
+
+> [!TIP]
+> Characters are Pawns -- Push Pawn supports custom collision shapes even with Character Movement Component!
+> <br>Of course, this doesn't affect their navigation nor interaction with the environment
+
+### Push Abilities & Gameplay Events
+Push Abilities can respond to gameplay events and trigger their own events. :triumph:
+
+> [!NOTE]
+> Push Pawn can drive gameplay systems, it is not merely cosmetic.
+
+> [!TIP]
+> Play a "shove" anim montage
+> <br>Implement procedural skeletal physics so their body physically reacts to being bumped
+> <br>Make your NPCs yell at the player when they run into them too fast!
+
+### Pushing Each Other
+When a group of NPCs attack a player, they often get in the way :skull: With Push Pawn they will push past each other with no extra work for you beyond setting up Push Pawn itself!
+
+Is another player blocking a door you want to pass through? No problem, we can push past them also!
+
+Or perhaps you'd like to be able to push AFK players off cliffs... :smiling_imp:
+
+### Exceptionally Customizable
+One day, someone is going to do something surprising with Push Pawn, and I look forward to it, because the possibilities to adjust behaviour really are endless. That someone might be you! :smiley_cat:
 
 ## How To Use
 
