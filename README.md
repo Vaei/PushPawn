@@ -6,7 +6,7 @@
 > <br>And results in great game feel!
 
 > [!TIP]
-> <br>Suitable for both singleplayer and multiplayer games
+> Suitable for both singleplayer and multiplayer games
 
 ## Features
 * Net predicted Pawn vs. Pawn collisions via GAS to prevent de-sync
