@@ -36,42 +36,6 @@ Here is the preview from the minimal Third Person Example project below. This fo
 
 ![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview.gif)
 
-## Limitations
-### Changing Collision Size
-If the collision dimensions change between prediction frames it can de-sync. For most of us sending this data is an unnecessary cost and can be ignored, behaviour is still reasonable because its not a 'brick wall' collision.
-
-Adding this is completely untested, but adding the shape dimensions to `FPushOption` through `IPusheeInstigator::GatherPushOptions` is the first thing you will want to do.
-
-## Performance
-PushPawn can very frequently activate abilities. As of 2.0.0 abilities with lightweight implementations and C++ only are available for this purpose. Furthermore for the sake of maximizing performance, classes have been marked with `final` but you may fork/remove this yourself.
-
-Easy wins for performance:
-	* Reduce the scan rates
-	* Use varying radiuses between character types, so that two overlaps don't occur simultaneously
-
-Not-so-easy wins for performance:
-	* Use the included C++ classes instead of blueprint - its fine to subclass as blueprint to change properties but avoid overriding functions and implementing logic
-
-### Large Character Counts
-There is no real limitation with large character counts and PushPawn, but it does need to be factored in and some additional work will be required to manage this. How you handle this will depend entirely on your project and use-case.
-
-With the standard implementation, the scan ability keeps the AbilitySystemComponent ticking due to it's `WaitForPushTargets` task. You should pause or resume the scanning based on significance and other such factors.
-
-There is no need to search for nearby characters if:
-* We're a Non-Player Character and no players are aware of us at all (when reactivating, they will eject each other if overlapping)
-* Other characters are sufficiently far away that they won't de-sync within their latency vs max velocity thresholds, meaning we can detect they're close enough and activate the ability sufficiently before they reach us and we actually need to push them
-
-You can disable the scan using `IPusheeInstigator::GetPushPawnScanPausedDelegate()`.
-
-## LyraShooter
-*Or anyone not using `UGameplayAbility` as an allowed base class*
-
-*This has been tested and is confirmed working with LyraShooter's framework*
-
-LyraShooter requires that `GameplayAbilities` extend `ULyraGameplayAbility`; you will likely need to duplicate the included abilities into your project and have it inherit `ULyraGameplayAbility`. This will also mean reparenting the blueprint content to your new classes, if you're using those (recommend using C++ versions instead).
-
-Add to the ctor of duplicated ability: `ActivationPolicy = ELyraAbilityActivationPolicy::OnSpawn;` and add to the appropriate attribute sets so that it always runs. Don't forget to change the `PUSHPAWN_API` macro to your own!
-
 ## How to Use
 _This how to was written from the viewpoint of a brand new 5.2 "Third Person" template. Many of these steps may be unnecessary for your project, this is for the purpose of documenting the entire process without leaving anything out._
 
