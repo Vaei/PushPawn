@@ -25,6 +25,9 @@
 * \>200ms latency without problematic de-sync
 * Shippable production-ready multiplayer game tested with high player counts with lots of NPCs
 
+> [!IMPORTANT]
+> [Read the Wiki to Learn How to use Push Pawn](https://github.com/Vaei/PushPawn/wiki)
+
 ## Example
 _Examples are based on 1.0.0_
 
