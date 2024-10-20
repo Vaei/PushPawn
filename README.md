@@ -22,7 +22,7 @@
 
 ## How To Use
 
-> [!TIP]
+> [!WARNING]
 > ***Due to the use of Git LFS, do not download a zip or your content will be missing***
 > <br>You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git` if you want the content
 > <br>Using C++ only is viable also as of `2.0.0`
