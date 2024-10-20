@@ -5,7 +5,7 @@
 > <br>Which eliminates inappropriate de-syncing when running near other pawns in multiplayer games
 > <br>And results in great game feel!
 > <br>PushPawn is aimed at both singleplayer and multiplayer games
-> <br>Fully tested in production with both Player-Controlled Characters and AI-Controlled Characters.
+> <br>Fully tested in production with both Player-Controlled Characters and AI-Controlled Characters and latency exceeding 200ms
 
 ## Features
 * Net predicted Pawn vs. Pawn collisions via GAS to prevent de-sync
@@ -25,10 +25,6 @@
 
 > [!IMPORTANT]
 > [Read the Wiki to Learn How to use Push Pawn](https://github.com/Vaei/PushPawn/wiki)
-
-## Test-Cases
-* \>200ms latency without problematic de-sync
-* Shippable production-ready multiplayer game tested with high player counts with lots of NPCs
 
 ## Example
 _Examples are based on 1.0.0_
