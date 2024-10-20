@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "PushOption.h"
-#include "PushTypes.h"
 #include "IPush.generated.h"
 
 class IPusherTarget;
