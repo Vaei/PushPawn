@@ -28,7 +28,7 @@
 ## Example
 _Examples are based on 1.0.0_
 
-Here is the preview from the minimal Third Person Example project below. This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't de-sync abnormally.
+Here is the preview from the included minimal Third Person Example project. This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't de-sync abnormally.
 
 ![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview.gif)
 
