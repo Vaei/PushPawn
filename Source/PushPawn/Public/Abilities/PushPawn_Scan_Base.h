@@ -30,7 +30,7 @@ protected:
 
 	/** The range to scan for pawns, later scaled by FPushPawnScanParams */
 	UPROPERTY(BlueprintReadOnly, Category=PushPawn)
-	float BaseScanRange;
+	float BaseScanRange = 0.f;
 
 	/**
 	 * The number of pushes that can be triggered before a net sync is required
