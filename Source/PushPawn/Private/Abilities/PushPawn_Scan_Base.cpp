@@ -31,7 +31,7 @@ void UPushPawn_Scan_Base::OnGameplayTaskInitialized(UGameplayTask& Task)
 	Super::OnGameplayTaskInitialized(Task);
 }
 
-void UPushPawn_Scan_Base::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Handle,
+bool UPushPawn_Scan_Base::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
@@ -45,7 +45,7 @@ void UPushPawn_Scan_Base::ActivatePushPawnAbility(const FGameplayAbilitySpecHand
 	if (!ensureMsgf(!FMath::IsNearlyZero(BaseScanRange), TEXT("BaseScanRange is zero, this will cause the scan to fail.")))
 	{
 		CancelAbility(Handle, ActorInfo, ActivationInfo, false);
-		return;
+		return false;
 	}
 
 	// Get the ability system component
@@ -57,6 +57,7 @@ void UPushPawn_Scan_Base::ActivatePushPawnAbility(const FGameplayAbilitySpecHand
 		UAbilityTask_GrantPushAbility* Task = UAbilityTask_GrantPushAbility::GrantAbilitiesForNearbyPushers(this, ScanParams, BaseScanRange);
 		Task->ReadyForActivation();
 	}
+	return true;
 }
 
 void UPushPawn_Scan_Base::UpdatePushes(const TArray<FPushOption>& PushOptions)
