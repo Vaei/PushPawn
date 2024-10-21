@@ -15,7 +15,7 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_PushPawnScan)
 
-namespace FPushPawn
+namespace FPushPawnCVars
 {
 #if ENABLE_DRAW_DEBUG
 	static int32 PushPawnScanDebugDraw = 0;
@@ -85,10 +85,10 @@ void UAbilityTask_PushPawnScan::ActivateTimer(EPushPawnPauseType PauseType)
 
 #if !UE_BUILD_SHIPPING
 		// Print to screen if desired
-		if (FPushPawn::PushPawnPrintNetSync > 0)
+		if (FPushPawnCVars::PushPawnPrintNetSync > 0)
 		{
-			const bool bPrintServer = FPushPawn::PushPawnPrintNetSync == 1 || FPushPawn::PushPawnPrintNetSync == 2;
-			const bool bPrintClient = FPushPawn::PushPawnPrintNetSync == 1 || FPushPawn::PushPawnPrintNetSync == 3;
+			const bool bPrintServer = FPushPawnCVars::PushPawnPrintNetSync == 1 || FPushPawnCVars::PushPawnPrintNetSync == 2;
+			const bool bPrintClient = FPushPawnCVars::PushPawnPrintNetSync == 1 || FPushPawnCVars::PushPawnPrintNetSync == 3;
 			const bool bIsServer = GetAvatarActor()->HasAuthority();
 			const bool bIsLocalClient = GetAvatarActor()->GetLocalRole() == ROLE_AutonomousProxy;
 			if ((bPrintServer && bIsServer) || (bPrintClient && bIsLocalClient))
@@ -287,7 +287,7 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 	UpdatePushOptions(PushQuery, PushTargets);
 
 #if ENABLE_DRAW_DEBUG
-	if (FPushPawn::PushPawnScanDebugDraw)
+	if (FPushPawnCVars::PushPawnScanDebugDraw)
 	{
 		FColor DebugColor = Hit.bBlockingHit ? FColor::Red : FColor::Green;
 		
@@ -325,10 +325,10 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 void UAbilityTask_PushPawnScan::OnScanPaused(bool bIsPaused)
 {
 #if !UE_BUILD_SHIPPING
-	if (FPushPawn::PushPawnPrintScanPaused > 0)
+	if (FPushPawnCVars::PushPawnPrintScanPaused > 0)
 	{
-		const bool bPrintServer = FPushPawn::PushPawnPrintScanPaused == 1 || FPushPawn::PushPawnPrintScanPaused == 2;
-		const bool bPrintClient = FPushPawn::PushPawnPrintScanPaused == 1 || FPushPawn::PushPawnPrintScanPaused == 3;
+		const bool bPrintServer = FPushPawnCVars::PushPawnPrintScanPaused == 1 || FPushPawnCVars::PushPawnPrintScanPaused == 2;
+		const bool bPrintClient = FPushPawnCVars::PushPawnPrintScanPaused == 1 || FPushPawnCVars::PushPawnPrintScanPaused == 3;
 		const bool bIsServer = GetAvatarActor()->HasAuthority();
 		const bool bIsLocalClient = GetAvatarActor()->GetLocalRole() == ROLE_AutonomousProxy;
 		if ((bPrintServer && bIsServer) || (bPrintClient && bIsLocalClient))

@@ -11,6 +11,19 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PushPawn_Action)
 
+namespace FPushPawnCVars
+{
+#if ENABLE_DRAW_DEBUG
+	static int32 PushPawnActionDebugDraw = 0;
+	FAutoConsoleVariableRef CVarPushPawnActionDebugDraw(
+		TEXT("p.PushPawn.Action.Debug.Draw"),
+		PushPawnActionDebugDraw,
+		TEXT("Optionally draw debug for PushPawn Action (Magenta).\n")
+		TEXT("0: Disable, 1: Enable"),
+		ECVF_Default);
+#endif
+}
+
 bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
@@ -44,6 +57,13 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 	// Gather Push Direction
 	static constexpr bool bForce2D = true;
 	const FVector PushDirection = UPushStatics::GetPushDirectionFromEventData(EventData, bForce2D);
+
+#if ENABLE_DRAW_DEBUG
+	if (FPushPawnCVars::PushPawnActionDebugDraw)
+	{
+		DrawDebugDirectionalArrow(Pushee->GetWorld(), Pushee->GetActorLocation(), Pushee->GetActorLocation() + PushDirection * 100.0f, 40.0f, FColor::Magenta, false, 1.0f);
+	}
+#endif
 
 	// Apply the push Force - we bypass the ability system for this because it replicates 6 parameters we don't need!
 	TSharedPtr<FRootMotionSource_ConstantForce> ConstantForce = MakeShared<FRootMotionSource_ConstantForce>();
