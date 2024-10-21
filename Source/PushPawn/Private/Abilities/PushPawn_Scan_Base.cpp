@@ -30,6 +30,17 @@ void UPushPawn_Scan_Base::OnGameplayTaskInitialized(UGameplayTask& Task)
 	Super::OnGameplayTaskInitialized(Task);
 }
 
+void UPushPawn_Scan_Base::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	Super::OnAvatarSet(ActorInfo, Spec);
+
+	// If we're auto-activating, try to activate the ability
+	if (bAutoActivateOnGrantAbility)
+	{
+		ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle, false);
+	}
+}
+
 bool UPushPawn_Scan_Base::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)

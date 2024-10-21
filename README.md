@@ -78,6 +78,9 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.1.4-beta
+* Auto-Activate scan ability when granted by default
+
 ### 2.1.3-beta
 * ActivatePushPawnAbility returns a bool so we can ensure Super didn't end the ability (returns false)
 * Remove redundant and now deprecated SetMovementSyncPoint

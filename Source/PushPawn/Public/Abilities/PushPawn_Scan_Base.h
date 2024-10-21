@@ -13,6 +13,8 @@
  * This is a lightweight class that cannot use tags or other advanced features to reduce performance overhead
  *
  * This checks for pawns within a certain range, and then triggers a push based on the options available.
+ *
+ * This ability auto-activates after being granted by default.
  */
 UCLASS(Blueprintable)
 class PUSHPAWN_API UPushPawn_Scan_Base : public UPushPawn_Ability
@@ -57,6 +59,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn, meta=(ClampMin="0.0", UIMin="0.0"))
 	float NetSyncDelayAfterPush = 5.0f;
 
+	/** Automatically activate this ability after being granted */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, AdvancedDisplay, Category=PushPawn)
+	bool bAutoActivateOnGrantAbility = true;
+	
 protected:
 	/**
 	 * The number of pushes that have been triggered since the last net sync
@@ -72,6 +78,8 @@ public:
 	UPushPawn_Scan_Base(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	virtual void OnGameplayTaskInitialized(UGameplayTask& Task) override;
+
+	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 	
 protected:
 	virtual bool ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
