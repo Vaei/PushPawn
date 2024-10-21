@@ -113,7 +113,6 @@ void UPushPawn_Scan_Base::TriggerPush()
 	// Use this to pass a Push direction, if we compute this later from the Payload Instigator or Target, it will
 	// result in de-sync
 	FVector Direction = PushOption.PusheeActorLocation - PushOption.PusherActorLocation;
-	Direction = ScanParams.bDirectionIs2D ? Direction.GetSafeNormal2D() : Direction.GetSafeNormal();
 
 	// Way too close to get a valid difference in direction
 	if (Direction.IsNearlyZero(2.5f))
@@ -125,6 +124,9 @@ void UPushPawn_Scan_Base::TriggerPush()
 		FVector NewDirection { FMath::Cos(RandAngle), FMath::Sin(RandAngle), 0.f };
 		Direction = NewDirection.GetSafeNormal();
 	}
+
+	// Normalize the direction
+	Direction = ScanParams.bDirectionIs2D ? Direction.GetSafeNormal2D() : Direction.GetSafeNormal();
 
 	// If we still don't have a valid direction, just push backwards
 	if (!Direction.IsNormalized() || !Direction.IsUnit())

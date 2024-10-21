@@ -82,6 +82,7 @@ This was initially created for a personal project that would make the AI play a 
 * Auto-Activate scan ability when granted by default
 * FPushPawn namespace renamed to FPushPawnCVars
 * Add debug drawing for PushPawn_Action "p.PushPawn.Action.Debug.Draw"
+* Fix bug with checking diff post-normalization instead of pre-normalization
 
 ### 2.1.3-beta
 * ActivatePushPawnAbility returns a bool so we can ensure Super didn't end the ability (returns false)
