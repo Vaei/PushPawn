@@ -11,7 +11,7 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PushPawn_Action)
 
-void UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Handle,
+bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
@@ -28,14 +28,14 @@ void UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 	{
 		ABILITY_LOG(Error, TEXT("PushPawn_Action: Pushee or Pusher is null!"));
 		CancelAbility(Handle, ActorInfo, ActivationInfo, false);
-		return;
+		return false;
 	}
 
 	UCharacterMovementComponent* MovementComponent = Pushee->GetCharacterMovement();
 	if (!MovementComponent || MovementComponent->MovementMode == MOVE_None)
 	{
 		CancelAbility(Handle, ActorInfo, ActivationInfo, false);
-		return;
+		return false;
 	}
 
 	// Gather Push Strength
@@ -46,7 +46,6 @@ void UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 	const FVector PushDirection = UPushStatics::GetPushDirectionFromEventData(EventData, bForce2D);
 
 	// Apply the push Force - we bypass the ability system for this because it replicates 6 parameters we don't need!
-	const FName ForceName = TEXT("PushPawnForce");
 	TSharedPtr<FRootMotionSource_ConstantForce> ConstantForce = MakeShared<FRootMotionSource_ConstantForce>();
 	ConstantForce->InstanceName = TEXT("PushPawnForce");
 	ConstantForce->AccumulateMode = ERootMotionAccumulateMode::Additive;
@@ -60,9 +59,7 @@ void UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 	if (RootMotionSourceID == (uint16)ERootMotionSourceID::Invalid)
 	{
 		CancelAbility(Handle, ActorInfo, ActivationInfo, false);
-		return;
+		return false;
 	}
-
-	// Set the sync point (just copying the ability task...)
-	SetMovementSyncPoint(ForceName);
+	return true;
 }

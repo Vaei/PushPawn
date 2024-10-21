@@ -18,7 +18,8 @@ class PUSHPAWN_API UPushPawn_Scan final : public UPushPawn_Scan_Base
 	GENERATED_BODY()
 
 public:
-	virtual void ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	virtual bool ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 	UFUNCTION()
 	void OnPushObjectsChanged(const TArray<FPushOption>& PushOptions);
