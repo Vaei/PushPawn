@@ -78,6 +78,11 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.1.5-beta
+* Renamed curve to include `Action` keyword
+* Added additional curve for scanning and assigned by default
+* Default to 2D direction for scanning
+
 ### 2.1.4-beta
 * Auto-Activate scan ability when granted by default
 * FPushPawn namespace renamed to FPushPawnCVars

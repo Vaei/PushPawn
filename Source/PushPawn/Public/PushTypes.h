@@ -80,7 +80,7 @@ struct PUSHPAWN_API FPushPawnScanParams
 	GENERATED_BODY()
 
 	FPushPawnScanParams()
-		: bDirectionIs2D(false)
+		: bDirectionIs2D(true)
 		, TraceChannel(ECC_Visibility)
 		, ScanRangeScalar(0.8f)
 		, ScanRangeAccelScalar(1.1f)
