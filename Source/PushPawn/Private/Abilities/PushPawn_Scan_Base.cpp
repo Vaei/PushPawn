@@ -16,7 +16,6 @@
 UPushPawn_Scan_Base::UPushPawn_Scan_Base(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	BaseScanRange = 0.f;
 }
 
 void UPushPawn_Scan_Base::OnGameplayTaskInitialized(UGameplayTask& Task)
