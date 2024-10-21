@@ -19,7 +19,7 @@ namespace FPushPawnCVars
 		TEXT("p.PushPawn.Action.Debug.Draw"),
 		PushPawnActionDebugDraw,
 		TEXT("Optionally draw debug for PushPawn Action (Magenta).\n")
-		TEXT("0: Disable, 1: Enable"),
+		TEXT("0: Disable, 1: Enable for all, 2: Enable for local player only"),
 		ECVF_Default);
 #endif
 }
@@ -59,9 +59,13 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 	const FVector PushDirection = UPushStatics::GetPushDirectionFromEventData(EventData, bForce2D);
 
 #if ENABLE_DRAW_DEBUG
-	if (FPushPawnCVars::PushPawnActionDebugDraw)
+	if (FPushPawnCVars::PushPawnActionDebugDraw > 0)
 	{
-		DrawDebugDirectionalArrow(Pushee->GetWorld(), Pushee->GetActorLocation(), Pushee->GetActorLocation() + PushDirection * 100.0f, 40.0f, FColor::Magenta, false, 1.0f);
+		const bool bIsLocalPlayer = ActorInfo->IsLocallyControlled();
+		if (FPushPawnCVars::PushPawnActionDebugDraw == 1 || bIsLocalPlayer)
+		{
+			DrawDebugDirectionalArrow(Pushee->GetWorld(), Pushee->GetActorLocation(), Pushee->GetActorLocation() + PushDirection * 100.0f, 40.0f, FColor::Magenta, false, 1.0f);
+		}
 	}
 #endif
 
