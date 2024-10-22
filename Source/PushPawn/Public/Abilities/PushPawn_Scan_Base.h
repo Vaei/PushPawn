@@ -34,13 +34,26 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category=PushPawn)
 	float BaseScanRange = 0.f;
 
+	/** Automatically activate this ability after being granted */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, AdvancedDisplay, Category=PushPawn)
+	bool bAutoActivateOnGrantAbility = true;
+
+protected:
+	/**
+	 * If FALSE, will never net sync, and de-sync is guaranteed
+	 * If you don't know what you're doing, leave this alone :)
+	 * @note Larger teams could consider using details customization to obscure this property away from designers
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync|Advanced", meta=(ClampMin="0", UIMin="0", DisplayName="Enable Wait For Net Sync (ADVANCED USE ONLY)"))
+	bool bEnableWaitForNetSync = true;
+	
 	/**
 	 * The number of pushes that can be triggered before a net sync is required
 	 * Will not sync until MinNetSyncDelay has also passed
 	 * Set to 0 to disable
 	 * @see ShouldWaitForNetSync(), TriggeredPushesSinceLastNetSync, MinNetSyncDelay
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn, meta=(ClampMin="0", UIMin="0"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync", meta=(ClampMin="0", UIMin="0", EditCondition="bEnableWaitForNetSync", EditConditionHides))
 	int32 MaxPushesUntilNetSync = 6;
 
 	/**
@@ -48,7 +61,7 @@ protected:
 	 * Set to 0 to disable
 	 * @see ShouldWaitForNetSync(), LastPushTime
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn, meta=(ClampMin="0.0", UIMin="0.0"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync", meta=(ClampMin="0.0", UIMin="0.0", EditCondition="bEnableWaitForNetSync", EditConditionHides))
 	float MinNetSyncDelay = 1.0f;
 	
 	/**
@@ -56,21 +69,17 @@ protected:
 	 * Set to 0 to disable
 	 * @see ShouldWaitForNetSync(), LastPushTime
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn, meta=(ClampMin="0.0", UIMin="0.0"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync", meta=(ClampMin="0.0", UIMin="0.0", EditCondition="bEnableWaitForNetSync", EditConditionHides))
 	float NetSyncDelayAfterPush = 5.0f;
 
-	/** Automatically activate this ability after being granted */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, AdvancedDisplay, Category=PushPawn)
-	bool bAutoActivateOnGrantAbility = true;
-	
-protected:
 	/**
 	 * The number of pushes that have been triggered since the last net sync
 	 * @see ShouldWaitForNetSync(), MaxPushesUntilNetSync
 	 */
-	UPROPERTY(BlueprintReadOnly, Category=PushPawn)
+	UPROPERTY(BlueprintReadOnly, Category="PushPawn|Net Sync")
 	int32 TriggeredPushesSinceLastNetSync = 0;
 
+protected:
 	UPROPERTY(BlueprintReadOnly, Category=PushPawn)
 	float LastPushTime = 0.f;
 

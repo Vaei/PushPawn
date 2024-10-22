@@ -78,6 +78,10 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.1.7-beta
+* Wait Net Sync properties moved to sub-category and AdvancedDisplay
+* Added advanced disable feature for Wait Net Sync
+
 ### 2.1.6-beta
 * Fix not applying rotation to box scan
 * Fix using default shapes without scale
