@@ -39,7 +39,8 @@ protected:
 	TArray<FPushOption> CurrentOptions;
 
 protected:
-	static void ShapeTrace(FHitResult& OutHitResult, const UWorld* World, const FVector& Center, const ECollisionChannel ChannelName, const FCollisionQueryParams& Params, const FCollisionShape& Shape);
+	static void ShapeTrace(FHitResult& OutHitResult, const UWorld* World, const FVector& Center, const FQuat& Rotation,
+		const ECollisionChannel ChannelName, const FCollisionQueryParams& Params, const FCollisionShape& Shape);
 
 	void UpdatePushOptions(const FPushQuery& PushQuery, const TArray<TScriptInterface<IPusherTarget>>& PushTargets);
 

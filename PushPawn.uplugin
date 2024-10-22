@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "2.1.5",
+	"VersionName": "2.1.6",
 	"FriendlyName": "PushPawn",
 	"Description": "Net-predicted organic soft collisions for great game-feel and no de-syncing when running near other pawns.",
 	"Category": "Gameplay",

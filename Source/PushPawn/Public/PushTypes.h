@@ -84,8 +84,8 @@ struct PUSHPAWN_API FPushPawnScanParams
 		, TraceChannel(ECC_Visibility)
 		, ScanRangeScalar(0.8f)
 		, ScanRangeAccelScalar(1.1f)
-		, PusherRadiusScalar(0.8f)
-		, PusherRadiusAccelScalar(1.0f)
+		, PusheeRadiusScalar(0.8f)
+		, PusheeRadiusAccelScalar(1.0f)
 		, RadiusVelocityScalar(nullptr)
 		, ScanRate(0.1f)
 		, ScanRateAccel(0.05f)
@@ -109,11 +109,11 @@ struct PUSHPAWN_API FPushPawnScanParams
 
 	/** Change the size we consider the pusher (the one who pushes us) to be when searching for them */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
-	float PusherRadiusScalar;
+	float PusheeRadiusScalar;
 
 	/** Change the size we consider the pusher (the one who pushes us) to be when searching for them when WE are under acceleration */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
-	float PusherRadiusAccelScalar;
+	float PusheeRadiusAccelScalar;
 
 	/** Change the size we consider the pusher (the one who pushes us) to be when searching for them based on OUR velocity */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)

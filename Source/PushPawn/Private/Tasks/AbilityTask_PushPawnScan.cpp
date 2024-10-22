@@ -241,7 +241,7 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 	}
 
 	// Calculate the radius scalar
-	const float RadiusScalar = bHasAcceleration ? ScanParams.PusherRadiusAccelScalar : ScanParams.PusherRadiusScalar;
+	const float RadiusScalar = bHasAcceleration ? ScanParams.PusheeRadiusAccelScalar : ScanParams.PusheeRadiusScalar;
 
 	// Create a collision shape to trace with
 	const float ShapeScalar = RadiusScalar * VelocityScalar;
@@ -275,9 +275,10 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 	Params.AddIgnoredActors(ActorsToIgnore);
 
 	// Perform the trace
-	FVector TraceStart = StartLocation.GetTargetingTransform().GetLocation();
+	const FVector TraceStart = StartLocation.GetTargetingTransform().GetLocation();
+	const FQuat TraceRotation = CollisionShape.IsBox() ? AvatarActor->GetActorQuat() : FQuat::Identity;
 	FHitResult Hit;
-	ShapeTrace(Hit, GetWorld(), TraceStart, ScanParams.TraceChannel, Params, CollisionShape);
+	ShapeTrace(Hit, GetWorld(), TraceStart, TraceRotation, ScanParams.TraceChannel, Params, CollisionShape);
 
 	// Append the push targets
 	TArray<TScriptInterface<IPusherTarget>> PushTargets;
@@ -295,7 +296,7 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 		{
 			case ECollisionShape::Box:
 			{
-				DrawDebugBox(World, TraceStart, CollisionShape.GetExtent(), FQuat::Identity, DebugColor, false, CurrentScanRate);
+				DrawDebugBox(World, TraceStart, CollisionShape.GetExtent(), TraceRotation, DebugColor, false, CurrentScanRate);
 			}
 			break;
 			case ECollisionShape::Sphere:
