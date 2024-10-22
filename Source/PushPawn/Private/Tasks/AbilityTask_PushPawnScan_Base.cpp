@@ -13,7 +13,7 @@ UAbilityTask_PushPawnScan_Base::UAbilityTask_PushPawnScan_Base(const FObjectInit
 }
 
 void UAbilityTask_PushPawnScan_Base::ShapeTrace(FHitResult& OutHitResult, const UWorld* World, const FVector& Center,
-	ECollisionChannel ChannelName, const FCollisionQueryParams& Params, const FCollisionShape& Shape)
+	const FQuat& Rotation, const ECollisionChannel ChannelName, const FCollisionQueryParams& Params, const FCollisionShape& Shape)
 {
 	check(World);
 
@@ -23,7 +23,7 @@ void UAbilityTask_PushPawnScan_Base::ShapeTrace(FHitResult& OutHitResult, const 
 	// Perform the trace
 	OutHitResult = FHitResult();
 	TArray<FHitResult> HitResults;
-	World->SweepMultiByChannel(HitResults, Center, End, FQuat::Identity, ChannelName, Shape, Params);
+	World->SweepMultiByChannel(HitResults, Center, End, Rotation, ChannelName, Shape, Params);
 
 	// Set the trace start and end
 	OutHitResult.TraceStart = Center;

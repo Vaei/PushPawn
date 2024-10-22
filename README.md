@@ -78,6 +78,16 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.1.6-beta
+* Fix not applying rotation to box scan
+* Fix using default shapes without scale
+* Refactor PusherRadiusScalar to PusheeRadiusScalar & Accel equivalent - oops
+
+_Blueprint_
+* Add K2_UpdatePawnOwner as a cache-point for PusheeComponent
+* Added FromCollisionShape to FPushPawnCollisionShapeHelper
+* Add K2_GetDefaultPusheeCollisionShape to UPusheeComponentHelper for BP only user convenience
+
 ### 2.1.5-beta
 * Renamed curve to include `Action` keyword
 * Added additional curve for scanning and assigned by default

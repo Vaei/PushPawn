@@ -36,6 +36,14 @@ public:
 	virtual void PostLoad() override;
 
 	void UpdatePawnOwner();
+
+	/**
+	 * Cache your blueprint-derived owning pawn or character here
+	 * APawn and ACharacter are already cached for you
+	 * @see PawnOwner, @see CharacterOwner
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category=PushPawn, meta=(DisplayName="Update Pawn Owner"))
+	void K2_UpdatePawnOwner();
 	
 public:
 	/**
