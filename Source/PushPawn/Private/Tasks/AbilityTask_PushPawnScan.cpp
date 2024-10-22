@@ -273,7 +273,7 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 
 	// Perform the trace
 	const FVector TraceStart = StartLocation.GetTargetingTransform().GetLocation();
-	const FQuat TraceRotation = CollisionShape.IsBox() ? AvatarActor->GetActorQuat() : FQuat::Identity;
+	const FQuat TraceRotation = (CollisionShape.IsBox() || CollisionShape.IsCapsule()) ? AvatarActor->GetActorQuat() : FQuat::Identity;
 	FHitResult Hit;
 	ShapeTrace(Hit, GetWorld(), TraceStart, TraceRotation, ScanParams.TraceChannel, Params, CollisionShape);
 
@@ -303,7 +303,7 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 			break;
 			case ECollisionShape::Capsule:
 			{
-				DrawDebugCapsule(World, TraceStart, CollisionShape.GetCapsuleHalfHeight(), CollisionShape.GetCapsuleRadius(), FQuat::Identity, DebugColor, false, CurrentScanRate);
+				DrawDebugCapsule(World, TraceStart, CollisionShape.GetCapsuleHalfHeight(), CollisionShape.GetCapsuleRadius(), TraceRotation, DebugColor, false, CurrentScanRate);
 			}
 			break;
 			default: break;
