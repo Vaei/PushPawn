@@ -357,17 +357,17 @@ FCollisionShape UPushStatics::GetDefaultPusheeCollisionShape(const AActor* Actor
 		case EPushCollisionType::Capsule:
 		{
 			const UCapsuleComponent* CapsuleComponent = CastChecked<UCapsuleComponent>(Component);
-			return FCollisionShape::MakeCapsule(CapsuleComponent->GetUnscaledCapsuleRadius(), CapsuleComponent->GetUnscaledCapsuleHalfHeight());
+			return FCollisionShape::MakeCapsule(CapsuleComponent->GetScaledCapsuleRadius(), CapsuleComponent->GetScaledCapsuleHalfHeight());
 		}
 		case EPushCollisionType::Box:
 		{
 			const UBoxComponent* BoxComponent = CastChecked<UBoxComponent>(Component);
-			return FCollisionShape::MakeBox(BoxComponent->GetUnscaledBoxExtent());
+			return FCollisionShape::MakeBox(BoxComponent->GetScaledBoxExtent());
 		}
 		case EPushCollisionType::Sphere:
 		{
 			const USphereComponent* SphereComponent = CastChecked<USphereComponent>(Component);
-			return FCollisionShape::MakeSphere(SphereComponent->GetUnscaledSphereRadius());
+			return FCollisionShape::MakeSphere(SphereComponent->GetScaledSphereRadius());
 		}
 		default: return {};
 	}
@@ -382,7 +382,7 @@ float UPushStatics::GetMaxDefaultCollisionShapeSize(const AActor* Actor, EPushCo
 		{
 			switch (CollisionShape.ShapeType)
 			{
-				case ECollisionShape::Box: return CollisionShape.GetBox().GetAbsMax();
+				case ECollisionShape::Box: return CollisionShape.GetExtent().GetAbsMax();
 				case ECollisionShape::Sphere: return CollisionShape.GetSphereRadius();
 				case ECollisionShape::Capsule: return FMath::Max<float>(CollisionShape.GetCapsuleRadius(), CollisionShape.GetCapsuleHalfHeight());
 				default: return 0.f;

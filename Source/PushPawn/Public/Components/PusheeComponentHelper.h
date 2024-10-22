@@ -21,6 +21,11 @@ struct PUSHPAWN_API FPushPawnCollisionShapeHelper
 		, SphereRadius(34.f)
 	{}
 
+	FPushPawnCollisionShapeHelper(const FCollisionShape& Shape)
+	{
+		FromCollisionShape(Shape);
+	}
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn)
 	EPushCollisionType CollisionType;
 
@@ -36,16 +41,8 @@ struct PUSHPAWN_API FPushPawnCollisionShapeHelper
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn, meta=(EditCondition="CollisionType == EPushCollisionType::Sphere"))
 	float SphereRadius;
 
-	FCollisionShape ToCollisionShape() const
-	{
-		switch (CollisionType)
-		{
-		case EPushCollisionType::Capsule: return FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight);
-		case EPushCollisionType::Box: return FCollisionShape::MakeBox(BoxHalfExtent);
-		case EPushCollisionType::Sphere: return FCollisionShape::MakeSphere(SphereRadius);
-		default: return {};
-		}
-	}
+	FCollisionShape ToCollisionShape() const;
+	void FromCollisionShape(const FCollisionShape& Shape);
 };
 
 /**
@@ -106,4 +103,14 @@ public:
 	UFUNCTION(BlueprintPure, BlueprintImplementableEvent, Category=PushPawn, meta=(DisplayName="Get Pushee Collision Shape"))
 	FPushPawnCollisionShapeHelper K2_GetPusheeCollisionShape() const;
 	virtual FCollisionShape GetPusheeCollisionShape() const override { return K2_GetPusheeCollisionShape().ToCollisionShape(); }
+
+protected:
+	/** 
+	 * @return The default collision shape for the pushee
+	 * @param Actor				The actor to get the collision shape for
+	 * @param OptionalShapeType	The optional shape type to use
+	 * @param OptionalComponent	The optional component to use - if not supplied, the root component from the Actor's defaults will be used
+	 */
+	UFUNCTION(BlueprintPure, Category=PushPawn, meta=(DisplayName="Get Default Pushee Collision Shape"))
+	FPushPawnCollisionShapeHelper K2_GetDefaultPusheeCollisionShape(const AActor* Actor, EPushCollisionType OptionalShapeType = EPushCollisionType::None, USceneComponent* OptionalComponent = nullptr) const;
 };

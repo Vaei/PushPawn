@@ -22,6 +22,8 @@ void UPusheeComponent::OnRegister()
 	{
 		UpdatePawnOwner();
 	}
+	
+	K2_UpdatePawnOwner();  // PostLoad() will crash
 }
 
 void UPusheeComponent::InitializeComponent()
@@ -29,6 +31,8 @@ void UPusheeComponent::InitializeComponent()
 	Super::InitializeComponent();
 
 	UpdatePawnOwner();
+
+	K2_UpdatePawnOwner();  // PostLoad() will crash
 }
 
 void UPusheeComponent::PostLoad()
