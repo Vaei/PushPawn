@@ -185,6 +185,11 @@ float UPushPawn_Scan_Base::GetBaseScanRange(const AActor* AvatarActor) const
 
 bool UPushPawn_Scan_Base::ShouldWaitForNetSync() const
 {
+	if (!bEnableWaitForNetSync)
+	{
+		return false;
+	}
+	
 	// If a push occurred recently, don't sync just yet
 	if (MinNetSyncDelay > 0.f && LastPushTime >= 0.f &&
 		GetWorld()->TimeSince(LastPushTime) < MinNetSyncDelay)
