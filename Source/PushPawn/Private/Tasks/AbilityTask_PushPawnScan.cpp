@@ -162,10 +162,7 @@ void UAbilityTask_PushPawnScan::Activate()
 void UAbilityTask_PushPawnScan::OnDestroy(bool bInOwnerFinished)
 {
 	// Clear the timer
-	if (TimerHandle.IsValid())
-	{
-		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-	}
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 
 	// Unbind the delegate
 	if (OnPushPawnScanPauseStateChangedDelegate)
@@ -346,10 +343,7 @@ void UAbilityTask_PushPawnScan::OnScanPaused(bool bIsPaused)
 	
 	if (bIsPaused)
 	{
-		if (TimerHandle.IsValid())
-		{
-			GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-		}
+		GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 		Pause();
 	}
 	else

@@ -82,6 +82,7 @@ This was initially created for a personal project that would make the AI play a 
 * Fix not applying rotation to box scan
 * Fix using default shapes without scale
 * Refactor PusherRadiusScalar to PusheeRadiusScalar & Accel equivalent - oops
+* Switch from ClearTimer to ClearAllTimersForObject in ability tasks
 
 _Blueprint_
 * Add K2_UpdatePawnOwner as a cache-point for PusheeComponent
