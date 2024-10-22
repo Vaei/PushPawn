@@ -20,12 +20,9 @@ void UAbilityTask_GrantPushAbility::Activate()
 
 void UAbilityTask_GrantPushAbility::OnDestroy(bool bInOwnerFinished)
 {
-	Super::OnDestroy(bInOwnerFinished);
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 
-	if (TimerHandle.IsValid())
-	{
-		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-	}
+	Super::OnDestroy(bInOwnerFinished);
 }
 
 void UAbilityTask_GrantPushAbility::ActivateTimer()
