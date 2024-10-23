@@ -78,6 +78,9 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.1.10-beta
+* Wrap UPushStatics::GetPushPawnScanRange return statement for Linux compiler
+
 ### 2.1.9-beta
 * Change LoadingPhase to PreDefault
 
