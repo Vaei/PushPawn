@@ -10,7 +10,7 @@ void FPushPawnEditorModule::StartupModule()
 {
 	FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
 
-	// Anim Instance
+	// PushPawn Ability
 	PropertyModule.RegisterCustomClassLayout(
 		UPushPawn_Ability::StaticClass()->GetFName(),
 		FOnGetDetailCustomizationInstance::CreateStatic(&FPushPawnAbilityDetailsCustomization::MakeInstance)
