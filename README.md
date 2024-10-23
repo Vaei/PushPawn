@@ -78,6 +78,9 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.1.9-beta
+* Change LoadingPhase to PreDefault
+
 ### 2.1.8-beta
 * Add support for horizontal capsule collisions
 
