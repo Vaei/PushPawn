@@ -322,7 +322,7 @@ float UPushStatics::GetPushPawnScanRange(const FVector& Acceleration, float Base
 	const FPushPawnScanParams& ScanParams)
 {
 	// If the pushee is accelerating, return the scalar, otherwise return the base rate
-	return BaseScanRange * IsPusheeAccelerating(Acceleration) ? ScanParams.ScanRangeAccelScalar : ScanParams.ScanRangeScalar;
+	return BaseScanRange * (IsPusheeAccelerating(Acceleration) ? ScanParams.ScanRangeAccelScalar : ScanParams.ScanRangeScalar);
 }
 
 EPushCollisionType UPushStatics::GetPusheeCollisionShapeType(const AActor* Actor)
