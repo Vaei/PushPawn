@@ -36,6 +36,7 @@ bool UPushPawn_Action_Base::WantsPushPawnActionDebugDraw()
 	static const IConsoleVariable* CVarPushPawnActionDebugDraw = IConsoleManager::Get().FindConsoleVariable(TEXT("p.PushPawn.Action.Debug.Draw"));
 	const int32 PushPawnActionDebugDraw = CVarPushPawnActionDebugDraw ? CVarPushPawnActionDebugDraw->GetInt() : 0;
 	return PushPawnActionDebugDraw > 0;
-#endif
+#else
 	return false;
+#endif
 }
