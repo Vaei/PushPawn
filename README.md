@@ -78,6 +78,18 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.2.0-beta
+* Removed final from UPushPawn_Action and noted the expectation to mark yours as final
+* Add UAbilityTask_PushPawnForce
+	* This properly ends abilities when root motion source expires
+	* Very lightweight compared to engine tasks that replicate unnecessarily (for PushPawn)
+* Add helper GatherPushOptions to UPushStatics
+* Output ShapeRotation from GetPusheeCollisionShape for rotated shape support
+* Export FPushQuery & FPushOption
+* Preliminary completion of blueprint support
+	* Add UPusheeTargetComponent
+	* Migrate commonalities to UPushPawnComponent
+
 ### 2.1.10-beta
 * Wrap UPushStatics::GetPushPawnScanRange return statement for Linux compiler
 

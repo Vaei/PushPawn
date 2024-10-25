@@ -217,7 +217,8 @@ void UAbilityTask_PushPawnScan::PerformTrace()
     }
 
 	// If we don't have a valid collision shape, we can't scan
-	FCollisionShape CollisionShape = Pushee->GetPusheeCollisionShape();
+	FQuat ShapeRotation;
+	FCollisionShape CollisionShape = Pushee->GetPusheeCollisionShape(ShapeRotation);
 	const bool bValidShape = !CollisionShape.IsLine() && !CollisionShape.IsNearlyZero();
 	if (!ensureMsgf(bValidShape, TEXT("PushPawn: Pushee %s has an invalid collision shape!"), *AvatarActor->GetName()))
     {
@@ -273,9 +274,8 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 
 	// Perform the trace
 	const FVector TraceStart = StartLocation.GetTargetingTransform().GetLocation();
-	const FQuat TraceRotation = (CollisionShape.IsBox() || CollisionShape.IsCapsule()) ? AvatarActor->GetActorQuat() : FQuat::Identity;
 	FHitResult Hit;
-	ShapeTrace(Hit, GetWorld(), TraceStart, TraceRotation, ScanParams.TraceChannel, Params, CollisionShape);
+	ShapeTrace(Hit, GetWorld(), TraceStart, ShapeRotation, ScanParams.TraceChannel, Params, CollisionShape);
 
 	// Append the push targets
 	TArray<TScriptInterface<IPusherTarget>> PushTargets;
@@ -293,7 +293,7 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 		{
 			case ECollisionShape::Box:
 			{
-				DrawDebugBox(World, TraceStart, CollisionShape.GetExtent(), TraceRotation, DebugColor, false, CurrentScanRate);
+				DrawDebugBox(World, TraceStart, CollisionShape.GetExtent(), ShapeRotation, DebugColor, false, CurrentScanRate);
 			}
 			break;
 			case ECollisionShape::Sphere:
@@ -303,7 +303,7 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 			break;
 			case ECollisionShape::Capsule:
 			{
-				DrawDebugCapsule(World, TraceStart, CollisionShape.GetCapsuleHalfHeight(), CollisionShape.GetCapsuleRadius(), TraceRotation, DebugColor, false, CurrentScanRate);
+				DrawDebugCapsule(World, TraceStart, CollisionShape.GetCapsuleHalfHeight(), CollisionShape.GetCapsuleRadius(), ShapeRotation, DebugColor, false, CurrentScanRate);
 			}
 			break;
 			default: break;

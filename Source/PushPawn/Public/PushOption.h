@@ -13,7 +13,7 @@ class UUserWidget;
  * Information required to push a pawn.
  */
 USTRUCT(BlueprintType)
-struct FPushOption
+struct PUSHPAWN_API FPushOption
 {
 	GENERATED_BODY()
 

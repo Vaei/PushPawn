@@ -8,50 +8,13 @@
 #include "PusheeComponentHelper.generated.h"
 
 /**
- * Blueprint cannot use FCollisionShape, so we need to create a helper struct
- */
-USTRUCT(BlueprintType)
-struct PUSHPAWN_API FPushPawnCollisionShapeHelper
-{
-	GENERATED_BODY()
-
-	FPushPawnCollisionShapeHelper()
-		: CollisionType(EPushCollisionType::Capsule)
-		, BoxHalfExtent(FVector(34.f, 34.f, 88.f))
-		, SphereRadius(34.f)
-	{}
-
-	FPushPawnCollisionShapeHelper(const FCollisionShape& Shape)
-	{
-		FromCollisionShape(Shape);
-	}
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn)
-	EPushCollisionType CollisionType;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn, meta=(EditCondition="CollisionType == EPushCollisionType::Capsule"))
-	float CapsuleRadius = 34.f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn, meta=(EditCondition="CollisionType == EPushCollisionType::Capsule"))
-	float CapsuleHalfHeight = 88.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn, meta=(EditCondition="CollisionType == EPushCollisionType::Box"))
-	FVector BoxHalfExtent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn, meta=(EditCondition="CollisionType == EPushCollisionType::Sphere"))
-	float SphereRadius;
-
-	FCollisionShape ToCollisionShape() const;
-	void FromCollisionShape(const FCollisionShape& Shape);
-};
-
-/**
  * Blueprint implementation to allow blueprint-only devs to use PushPawn
  * Create a blueprint class that inherits from this class and implement the functions
  * Then, add the component to your pawn
  */
 UCLASS(Blueprintable, ClassGroup=(Custom), meta=(NotBlueprintSpawnableComponent))
-class PUSHPAWN_API UPusheeComponentHelper final : public UPusheeComponent
+class PUSHPAWN_API UPusheeComponentHelper final
+	: public UPusheeComponent
 {
 	GENERATED_BODY()
 
@@ -101,8 +64,8 @@ public:
 	 * This means crouch, prone, etc. consideration is not supported by default. It may be possible to extend this.
 	 */
 	UFUNCTION(BlueprintPure, BlueprintImplementableEvent, Category=PushPawn, meta=(DisplayName="Get Pushee Collision Shape"))
-	FPushPawnCollisionShapeHelper K2_GetPusheeCollisionShape() const;
-	virtual FCollisionShape GetPusheeCollisionShape() const override { return K2_GetPusheeCollisionShape().ToCollisionShape(); }
+	FPushPawnCollisionShapeHelper K2_GetPusheeCollisionShape(FQuat& ShapeRotation) const;
+	virtual FCollisionShape GetPusheeCollisionShape(FQuat& ShapeRotation) const override { return K2_GetPusheeCollisionShape(ShapeRotation).ToCollisionShape(); }
 
 protected:
 	/** 
@@ -112,5 +75,5 @@ protected:
 	 * @param OptionalComponent	The optional component to use - if not supplied, the root component from the Actor's defaults will be used
 	 */
 	UFUNCTION(BlueprintPure, Category=PushPawn, meta=(DisplayName="Get Default Pushee Collision Shape"))
-	FPushPawnCollisionShapeHelper K2_GetDefaultPusheeCollisionShape(const AActor* Actor, EPushCollisionType OptionalShapeType = EPushCollisionType::None, USceneComponent* OptionalComponent = nullptr) const;
+	FPushPawnCollisionShapeHelper K2_GetDefaultPusheeCollisionShape(const AActor* Actor, FQuat& ShapeRotation, EPushCollisionType OptionalShapeType = EPushCollisionType::None, USceneComponent* OptionalComponent = nullptr) const;
 };

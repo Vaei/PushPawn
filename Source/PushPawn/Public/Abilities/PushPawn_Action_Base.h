@@ -22,4 +22,8 @@ class PUSHPAWN_API UPushPawn_Action_Base : public UPushPawn_Ability
 
 public:
 	virtual bool CanActivatePushPawnAbility(const AActor* AvatarActor) const override;
+
+protected:
+	/** Helper for derived actions to retrieve p.PushPawn.Action.Debug.Draw which is declared in UPushPawn_Action cpp */
+	static bool WantsPushPawnActionDebugDraw();
 };
