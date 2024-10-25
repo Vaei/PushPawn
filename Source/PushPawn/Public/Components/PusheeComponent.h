@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "IPush.h"
-#include "Components/ActorComponent.h"
+#include "PushPawnComponent.h"
 #include "PusheeComponent.generated.h"
 
 
@@ -14,37 +14,11 @@
  */
 UCLASS(Abstract)
 class PUSHPAWN_API UPusheeComponent
-	: public UActorComponent
+	: public UPushPawnComponent
 	, public IPusheeInstigator
 {
 	GENERATED_BODY()
 
-public:
-	/** Owning Pawn if Owner is a Pawn */
-	UPROPERTY(Transient, DuplicateTransient, BlueprintReadOnly, Category=PushPawn)
-	TObjectPtr<APawn> PawnOwner;
-
-	/** Owning Character if Owner is a Character */
-	UPROPERTY(Transient, DuplicateTransient, BlueprintReadOnly, Category=PushPawn)
-	TObjectPtr<ACharacter> CharacterOwner;
-
-public:
-	UPusheeComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-
-	virtual void OnRegister() override;
-	virtual void InitializeComponent() override;
-	virtual void PostLoad() override;
-
-	void UpdatePawnOwner();
-
-	/**
-	 * Cache your blueprint-derived owning pawn or character here
-	 * APawn and ACharacter are already cached for you
-	 * @see PawnOwner, @see CharacterOwner
-	 */
-	UFUNCTION(BlueprintImplementableEvent, Category=PushPawn, meta=(DisplayName="Update Pawn Owner"))
-	void K2_UpdatePawnOwner();
-	
 public:
 	/**
 	 * Prevents unnecessary ability activation
@@ -83,7 +57,7 @@ public:
 	 * Generally you should use UPushStatics::GetDefaultPusheeCollisionShape() to get the shape, unless you want to use a
 	 * different shape size than the collision shape's.
 	 */
-	virtual FCollisionShape GetPusheeCollisionShape() const override PURE_VIRTUAL(UPusheeComponent::GetPusheeCollisionShape, return {};);
+	virtual FCollisionShape GetPusheeCollisionShape(FQuat& ShapeRotation) const override PURE_VIRTUAL(UPusheeComponent::GetPusheeCollisionShape, return {};);
 
 	/**
 	 * Optionally, pause the scan when the pawn is in a state where it should not look for pushers.

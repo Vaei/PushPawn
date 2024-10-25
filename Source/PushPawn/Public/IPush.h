@@ -89,7 +89,7 @@ public:
 	 * Generally you should use UPushStatics::GetDefaultPusheeCollisionShape() to get the shape, unless you want to use a
 	 * different shape size than the collision shape's.
 	 */
-	virtual FCollisionShape GetPusheeCollisionShape() const = 0;
+	virtual FCollisionShape GetPusheeCollisionShape(FQuat& ShapeRotation) const = 0;
 
 	/**
 	 * Optionally, pause the scan when the pawn is in a state where it should not look for pushers.

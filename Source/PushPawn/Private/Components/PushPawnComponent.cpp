@@ -1,20 +1,20 @@
 ﻿// Copyright (c) Jared Taylor. All Rights Reserved
 
 
-#include "Components/PusheeComponent.h"
+#include "Components/PushPawnComponent.h"
 
 #include "GameFramework/Character.h"
 
-#include UE_INLINE_GENERATED_CPP_BY_NAME(PusheeComponent)
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PushPawnComponent)
 
-UPusheeComponent::UPusheeComponent(const FObjectInitializer& ObjectInitializer)
+UPushPawnComponent::UPushPawnComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 }
 
-void UPusheeComponent::OnRegister()
+void UPushPawnComponent::OnRegister()
 {
 	Super::OnRegister();
 
@@ -26,7 +26,7 @@ void UPusheeComponent::OnRegister()
 	K2_UpdatePawnOwner();  // PostLoad() will crash
 }
 
-void UPusheeComponent::InitializeComponent()
+void UPushPawnComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 
@@ -35,7 +35,7 @@ void UPusheeComponent::InitializeComponent()
 	K2_UpdatePawnOwner();  // PostLoad() will crash
 }
 
-void UPusheeComponent::PostLoad()
+void UPushPawnComponent::PostLoad()
 {
 	Super::PostLoad();
 
@@ -43,7 +43,7 @@ void UPusheeComponent::PostLoad()
 	UpdatePawnOwner();
 }
 
-void UPusheeComponent::UpdatePawnOwner()
+void UPushPawnComponent::UpdatePawnOwner()
 {
 	PawnOwner = Cast<APawn>(GetOwner());
 	CharacterOwner = Cast<ACharacter>(GetOwner());

@@ -2,6 +2,7 @@
 
 #include "PushStatics.h"
 #include "IPush.h"
+#include "PushQuery.h"
 #include "Abilities/PushPawnAbilityTargetData.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -325,6 +326,22 @@ float UPushStatics::GetPushPawnScanRange(const FVector& Acceleration, float Base
 	return BaseScanRange * (IsPusheeAccelerating(Acceleration) ? ScanParams.ScanRangeAccelScalar : ScanParams.ScanRangeScalar);
 }
 
+bool UPushStatics::GatherPushOptions(const TSubclassOf<UGameplayAbility>& PushAbilityToGrant,
+	const APawn* PusherPawn, const FPushQuery& PushQuery, const FPushOptionBuilder& OptionBuilder)
+{
+	if (PushAbilityToGrant && PusherPawn && PushQuery.RequestingAvatar.IsValid())
+	{
+		FPushOption Push;
+		Push.PushAbilityToGrant = PushAbilityToGrant;
+		Push.PusheeActorLocation = PushQuery.RequestingAvatar->GetActorLocation();
+		Push.PusheeForwardVector = PusherPawn->GetActorForwardVector();
+		Push.PusherActorLocation = PusherPawn->GetActorLocation();
+		OptionBuilder.AddPushOption(Push);
+		return true;
+	}
+	return false;
+}
+
 EPushCollisionType UPushStatics::GetPusheeCollisionShapeType(const AActor* Actor)
 {
 	const USceneComponent* RootComponent = Actor->GetRootComponent();
@@ -343,7 +360,7 @@ EPushCollisionType UPushStatics::GetPusheeCollisionShapeType(const AActor* Actor
 	return EPushCollisionType::None;
 }
 
-FCollisionShape UPushStatics::GetDefaultPusheeCollisionShape(const AActor* Actor, EPushCollisionType OptionalShapeType, USceneComponent* OptionalComponent)
+FCollisionShape UPushStatics::GetDefaultPusheeCollisionShape(const AActor* Actor, FQuat& OutShapeRotation, EPushCollisionType OptionalShapeType, USceneComponent* OptionalComponent)
 {
 	if (OptionalShapeType == EPushCollisionType::None)
 	{
@@ -352,6 +369,7 @@ FCollisionShape UPushStatics::GetDefaultPusheeCollisionShape(const AActor* Actor
 
 	// Use the default root component if no specific component is supplied
 	USceneComponent* Component = OptionalComponent ? OptionalComponent : Actor->GetClass()->GetDefaultObject<AActor>()->GetRootComponent();
+	OutShapeRotation = Component->GetComponentQuat();
 	switch (OptionalShapeType)
 	{
 		case EPushCollisionType::Capsule:
@@ -377,7 +395,8 @@ float UPushStatics::GetMaxDefaultCollisionShapeSize(const AActor* Actor, EPushCo
 {
 	if (Actor)
 	{
-		FCollisionShape CollisionShape = GetDefaultPusheeCollisionShape(Actor, SpecificShapeType, nullptr);
+		FQuat ShapeRotation;
+		FCollisionShape CollisionShape = GetDefaultPusheeCollisionShape(Actor, ShapeRotation, SpecificShapeType, nullptr);
 		if (!CollisionShape.IsNearlyZero())
 		{
 			switch (CollisionShape.ShapeType)
