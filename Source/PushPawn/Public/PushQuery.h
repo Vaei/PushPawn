@@ -10,7 +10,7 @@
  * Information required to push a pawn.
  */
 USTRUCT(BlueprintType)
-struct FPushQuery
+struct PUSHPAWN_API FPushQuery
 {
 	GENERATED_BODY()
 

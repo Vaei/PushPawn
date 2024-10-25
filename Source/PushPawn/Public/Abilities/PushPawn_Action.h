@@ -14,7 +14,7 @@
  * BP should only be used for changing parameters, not for logic.
  */
 UCLASS(Blueprintable)
-class PUSHPAWN_API UPushPawn_Action final // If subclassing, make sure your subclass is marked final instead, do not have non-final classes for this ability
+class PUSHPAWN_API UPushPawn_Action // final -- Make sure your subclass is marked final, do not have non-final classes for this ability
 	: public UPushPawn_Action_Base
 {
 	GENERATED_BODY()
@@ -26,4 +26,7 @@ protected:
 
 	virtual bool ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
+	UFUNCTION()
+	virtual void OnPushTaskFinished();
 };

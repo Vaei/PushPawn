@@ -127,3 +127,41 @@ struct PUSHPAWN_API FPushPawnScanParams
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
 	float ScanRateAccel;
 };
+
+/**
+ * Blueprint cannot use FCollisionShape, so we need to create a helper struct
+ */
+USTRUCT(BlueprintType)
+struct PUSHPAWN_API FPushPawnCollisionShapeHelper
+{
+	GENERATED_BODY()
+
+	FPushPawnCollisionShapeHelper()
+		: CollisionType(EPushCollisionType::Capsule)
+		, BoxHalfExtent(FVector(34.f, 34.f, 88.f))
+		, SphereRadius(34.f)
+	{}
+
+	FPushPawnCollisionShapeHelper(const FCollisionShape& Shape)
+	{
+		FromCollisionShape(Shape);
+	}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn)
+	EPushCollisionType CollisionType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn, meta=(EditCondition="CollisionType == EPushCollisionType::Capsule"))
+	float CapsuleRadius = 34.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn, meta=(EditCondition="CollisionType == EPushCollisionType::Capsule"))
+	float CapsuleHalfHeight = 88.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn, meta=(EditCondition="CollisionType == EPushCollisionType::Box"))
+	FVector BoxHalfExtent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PushPawn, meta=(EditCondition="CollisionType == EPushCollisionType::Sphere"))
+	float SphereRadius;
+
+	FCollisionShape ToCollisionShape() const;
+	void FromCollisionShape(const FCollisionShape& Shape);
+};

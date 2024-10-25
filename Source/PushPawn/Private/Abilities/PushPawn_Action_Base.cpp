@@ -29,3 +29,13 @@ bool UPushPawn_Action_Base::CanActivatePushPawnAbility(const AActor* AvatarActor
 
 	return false;
 }
+
+bool UPushPawn_Action_Base::WantsPushPawnActionDebugDraw()
+{
+#if ENABLE_DRAW_DEBUG
+	static const IConsoleVariable* CVarPushPawnActionDebugDraw = IConsoleManager::Get().FindConsoleVariable(TEXT("p.PushPawn.Action.Debug.Draw"));
+	const int32 PushPawnActionDebugDraw = CVarPushPawnActionDebugDraw ? CVarPushPawnActionDebugDraw->GetInt() : 0;
+	return PushPawnActionDebugDraw > 0;
+#endif
+	return false;
+}

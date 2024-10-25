@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/RootMotionSource.h"
+#include "Tasks/AbilityTask_PushPawnForce.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PushPawn_Action)
 
@@ -59,7 +60,7 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 	const FVector PushDirection = UPushStatics::GetPushDirectionFromEventData(EventData, bForce2D);
 
 #if ENABLE_DRAW_DEBUG
-	if (FPushPawnCVars::PushPawnActionDebugDraw > 0)
+	if (FPushPawnCVars::PushPawnActionDebugDraw > 0)  // Use WantsPushPawnActionDebugDraw() in derived classes
 	{
 		const bool bIsLocalPlayer = ActorInfo->IsLocallyControlled();
 		if (FPushPawnCVars::PushPawnActionDebugDraw == 1 || bIsLocalPlayer)
@@ -69,21 +70,22 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 	}
 #endif
 
-	// Apply the push Force - we bypass the ability system for this because it replicates 6 parameters we don't need!
-	TSharedPtr<FRootMotionSource_ConstantForce> ConstantForce = MakeShared<FRootMotionSource_ConstantForce>();
-	ConstantForce->InstanceName = TEXT("PushPawnForce");
-	ConstantForce->AccumulateMode = ERootMotionAccumulateMode::Additive;
-	ConstantForce->Priority = 5;
-	ConstantForce->Force = PushDirection * Strength;
-	ConstantForce->Duration = PushParams.Duration;
-	ConstantForce->Settings.SetFlag(ERootMotionSourceSettingsFlags::IgnoreZAccumulate);
-	uint16 RootMotionSourceID = MovementComponent->ApplyRootMotionSource(ConstantForce);
+	// Apply Push Force Task
+	static constexpr bool bIsAdditive = true;
+	static constexpr bool bEnableGravity = true;
+	UAbilityTask_PushPawnForce* PushTask = UAbilityTask_PushPawnForce::ApplyPushPawnForce(
+		this, PushDirection, Strength, PushParams.Duration, bIsAdditive, bEnableGravity);
 
-	// If we failed to apply the root motion source, cancel the ability
-	if (RootMotionSourceID == (uint16)ERootMotionSourceID::Invalid)
-	{
-		CancelAbility(Handle, ActorInfo, ActivationInfo, false);
-		return false;
-	}
+	// Bind EndAbility to OnFinish
+	PushTask->OnFinish.AddDynamic(this, &UPushPawn_Action::OnPushTaskFinished);
+
+	// Activate the Push Task
+	PushTask->SharedInitAndApply();
+
 	return true;
+}
+
+void UPushPawn_Action::OnPushTaskFinished()
+{
+	K2_EndAbility();
 }

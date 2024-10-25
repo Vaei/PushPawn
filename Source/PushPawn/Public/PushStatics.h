@@ -6,10 +6,13 @@
 #include "PushTypes.h"
 #include "PushStatics.generated.h"
 
-class IPusheeInstigator;
+struct FPushQuery;
 struct FGameplayEventData;
 struct FGameplayAbilityTargetDataHandle;
 struct FPushPawnAbilityTargetData;
+class UGameplayAbility;
+class FPushOptionBuilder;
+class IPusheeInstigator;
 class IPusherTarget;
 
 /**
@@ -134,15 +137,19 @@ public:
 	static float GetPushPawnScanRange(APawn* Pushee, float BaseScanRange, const FPushPawnScanParams& ScanParams);
 	static float GetPushPawnScanRange(const FVector& Acceleration, float BaseScanRange, const FPushPawnScanParams& ScanParams);
 
+	/** Default implementation of IPusherTarget::GatherPushOptions for convenience */
+	static bool GatherPushOptions(const TSubclassOf<UGameplayAbility>& PushAbilityToGrant, const APawn* PusherPawn, const FPushQuery& PushQuery, const FPushOptionBuilder& OptionBuilder);
+	
 	static EPushCollisionType GetPusheeCollisionShapeType(const AActor* Actor);
 
 	/** 
 	 * @return The default collision shape for the pushee
-	 * @param Actor				The actor to get the collision shape for
-	 * @param OptionalShapeType	The optional shape type to use
-	 * @param OptionalComponent	The optional component to use - if not supplied, the root component from the Actor's defaults will be used
+	 * @param Actor					The actor to get the collision shape for
+	 * @param OutShapeRotation		The output rotation of the shape
+	 * @param OptionalShapeType		The optional shape type to use
+	 * @param OptionalComponent		The optional component to use - if not supplied, the root component from the Actor's defaults will be used
 	 */
-	static FCollisionShape GetDefaultPusheeCollisionShape(const AActor* Actor, EPushCollisionType OptionalShapeType = EPushCollisionType::None, USceneComponent* OptionalComponent = nullptr);
+	static FCollisionShape GetDefaultPusheeCollisionShape(const AActor* Actor, FQuat& OutShapeRotation, EPushCollisionType OptionalShapeType = EPushCollisionType::None, USceneComponent* OptionalComponent = nullptr);
 	
 	/**
 	 * @return The max of the collision shape size. For ACharacter: ScaledCapsuleHalfHeight or ScaledCapsuleRadius - whichever is larger - taken from class defaults (i.e. ignores crouching character)
