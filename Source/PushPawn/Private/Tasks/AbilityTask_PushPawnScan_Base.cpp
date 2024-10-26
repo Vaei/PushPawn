@@ -50,9 +50,21 @@ void UAbilityTask_PushPawnScan_Base::UpdatePushOptions(const FPushQuery& PushQue
 		// Iterate over the options and update their parameters and filter out any that can't be activated
 		for (FPushOption& Option : PushOptions)
 		{
-			const FGameplayAbilitySpec* PushAbilitySpec = nullptr;
+			// Grant the ability to the GAS, otherwise it won't be able to do whatever the Push is.
+			const bool bAuthority = AbilitySystemComponent.IsValid() && AbilitySystemComponent->GetOwnerRole() == ROLE_Authority;
+			if (bAuthority && Option.PushAbilityToGrant)
+			{
+				FObjectKey ObjectKey { Option.PushAbilityToGrant };
+				if (!PushAbilityCache.Find(ObjectKey))
+				{
+					FGameplayAbilitySpec Spec(Option.PushAbilityToGrant, 1, INDEX_NONE, this);
+					FGameplayAbilitySpecHandle Handle = AbilitySystemComponent->GiveAbility(Spec);
+					PushAbilityCache.Add(ObjectKey, Handle);
+				}
+			}
 
 			// If there is a handle and a target ability system, we're triggering the ability on the target
+			const FGameplayAbilitySpec* PushAbilitySpec = nullptr;
 			if (Option.TargetAbilitySystem && Option.TargetPushAbilityHandle.IsValid())
 			{
 				// Find the spec

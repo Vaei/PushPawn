@@ -77,6 +77,9 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.3.0-beta
+* Remove separate ability-granting task and move into scan task
+
 ### 2.2.0-beta
 * Removed final from UPushPawn_Action and noted the expectation to mark yours as final
 * Add UAbilityTask_PushPawnForce

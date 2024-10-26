@@ -38,6 +38,8 @@ protected:
 
 	TArray<FPushOption> CurrentOptions;
 
+	TMap<FObjectKey, FGameplayAbilitySpecHandle> PushAbilityCache;
+
 protected:
 	static void ShapeTrace(FHitResult& OutHitResult, const UWorld* World, const FVector& Center, const FQuat& Rotation,
 		const ECollisionChannel ChannelName, const FCollisionQueryParams& Params, const FCollisionShape& Shape);
