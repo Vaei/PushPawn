@@ -59,8 +59,7 @@ One day, someone is going to do something surprising with Push Pawn, and I look 
 
 > [!WARNING]
 > ***Due to the use of Git LFS, do not download a zip or your content will be missing***
-> <br>You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git` if you want the content
-> <br>Using C++ only is viable also as of `2.0.0`
+> <br>You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git`
 
 > [!IMPORTANT]
 > [Read the Wiki to Learn How to use Push Pawn](https://github.com/Vaei/PushPawn/wiki)
