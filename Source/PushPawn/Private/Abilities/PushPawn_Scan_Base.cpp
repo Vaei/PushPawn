@@ -7,7 +7,6 @@
 #include "NativeGameplayTags.h"
 #include "PushPawnTags.h"
 #include "Abilities/PushPawnAbilityTargetData.h"
-#include "Tasks/AbilityTask_GrantPushAbility.h"
 #include "AbilitySystemComponent.h"
 #include "Tasks/AbilityTask_PushPawnScan.h"
 
@@ -58,15 +57,6 @@ bool UPushPawn_Scan_Base::ActivatePushPawnAbility(const FGameplayAbilitySpecHand
 		return false;
 	}
 
-	// Get the ability system component
-	const UAbilitySystemComponent* AbilitySystem = GetAbilitySystemComponentFromActorInfo();
-
-	// If we have an ability system, and we're the authority, create the task to grant abilities for nearby pushers
-	if (AbilitySystem && AbilitySystem->GetOwnerRole() == ROLE_Authority)
-	{
-		UAbilityTask_GrantPushAbility* Task = UAbilityTask_GrantPushAbility::GrantAbilitiesForNearbyPushers(this, ScanParams, BaseScanRange);
-		Task->ReadyForActivation();
-	}
 	return true;
 }
 
