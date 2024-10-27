@@ -23,7 +23,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPushObjectsChangedEvent, const TArr
 UCLASS(Abstract)
 class PUSHPAWN_API UAbilityTask_PushPawnScan_Base : public UAbilityTask
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 
 public:
 	UPROPERTY(BlueprintAssignable)
@@ -41,6 +41,8 @@ protected:
 	TMap<FObjectKey, FGameplayAbilitySpecHandle> PushAbilityCache;
 
 protected:
+	UAbilityTask_PushPawnScan_Base(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
 	static void ShapeTrace(FHitResult& OutHitResult, const UWorld* World, const FVector& Center, const FQuat& Rotation,
 		const ECollisionChannel ChannelName, const FCollisionQueryParams& Params, const FCollisionShape& Shape);
 
