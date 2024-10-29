@@ -32,7 +32,7 @@ bool UPushPawn_Action_Base::CanActivatePushPawnAbility(const AActor* AvatarActor
 
 bool UPushPawn_Action_Base::WantsPushPawnActionDebugDraw()
 {
-#if ENABLE_DRAW_DEBUG
+#if UE_ENABLE_DEBUG_DRAWING
 	static const IConsoleVariable* CVarPushPawnActionDebugDraw = IConsoleManager::Get().FindConsoleVariable(TEXT("p.PushPawn.Action.Debug.Draw"));
 	const int32 PushPawnActionDebugDraw = CVarPushPawnActionDebugDraw ? CVarPushPawnActionDebugDraw->GetInt() : 0;
 	return PushPawnActionDebugDraw > 0;
