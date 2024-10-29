@@ -1,4 +1,4 @@
-# Push Pawn <img align="right" width=128, height=128 src="https://github.com/Vaei/PushPawn/blob/main/Resources/Icon128.png">
+# Push Pawn <img align="right" width=256, height=256 src="https://github.com/Vaei/PushPawn/blob/main/Resources/Icon256.png">
 
 > [!IMPORTANT]
 > **Net-predicted soft organic collisions!**
