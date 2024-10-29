@@ -17,7 +17,7 @@
 
 namespace FPushPawnCVars
 {
-#if ENABLE_DRAW_DEBUG
+#if UE_ENABLE_DEBUG_DRAWING
 	static int32 PushPawnScanDebugDraw = 0;
 	FAutoConsoleVariableRef CVarPushPawnScanDebugDraw(
 		TEXT("p.PushPawn.Scan.Debug.Draw"),
@@ -284,7 +284,7 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 	// Update the push options
 	UpdatePushOptions(PushQuery, PushTargets);
 
-#if ENABLE_DRAW_DEBUG
+#if UE_ENABLE_DEBUG_DRAWING
 	if (FPushPawnCVars::PushPawnScanDebugDraw)
 	{
 		FColor DebugColor = Hit.bBlockingHit ? FColor::Red : FColor::Green;

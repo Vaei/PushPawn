@@ -13,7 +13,7 @@
 
 namespace FPushPawnCVars
 {
-#if ENABLE_DRAW_DEBUG
+#if UE_ENABLE_DEBUG_DRAWING
 	static int32 PushPawnActionDebugDraw = 0;
 	FAutoConsoleVariableRef CVarPushPawnActionDebugDraw(
 		TEXT("p.PushPawn.Action.Debug.Draw"),
@@ -58,7 +58,7 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 	static constexpr bool bForce2D = true;
 	const FVector PushDirection = UPushStatics::GetPushDirectionFromEventData(EventData, bForce2D);
 
-#if ENABLE_DRAW_DEBUG
+#if UE_ENABLE_DEBUG_DRAWING
 	if (FPushPawnCVars::PushPawnActionDebugDraw > 0)  // Use WantsPushPawnActionDebugDraw() in derived classes
 	{
 		const bool bIsLocalPlayer = ActorInfo->IsLocallyControlled();
