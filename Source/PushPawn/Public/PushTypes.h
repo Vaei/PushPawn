@@ -5,6 +5,10 @@
 #include "CoreMinimal.h"
 #include "PushTypes.generated.h"
 
+enum ECollisionChannel : int;
+struct FCollisionShape;
+class UCurveFloat;
+
 UENUM(BlueprintType)
 enum class EPushCollisionType : uint8
 {
@@ -79,17 +83,7 @@ struct PUSHPAWN_API FPushPawnScanParams
 {
 	GENERATED_BODY()
 
-	FPushPawnScanParams()
-		: bDirectionIs2D(true)
-		, TraceChannel(ECC_Visibility)
-		, ScanRangeScalar(0.8f)
-		, ScanRangeAccelScalar(1.1f)
-		, PusheeRadiusScalar(0.8f)
-		, PusheeRadiusAccelScalar(1.0f)
-		, RadiusVelocityScalar(nullptr)
-		, ScanRate(0.1f)
-		, ScanRateAccel(0.05f)
-	{}
+	FPushPawnScanParams();
 
 	/** If true, calculate the direction using X/Y only */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
