@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Kismet/BlueprintFunctionLibrary.h"
 #include "PushTypes.h"
 #include "PushStatics.generated.h"
 
@@ -10,6 +11,8 @@ struct FPushQuery;
 struct FGameplayEventData;
 struct FGameplayAbilityTargetDataHandle;
 struct FPushPawnAbilityTargetData;
+struct FOverlapResult;
+struct FHitResult;
 class UGameplayAbility;
 class FPushOptionBuilder;
 class IPusheeInstigator;

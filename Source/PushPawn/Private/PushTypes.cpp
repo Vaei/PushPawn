@@ -3,7 +3,21 @@
 
 #include "PushTypes.h"
 
+#include "Engine/EngineTypes.h"
+#include "CollisionShape.h"
+
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PushTypes)
+
+FPushPawnScanParams::FPushPawnScanParams(): bDirectionIs2D(true)
+                                            , TraceChannel(ECC_Visibility)
+                                            , ScanRangeScalar(0.8f)
+                                            , ScanRangeAccelScalar(1.1f)
+                                            , PusheeRadiusScalar(0.8f)
+                                            , PusheeRadiusAccelScalar(1.0f)
+                                            , RadiusVelocityScalar(nullptr)
+                                            , ScanRate(0.1f)
+                                            , ScanRateAccel(0.05f)
+{}
 
 FCollisionShape FPushPawnCollisionShapeHelper::ToCollisionShape() const
 {

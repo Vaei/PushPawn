@@ -3,8 +3,8 @@
 
 #include "Abilities/PushPawn_Scan.h"
 
-#include "PushQuery.h"
 #include "Tasks/AbilityTask_PushPawnScan.h"
+#include "PushQuery.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PushPawn_Scan)
 

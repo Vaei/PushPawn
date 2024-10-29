@@ -77,6 +77,10 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.3.1-beta
+* Fix up includes
+* Change from pre-processor ENABLE_DRAW_DEBUG to UE_ENABLE_DEBUG_DRAWING
+
 ### 2.3.0-beta
 * Remove separate ability-granting task and move into scan task
 

@@ -1,15 +1,19 @@
 // Copyright (c) Jared Taylor. All Rights Reserved
 
 #include "PushStatics.h"
-#include "IPush.h"
-#include "PushQuery.h"
+
+#include "GameFramework/PawnMovementComponent.h"
+#include "GameFramework/Pawn.h"
 #include "Abilities/PushPawnAbilityTargetData.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/PusheeComponent.h"
 #include "Components/SphereComponent.h"
+#include "IPush.h"
+#include "PushQuery.h"
+
 #include "Engine/OverlapResult.h"
-#include "GameFramework/PawnMovementComponent.h"
+#include "Curves/CurveFloat.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PushStatics)
 

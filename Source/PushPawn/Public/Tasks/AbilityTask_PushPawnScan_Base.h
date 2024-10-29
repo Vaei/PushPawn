@@ -10,9 +10,9 @@
 #include "AbilityTask_PushPawnScan_Base.generated.h"
 
 class UPushPawn_Scan_Base;
-class AActor;
-class UPrimitiveComponent;
 class UGameplayAbility;
+class UPrimitiveComponent;
+class AActor;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPushObjectsChangedEvent, const TArray<FPushOption>&, PushOptions);
 

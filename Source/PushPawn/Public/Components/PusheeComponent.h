@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "IPush.h"
 #include "PushPawnComponent.h"
+#include "CollisionShape.h"
 #include "PusheeComponent.generated.h"
 
 

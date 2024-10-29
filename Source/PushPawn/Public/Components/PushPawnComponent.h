@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "PushPawnComponent.generated.h"
 
+class ACharacter;
 
 /**
  * Base component for PushPawn
