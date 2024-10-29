@@ -1,13 +1,25 @@
 // Copyright (c) Jared Taylor. All Rights Reserved
 
 #include "Tasks/AbilityTask_PushPawnScan.h"
-#include "GameFramework/Actor.h"
-#include "IPush.h"
-#include "PushStatics.h"
-#include "PushQuery.h"
+
+#include "GameFramework/Pawn.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/PushPawn_Scan_Base.h"
 #include "Abilities/Tasks/AbilityTask_NetworkSyncPoint.h"
+#include "IPush.h"
+#include "PushStatics.h"
+#include "PushQuery.h"
+
+#include "TimerManager.h"
+#include "Curves/CurveFloat.h"
+#include "DrawDebugHelpers.h"
+#include "Engine/World.h"
+#include "CollisionShape.h"
+
+#if !UE_BUILD_SHIPPING
+#include "Engine/Engine.h"
+#include "Logging/MessageLog.h"
+#endif
 
 #if UE_BUILD_SHIPPING
 #include "AbilitySystemLog.h"

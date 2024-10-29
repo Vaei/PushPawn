@@ -5,7 +5,11 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemLog.h"
+
+#if WITH_EDITOR
+#include "Logging/MessageLog.h"
 #include "Misc/UObjectToken.h"
+#endif
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PushPawn_Ability)
 

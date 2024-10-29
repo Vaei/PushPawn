@@ -1,8 +1,11 @@
 // Copyright (c) Jared Taylor. All Rights Reserved
 
 #include "Tasks/AbilityTask_PushPawnScan_Base.h"
+
 #include "GameFramework/Actor.h"
 #include "AbilitySystemComponent.h"
+
+#include "Engine/World.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(AbilityTask_PushPawnScan_Base)
 

@@ -2,13 +2,16 @@
 
 
 #include "Abilities/PushPawn_Scan_Base.h"
+
+#include "AbilitySystemComponent.h"
+#include "Abilities/PushPawnAbilityTargetData.h"
+#include "NativeGameplayTags.h"
+#include "Tasks/AbilityTask_PushPawnScan.h"
 #include "IPush.h"
 #include "PushStatics.h"
-#include "NativeGameplayTags.h"
 #include "PushPawnTags.h"
-#include "Abilities/PushPawnAbilityTargetData.h"
-#include "AbilitySystemComponent.h"
-#include "Tasks/AbilityTask_PushPawnScan.h"
+
+#include "Engine/World.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PushPawn_Scan_Base)
 
