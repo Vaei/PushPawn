@@ -77,6 +77,9 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.3.2-beta
+* Change timer to WeakLambda
+
 ### 2.3.1-beta
 * Fix up includes
 * Change from pre-processor ENABLE_DRAW_DEBUG to UE_ENABLE_DEBUG_DRAWING
