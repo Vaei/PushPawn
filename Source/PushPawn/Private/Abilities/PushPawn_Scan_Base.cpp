@@ -60,6 +60,8 @@ bool UPushPawn_Scan_Base::ActivatePushPawnAbility(const FGameplayAbilitySpecHand
 		return false;
 	}
 
+	LastNetSyncTime = GetWorld()->GetTimeSeconds();
+
 	return true;
 }
 
@@ -197,6 +199,13 @@ bool UPushPawn_Scan_Base::ShouldWaitForNetSync() const
 		return true;
 	}
 
+	// If too much time has passed without a push, sync
+	if (NetSyncDelayWithoutPush > 0.f && TriggeredPushesSinceLastNetSync == 0 &&
+		LastNetSyncTime >= 0.f && GetWorld()->TimeSince(LastNetSyncTime) >= NetSyncDelayWithoutPush)
+	{
+		return true;
+	}
+
 	// If we've exceeded the max pushes, sync
 	if (MaxPushesUntilNetSync == 0)
 	{
@@ -209,6 +218,7 @@ void UPushPawn_Scan_Base::ConsumeWaitForNetSync()
 {
 	TriggeredPushesSinceLastNetSync = 0;
 	LastPushTime = -1.f;
+	LastNetSyncTime = GetWorld()->GetTimeSeconds();
 }
 
 float UPushPawn_Scan_Base::K2_GetBaseScanRange_Implementation(const AActor* AvatarActor) const
