@@ -71,7 +71,15 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync", meta=(ClampMin="0.0", UIMin="0.0", EditCondition="bEnableWaitForNetSync", EditConditionHides))
 	float NetSyncDelayAfterPush = 5.0f;
-
+	
+	/**
+	 * If this time lapses without any pushes, a net sync will occur
+	 * Set to 0 to disable
+	 * @see ShouldWaitForNetSync(), LastPushTime
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync", meta=(ClampMin="0.0", UIMin="0.0", EditCondition="bEnableWaitForNetSync", EditConditionHides))
+	float NetSyncDelayWithoutPush = 12.0f;
+	
 	/**
 	 * The number of pushes that have been triggered since the last net sync
 	 * @see ShouldWaitForNetSync(), MaxPushesUntilNetSync
@@ -82,6 +90,9 @@ protected:
 protected:
 	UPROPERTY(BlueprintReadOnly, Category=PushPawn)
 	float LastPushTime = 0.f;
+
+	UPROPERTY(BlueprintReadOnly, Category=PushPawn)
+	float LastNetSyncTime = 0.f;
 
 public:
 	UPushPawn_Scan_Base(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());

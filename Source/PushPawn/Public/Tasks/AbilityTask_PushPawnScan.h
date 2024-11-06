@@ -68,5 +68,7 @@ private:
 
 	FTimerHandle TimerHandle;
 
+	FConsoleVariableDelegate OnDisabledDelegate;
+	
 	FOnPushPawnScanPaused* OnPushPawnScanPauseStateChangedDelegate = nullptr;
 };
