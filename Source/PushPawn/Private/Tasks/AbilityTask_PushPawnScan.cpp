@@ -40,6 +40,13 @@ namespace FPushPawnCVars
 #endif
 
 #if !UE_BUILD_SHIPPING
+	static bool bPushPawnDisabled = false;
+	FAutoConsoleVariableRef CVarPushPawnDisabled(
+		TEXT("p.PushPawn.Disable"),
+		bPushPawnDisabled,
+		TEXT("Disable PushPawn. Will continue running tasks, but Pushes will never occur.\n"),
+		ECVF_Cheat);
+	
 	static int32 PushPawnPrintNetSync = 0;
 	FAutoConsoleVariableRef CVarPushPawnPrintNetSync(
 		TEXT("p.PushPawn.PrintNetSync"),
@@ -193,6 +200,30 @@ void UAbilityTask_PushPawnScan::PerformTrace()
 {
 	TRACE_CPUPROFILER_EVENT_SCOPE(UAbilityTask_PushPawnScan::PerformTrace);
 
+#if !UE_BUILD_SHIPPING
+	if (FPushPawnCVars::bPushPawnDisabled)
+	{
+		OnDisabledDelegate.BindLambda([this](const IConsoleVariable* CVar)
+		{
+			const bool bDisabled = CVar->GetBool();
+			if (!bDisabled)
+			{
+				FPushPawnCVars::CVarPushPawnDisabled->SetOnChangedCallback(nullptr);
+				ActivateTimer();
+			}
+			else
+			{
+				if (OnDisabledDelegate.IsBound())
+				{
+					OnDisabledDelegate.Unbind();
+				}
+			}
+		});
+		FPushPawnCVars::CVarPushPawnDisabled->SetOnChangedCallback(OnDisabledDelegate);
+		return;
+	}
+#endif
+	
 	// Check if we have an avatar actor
 	AActor* AvatarActor = Ability->GetCurrentActorInfo()->AvatarActor.Get();
 	if (!AvatarActor)
