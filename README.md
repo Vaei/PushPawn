@@ -77,6 +77,10 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.3.4-beta
+* Add missing null checks for UPushStatics::GetPushPawnsFromEventDataChecked
+* Add GetWorld() checks for AbilityTask_PushPawnScan
+
 ### 2.3.3-beta
 * Add WaitNetSync setting to sync without any pushes
 * Add CVar p.PushPawn.Disabled to disable pushing

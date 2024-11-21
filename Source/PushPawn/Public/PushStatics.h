@@ -211,6 +211,13 @@ void UPushStatics::GetPushPawnsFromEventDataChecked(const FGameplayEventData& Ev
 	const AActor* PusherActor = nullptr;
 	GetPushActorsFromEventData(EventData, PusheeActor, PusherActor);
 
-	Pushee = CastChecked<PusheeT>(PusheeActor);
-	Pusher = CastChecked<PusherT>(PusherActor);
+	if (IsValid(PusheeActor))
+	{
+		Pushee = CastChecked<PusheeT>(PusheeActor);
+	}
+	
+	if (IsValid(PusherActor))
+	{
+		Pusher = CastChecked<PusherT>(PusherActor);
+	}
 }
