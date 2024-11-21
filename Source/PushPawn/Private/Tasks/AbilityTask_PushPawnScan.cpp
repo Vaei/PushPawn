@@ -167,7 +167,10 @@ void UAbilityTask_PushPawnScan::ActivateTimer(EPushPawnPauseType PauseType)
 		Delegate.BindWeakLambda(this, PendingTimer);
 
 		// Set the timer
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, Delegate, ActivationFailureDelay, false);
+		if (GetWorld())
+		{
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, Delegate, ActivationFailureDelay, false);
+		}
 	}
 }
 
@@ -181,10 +184,13 @@ void UAbilityTask_PushPawnScan::Activate()
 void UAbilityTask_PushPawnScan::OnDestroy(bool bInOwnerFinished)
 {
 	// Clear the timer
-	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 
-	// Clear non-uobject timers
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+		// Clear non-uobject timers
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	}
 
 	// Unbind the delegate
 	if (OnPushPawnScanPauseStateChangedDelegate)
