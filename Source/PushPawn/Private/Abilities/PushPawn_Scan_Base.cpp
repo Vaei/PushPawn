@@ -109,6 +109,9 @@ void UPushPawn_Scan_Base::TriggerPush()
 	// result in de-sync
 	FVector Direction = PushOption.PusheeActorLocation - PushOption.PusherActorLocation;
 
+	// Pushee distance from pusher, used later to calculate the normalized distance from pusher. 
+	const float Distance = ScanParams.bDirectionIs2D ? Direction.Size2D() : Direction.Size();
+	
 	// Way too close to get a valid difference in direction
 	if (Direction.IsNearlyZero(2.5f))
 	{
@@ -119,7 +122,7 @@ void UPushPawn_Scan_Base::TriggerPush()
 		FVector NewDirection { FMath::Cos(RandAngle), FMath::Sin(RandAngle), 0.f };
 		Direction = NewDirection.GetSafeNormal();
 	}
-
+	
 	// Normalize the direction
 	Direction = ScanParams.bDirectionIs2D ? Direction.GetSafeNormal2D() : Direction.GetSafeNormal();
 
@@ -133,7 +136,7 @@ void UPushPawn_Scan_Base::TriggerPush()
 	
 	// Allow the target to customize the event data we're about to pass in, in case the ability needs custom data
 	// that only the actor knows.
-	FPushPawnAbilityTargetData* TargetData = new FPushPawnAbilityTargetData(Direction);
+	FPushPawnAbilityTargetData* TargetData = new FPushPawnAbilityTargetData(Direction, Distance);
 
 	// The payload data for the Push ability
 	FGameplayEventData Payload;

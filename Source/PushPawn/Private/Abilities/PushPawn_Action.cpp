@@ -26,6 +26,12 @@ namespace FPushPawnCVars
 #endif
 }
 
+float SafeDivide(float A, float B)
+{
+	// Prevent potential divide by zero issues
+	return B != 0.f ? (A / B) : 0.f;
+}
+
 bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
@@ -52,13 +58,19 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 		CancelAbility(Handle, ActorInfo, ActivationInfo, false);
 		return false;
 	}
-
-	// Gather Push Strength
-	const float Strength = UPushStatics::GetPushStrength(Pushee, PushParams);
-
+	
 	// Gather Push Direction
 	static constexpr bool bForce2D = true;
-	const FVector PushDirection = UPushStatics::GetPushDirectionFromEventData(EventData, bForce2D);
+	FVector PushDirection = FVector::ZeroVector;
+	float DistanceBetween = 0.f;
+	UPushStatics::GetPushDirectionAndDistanceBetweenFromEventData(EventData, bForce2D, PushDirection, DistanceBetween);
+
+	// Normalize DistanceBetween (might be able to move concept this into the scan and simplify it as CapsuleOverlapPct or something).
+	float CombinedRadius = Pushee->GetSimpleCollisionRadius() +  Pusher->GetSimpleCollisionRadius();
+	float NormalizedDistance = SafeDivide(DistanceBetween, CombinedRadius);
+	
+	// Gather Push Strength
+	const float Strength = UPushStatics::GetPushStrength(Pushee, NormalizedDistance, PushParams);
 
 #if UE_ENABLE_DEBUG_DRAWING
 	if (FPushPawnCVars::PushPawnActionDebugDraw > 0)  // Use WantsPushPawnActionDebugDraw() in derived classes
@@ -66,7 +78,7 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 		const bool bIsLocalPlayer = ActorInfo->IsLocallyControlled();
 		if (FPushPawnCVars::PushPawnActionDebugDraw == 1 || bIsLocalPlayer)
 		{
-			DrawDebugDirectionalArrow(Pushee->GetWorld(), Pushee->GetActorLocation(), Pushee->GetActorLocation() + PushDirection * 100.0f, 40.0f, FColor::Magenta, false, 1.0f);
+			DrawDebugDirectionalArrow(Pushee->GetWorld(), Pushee->GetActorLocation(), Pushee->GetActorLocation() + PushDirection * 100.f, 40.f, FColor::Magenta, false, 1.0f);
 		}
 	}
 #endif
