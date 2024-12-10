@@ -7,6 +7,8 @@
 #include "PushTypes.h"
 #include "AbilityTask_PushPawnScan.generated.h"
 
+class UAbilityTask_PushPawnSync;
+
 /**
  * Implemented by the PushPawn Scan ability.
  * 
@@ -23,7 +25,7 @@ class PUSHPAWN_API UAbilityTask_PushPawnScan : public UAbilityTask_PushPawnScan_
 
 public:
 	UFUNCTION()
-	void OnNetSync();
+	void OnNetSync(UAbilityTask_PushPawnSync* SyncPoint);
 	
 	void ActivateTimer(EPushPawnPauseType PauseType = EPushPawnPauseType::NotPaused);
 
@@ -62,6 +64,10 @@ private:
 	UPROPERTY(Transient, DuplicateTransient)
 	float ActivationFailureDelay;
 
+	/** Tracked to prevent premature GC and allow ending during OnDestroy */
+	UPROPERTY(Transient)
+	TArray<TObjectPtr<UAbilityTask_PushPawnSync>> SyncPoints;
+	
 private:
 	UPROPERTY(Transient, DuplicateTransient)
 	float CurrentScanRate;

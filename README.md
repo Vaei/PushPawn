@@ -77,6 +77,14 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.4.0
+_No longer in beta following meaningful testing_
+
+* Fixed potential GC leak with WaitNetSync
+	* Added custom WaitNetSync (UAbilityTask_PushPawnSync) that passes itself with the callback to allow TArray cleanup
+* Added distance based scaling to make characters firmer, if desired
+* Added non-shipping CVars to disable both velocity and distance based scaling
+
 ### 2.3.4-beta
 * Add missing null checks for UPushStatics::GetPushPawnsFromEventDataChecked
 * Add GetWorld() checks for AbilityTask_PushPawnScan

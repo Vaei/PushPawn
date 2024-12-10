@@ -58,6 +58,7 @@ struct PUSHPAWN_API FPushPawnActionParams
 
 	FPushPawnActionParams()
 		: VelocityToStrengthCurve(nullptr)
+		, DistanceToStrengthCurve(nullptr)
 		, Duration(0.1f)
 		, StrengthScalar(1.f)
 	{}
@@ -65,6 +66,10 @@ struct PUSHPAWN_API FPushPawnActionParams
 	/** Scale the push strength by the pushee's own velocity */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
 	UCurveFloat* VelocityToStrengthCurve;
+
+	/** Scale the push strength by the normalized capsule-distance to the pushee */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
+	UCurveFloat* DistanceToStrengthCurve;
 
 	/** How long the push force lasts for */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
