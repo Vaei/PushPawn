@@ -5,7 +5,7 @@
 #include "GameFramework/Pawn.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/PushPawn_Scan_Base.h"
-#include "Abilities/Tasks/AbilityTask_NetworkSyncPoint.h"
+#include "Tasks/AbilityTask_PushPawnSync.h"
 #include "IPush.h"
 #include "PushStatics.h"
 #include "PushQuery.h"
@@ -80,8 +80,15 @@ UAbilityTask_PushPawnScan* UAbilityTask_PushPawnScan::PushPawnScan(
 	return MyObj;
 }
 
-void UAbilityTask_PushPawnScan::OnNetSync()
+void UAbilityTask_PushPawnScan::OnNetSync(UAbilityTask_PushPawnSync* SyncPoint)
 {
+	// Remove finished net sync
+	if (IsValid(SyncPoint))
+	{
+		SyncPoints.RemoveSingle(SyncPoint);
+	}
+	
+	// Re-activate the timer
 	ActivateTimer();
 }
 
@@ -121,9 +128,10 @@ void UAbilityTask_PushPawnScan::ActivateTimer(EPushPawnPauseType PauseType)
 		}
 #endif
 		
-		UAbilityTask_NetworkSyncPoint* WaitNetSync = UAbilityTask_NetworkSyncPoint::WaitNetSync(Ability, EAbilityTaskNetSyncType::OnlyServerWait);
+		UAbilityTask_PushPawnSync* WaitNetSync = UAbilityTask_PushPawnSync::WaitNetSync(Ability);
 		WaitNetSync->OnSync.AddDynamic(this, &ThisClass::OnNetSync);
 		WaitNetSync->ReadyForActivation();
+		SyncPoints.Add(WaitNetSync);
 		return;
 	}
 
@@ -198,7 +206,15 @@ void UAbilityTask_PushPawnScan::OnDestroy(bool bInOwnerFinished)
 		OnPushPawnScanPauseStateChangedDelegate->Unbind();
 		OnPushPawnScanPauseStateChangedDelegate = nullptr;
 	}
-	
+
+	for (UAbilityTask_PushPawnSync* WaitNetSync : SyncPoints)
+	{
+		if (IsValid(WaitNetSync))
+		{
+			WaitNetSync->EndTask();
+		}
+	}
+
 	Super::OnDestroy(bInOwnerFinished);
 }
 

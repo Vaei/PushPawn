@@ -17,6 +17,25 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PushStatics)
 
+namespace FPushPawnCVars
+{
+#if !UE_BUILD_SHIPPING
+	static bool bPushPawnVelocityStrengthScalarDisabled = false;
+	FAutoConsoleVariableRef CVarPushPawnDisableVelocityStrengthScalar(
+		TEXT("p.PushPawn.DisableVelocityScaling"),
+		bPushPawnVelocityStrengthScalarDisabled,
+		TEXT("Disable PushPawn velocity based strength scalar.\n"),
+		ECVF_Cheat);
+	
+	static bool bPushPawnDistanceStrengthScalarDisabled = false;
+	FAutoConsoleVariableRef CVarPushPawnDisableDistanceStrengthScalar(
+		TEXT("p.PushPawn.DisableDistanceScaling"),
+		bPushPawnDistanceStrengthScalarDisabled,
+		TEXT("Disable PushPawn distance based strength scalar.\n"),
+		ECVF_Cheat);
+#endif
+}
+
 void UPushStatics::GetPushActorsFromEventData(const FGameplayEventData& EventData, const AActor*& Pushee, const AActor*& Pusher)
 {
 	Pushee = EventData.Instigator.Get();
@@ -64,6 +83,27 @@ FVector UPushStatics::GetPushDirectionFromEventData(const FGameplayEventData& Ev
 		return PushTargetData.Direction.GetSafeNormal2D();
 	}
 	return PushTargetData.Direction.GetSafeNormal();
+}
+
+void UPushStatics::GetPushDirectionAndDistanceBetweenFromEventData(const FGameplayEventData& EventData, bool bForce2D, FVector& OutPushDirection, float& OutDistanceBetween)
+{
+	// Get the target data from the event data
+	const FGameplayAbilityTargetData* RawData = EventData.TargetData.Get(0);
+	check(RawData);
+	const FPushPawnAbilityTargetData& PushTargetData = static_cast<const FPushPawnAbilityTargetData&>(*RawData);
+
+	// Normalize the direction
+	if (bForce2D)
+	{
+		OutPushDirection = PushTargetData.Direction.GetSafeNormal2D();
+	}
+	else
+	{
+		OutPushDirection = PushTargetData.Direction.GetSafeNormal();
+	}
+
+	// Extract distance
+	OutDistanceBetween = PushTargetData.Distance;
 }
 
 bool UPushStatics::GetDefaultCapsuleRootComponent(const AActor* Actor, float& CapsuleRadius, float& CapsuleHalfHeight)
@@ -119,35 +159,99 @@ float UPushStatics::GetPusheeGroundSpeed(const IPusheeInstigator* Pushee)
 	return GetPusheeGroundVelocity(Pushee).Size();
 }
 
-float UPushStatics::GetPushStrength(const APawn* Pushee, const FPushPawnActionParams& Params)
+float UPushStatics::GetPushStrength(const APawn* Pushee, float Distance, const FPushPawnActionParams& Params)
 {
-	// If no curve is supplied, return the scalar
-	if (!Params.VelocityToStrengthCurve)
+	// Get the strength from the curve and apply the scalar
+	float Strength = Params.StrengthScalar;
+	
+	// Scale strength based on pushee velocity
+	if (Params.VelocityToStrengthCurve)
 	{
-		return Params.StrengthScalar;
+		bool bEvaluateVelocityToStrengthCurve = true;
+
+#if !UE_BUILD_SHIPPING
+		if (FPushPawnCVars::bPushPawnVelocityStrengthScalarDisabled)
+		{
+			bEvaluateVelocityToStrengthCurve = false;
+		}
+#endif
+
+		if (bEvaluateVelocityToStrengthCurve)
+		{
+			// Get the speed of the pushee
+			const float PusheeSpeed = GetPawnGroundSpeed(Pushee);
+
+			// Get the strength from the curve and apply the scalar
+			Strength *= Params.VelocityToStrengthCurve->GetFloatValue(PusheeSpeed);	
+		}
 	}
 
-	// Get the speed of the pushee
-	const float PusheeSpeed = GetPawnGroundSpeed(Pushee);
+	// Scale strength based on distance between the pushee & pusher
+	if (Params.DistanceToStrengthCurve)
+	{
+		bool bEvaluateDistanceToStrengthCurve = true;
 
-	// Get the strength from the curve and apply the scalar
-	return Params.VelocityToStrengthCurve->GetFloatValue(PusheeSpeed) * Params.StrengthScalar;
+#if !UE_BUILD_SHIPPING
+		if (FPushPawnCVars::bPushPawnDistanceStrengthScalarDisabled)
+		{
+			bEvaluateDistanceToStrengthCurve = false;
+		}
+#endif
+		
+		if (bEvaluateDistanceToStrengthCurve)
+		{
+			Strength *= Params.DistanceToStrengthCurve->GetFloatValue(Distance);	
+		}
+	}
+
+	return Strength;
 }
 
-float UPushStatics::GetPushStrengthSimple(const APawn* Pushee, const UCurveFloat* VelocityToStrengthCurve,
-	float StrengthScalar)
+float UPushStatics::GetPushStrengthSimple(const APawn* Pushee, const UCurveFloat* VelocityToStrengthCurve, const UCurveFloat* DistanceToStrengthCurve, float Distance, float StrengthScalar)
 {
-	// If no curve is supplied, return the scalar
-	if (!VelocityToStrengthCurve)
+	float Strength = StrengthScalar;
+	 
+	// Scale strength based on pushee velocity
+	if (VelocityToStrengthCurve)
 	{
-		return StrengthScalar;
+		bool bEvaluateVelocityToStrengthCurve = true;
+
+		#if !UE_BUILD_SHIPPING
+		if (FPushPawnCVars::bPushPawnVelocityStrengthScalarDisabled)
+		{
+			bEvaluateVelocityToStrengthCurve = false;
+		}
+		#endif
+
+		if (bEvaluateVelocityToStrengthCurve)
+		{
+			// Get the speed of the pushee
+			const float PusheeSpeed = GetPawnGroundSpeed(Pushee);
+
+			// Get the strength from the curve and apply the scalar
+			Strength *= VelocityToStrengthCurve->GetFloatValue(PusheeSpeed);
+		}
 	}
 
-	// Get the speed of the pushee
-	const float PusheeSpeed = GetPawnGroundSpeed(Pushee);
+	// Scale strength based on distance between the pushee & pusher
+	if (DistanceToStrengthCurve)
+	{
+		bool bEvaluateDistanceToStrengthCurve = true;
 
-	// Get the strength from the curve and apply the scalar
-	return VelocityToStrengthCurve->GetFloatValue(PusheeSpeed) * StrengthScalar;
+#if !UE_BUILD_SHIPPING
+		if (FPushPawnCVars::bPushPawnDistanceStrengthScalarDisabled)
+		{
+			bEvaluateDistanceToStrengthCurve = false;
+		}
+#endif
+
+		if (bEvaluateDistanceToStrengthCurve)
+		{
+			Strength *= DistanceToStrengthCurve->GetFloatValue(Distance);	
+		}
+	}
+
+	return Strength;
 }
 
 float UPushStatics::CalculatePushDirection(const FVector& Direction, const FRotator& BaseRotation)

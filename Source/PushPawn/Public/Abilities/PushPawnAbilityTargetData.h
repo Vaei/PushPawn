@@ -17,18 +17,24 @@ struct FPushPawnAbilityTargetData : public FGameplayAbilityTargetData
 
 	FPushPawnAbilityTargetData()
 		: Direction(FVector::ZeroVector)
+		, Distance(0.f)
 	{}
 
-	FPushPawnAbilityTargetData(const FVector& InDirection)
+	FPushPawnAbilityTargetData(const FVector& InDirection, float InDistance = 0.f)
 		: Direction(InDirection)
+		, Distance(InDistance)
 	{}
 
 	UPROPERTY(BlueprintReadOnly, Category=Character)
 	FVector_NetQuantizeNormal Direction;
 
+	UPROPERTY(BlueprintReadOnly, Category=Character)
+	float Distance;
+	
 	bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
 	{
 		Direction.NetSerialize(Ar, Map, bOutSuccess);
+		Ar << Distance;
 		return true;
 	}
 	

@@ -59,6 +59,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category=PushPawn)
 	static FVector GetPushDirectionFromEventData(const FGameplayEventData& EventData, bool bForce2D = true);
 
+	/**
+	 * Extracts the push direction and distance between from the event data
+	 * @param EventData		The event data to extract the push direction from
+	 * @param bForce2D		Whether to force the direction to be 2D
+	 * @param OutPushDirection The normalized push direction from the event data 
+	 * @param OutDistanceBetween The distance between pusher & pushee at the time of the event.
+	 */
+	UFUNCTION(BlueprintCallable, Category=PushPawn)
+	static void GetPushDirectionAndDistanceBetweenFromEventData(const FGameplayEventData& EventData, bool bForce2D, FVector& OutPushDirection, float& OutDistanceBetween);
+
 public:
 	//--------------------------------------------------------------
 	// ABILITY HELPER METHODS
@@ -90,21 +100,24 @@ public:
 	/** 
 	 * Returns the push strength based on the push parameters
 	 * @param Pushee	The pawn being pushed
+	 * @param Distance	The normalized distance between the pushee and pusher
 	 * @param Params	The push parameters
 	 * @return The push strength
 	 */
 	UFUNCTION(BlueprintPure, Category=PushPawn)
-	static float GetPushStrength(const APawn* Pushee, const FPushPawnActionParams& Params);
+	static float GetPushStrength(const APawn* Pushee, float Distance, const FPushPawnActionParams& Params);
 
 	/** 
 	 * Returns the push strength based on the push parameters
 	 * @param Pushee					The pawn being pushed
 	 * @param VelocityToStrengthCurve	The curve mapping velocity to push strength
+	 * @param DistanceToStrengthCurve	The curve mapping distance to push strength
+	 * @param Distance					The normalized distance between the pushee and pusher
 	 * @param StrengthScalar			The scalar to apply to the push strength. If no curve supplied, this will be the direct push strength
 	 * @return The push strength
 	 */
 	UFUNCTION(BlueprintPure, Category=PushPawn)
-	static float GetPushStrengthSimple(const APawn* Pushee, const UCurveFloat* VelocityToStrengthCurve = nullptr, float StrengthScalar = 1.f);
+	static float GetPushStrengthSimple(const APawn* Pushee, const UCurveFloat* VelocityToStrengthCurve = nullptr, const UCurveFloat* DistanceToStrengthCurve = nullptr, float Distance = 0.f, float StrengthScalar = 1.f);
 
 public:
 	/** 

@@ -23,8 +23,8 @@ UAbilityTask_PushPawnForce::UAbilityTask_PushPawnForce(const FObjectInitializer&
 
 	Priority = 2;
 	WorldDirection = FVector::ZeroVector;
-	Strength = 0.0f;
-	Duration = 0.0f;
+	Strength = 0.f;
+	Duration = 0.f;
 	StrengthOverTime = nullptr;
 	bIsAdditive = true;
 	bEnableGravity = false;
