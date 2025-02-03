@@ -60,7 +60,7 @@ void UAbilityTask_PushPawnScan_Base::UpdatePushOptions(const FPushQuery& PushQue
 				FObjectKey ObjectKey { Option.PushAbilityToGrant };
 				if (!PushAbilityCache.Find(ObjectKey))
 				{
-					FGameplayAbilitySpec Spec(Option.PushAbilityToGrant, 1, INDEX_NONE, this);
+					FGameplayAbilitySpec Spec(Option.PushAbilityToGrant, 1, INDEX_NONE);
 					FGameplayAbilitySpecHandle Handle = AbilitySystemComponent->GiveAbility(Spec);
 					PushAbilityCache.Add(ObjectKey, Handle);
 				}
