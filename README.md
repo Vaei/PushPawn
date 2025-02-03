@@ -77,6 +77,9 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.4.1
+* Don't pass SourceObject to AbilitySpec, AbilitySystem isn't net stable and tries to rep it
+
 ### 2.4.0
 _No longer in beta following meaningful testing_
 
