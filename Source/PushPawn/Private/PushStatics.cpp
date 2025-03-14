@@ -8,6 +8,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/PusheeComponent.h"
+#include "Components/PusherComponent.h"
 #include "Components/SphereComponent.h"
 #include "IPush.h"
 #include "PushQuery.h"
@@ -374,6 +375,46 @@ const IPusheeInstigator* UPushStatics::GetPusheeInstigator(const AActor* Actor)
 	return nullptr;
 }
 
+IPusherTarget* UPushStatics::GetPusherTarget(AActor* Actor)
+{
+	if (!Actor)
+	{
+		return nullptr;
+	}
+	
+	if (IPusherTarget* Interface = Cast<IPusherTarget>(Actor))
+	{
+		return Interface;
+	}
+
+	if (auto* Component = Actor->GetComponentByClass<UPusherComponent>())
+	{
+		return Cast<IPusherTarget>(Component);
+	}
+
+	return nullptr;
+}
+
+const IPusherTarget* UPushStatics::GetPusherTarget(const AActor* Actor)
+{
+	if (!Actor)
+	{
+		return nullptr;
+	}
+	
+	if (const IPusherTarget* Interface = Cast<IPusherTarget>(Actor))
+	{
+		return Interface;
+	}
+
+	if (auto* Component = Actor->GetComponentByClass<UPusherComponent>())
+	{
+		return Cast<IPusherTarget>(Component);
+	}
+
+	return nullptr;
+}
+
 FVector UPushStatics::GetPushPawnAcceleration(const IPusheeInstigator* Pushee)
 {
 	return Pushee ? Pushee->GetPusheeAcceleration().GetSafeNormal() : FVector::ZeroVector;
@@ -591,7 +632,8 @@ void UPushStatics::AppendPushTargetsFromHitResult(const FHitResult& HitResult, T
 	}
 
 	// If the actor isn't Pusher, it might have a component that has a Push interface.
-	const TScriptInterface<IPusherTarget> PushComponent(HitResult.GetComponent());
+	UPusherComponent* PusherComponent = HitResult.GetActor() ? HitResult.GetActor()->FindComponentByClass<UPusherComponent>() : nullptr;
+	const TScriptInterface<IPusherTarget> PushComponent(PusherComponent);
 	if (PushComponent)
 	{
 		OutPushTargets.AddUnique(PushComponent);

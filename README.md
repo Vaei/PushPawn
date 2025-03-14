@@ -77,6 +77,10 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.4.2
+* Implement support UPusherTargetComponent
+	* PushPawn can now be setup without any C++ (ill-advised)
+
 ### 2.4.1
 * Don't pass SourceObject to AbilitySpec, AbilitySystem isn't net stable and tries to rep it
 
