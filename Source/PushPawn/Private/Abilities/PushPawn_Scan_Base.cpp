@@ -91,7 +91,7 @@ void UPushPawn_Scan_Base::TriggerPush()
 	const IPusheeInstigator* PusheeInstigator = UPushStatics::GetPusheeInstigator(PusheeInstigatorActor);
 	
 	// The ability target that does the pushing
-	const IPusherTarget* PusherTarget = PusherTargetActor ? Cast<IPusherTarget>(PusherTargetActor) : nullptr;
+	const IPusherTarget* PusherTarget = UPushStatics::GetPusherTarget(PusherTargetActor);
 
 	// Check if the pushee can be pushed by the pusher
 	const bool bCanBePushed = PusheeInstigator && PusheeInstigator->CanBePushedBy(PusherTargetActor);

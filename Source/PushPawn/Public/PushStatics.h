@@ -138,6 +138,8 @@ public:
 
 	static IPusheeInstigator* GetPusheeInstigator(AActor* Actor);
 	static const IPusheeInstigator* GetPusheeInstigator(const AActor* Actor);
+	static IPusherTarget* GetPusherTarget(AActor* Actor);
+	static const IPusherTarget* GetPusherTarget(const AActor* Actor);
 	
 	static FVector GetPushPawnAcceleration(const IPusheeInstigator* Pushee);
 	static FVector GetPushPawnAcceleration(APawn* Pushee);
