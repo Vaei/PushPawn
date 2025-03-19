@@ -137,11 +137,13 @@ void UAbilityTask_PushPawnScan::ActivateTimer(EPushPawnPauseType PauseType)
 
 	if (!OnPushPawnScanPauseStateChangedDelegate)
 	{
-		IPusheeInstigator* Pushee = UPushStatics::GetPusheeInstigator(GetAvatarActor());
-		OnPushPawnScanPauseStateChangedDelegate = Pushee->GetPushPawnScanPausedDelegate();
-		if (OnPushPawnScanPauseStateChangedDelegate)
+		if (IPusheeInstigator* Pushee = UPushStatics::GetPusheeInstigator(GetAvatarActor()))
 		{
-			OnPushPawnScanPauseStateChangedDelegate->BindUObject(this, &ThisClass::OnScanPaused);
+			OnPushPawnScanPauseStateChangedDelegate = Pushee->GetPushPawnScanPausedDelegate();
+			if (OnPushPawnScanPauseStateChangedDelegate)
+			{
+				OnPushPawnScanPauseStateChangedDelegate->BindUObject(this, &ThisClass::OnScanPaused);
+			}
 		}
 	}
 	
