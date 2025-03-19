@@ -52,7 +52,7 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 		return false;
 	}
 
-	UCharacterMovementComponent* MovementComponent = Pushee->GetCharacterMovement();
+	const UCharacterMovementComponent* MovementComponent = Pushee->GetCharacterMovement();
 	if (!MovementComponent || MovementComponent->MovementMode == MOVE_None)
 	{
 		CancelAbility(Handle, ActorInfo, ActivationInfo, false);

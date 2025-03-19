@@ -31,7 +31,7 @@ bool UPushPawn_Ability::CanActivateAbility(const FGameplayAbilitySpecHandle Hand
 	TRACE_CPUPROFILER_EVENT_SCOPE(UPushPawn_Ability::CanActivateAbility);
 	
 	// A valid AvatarActor is required.
-	AActor* const AvatarActor = ActorInfo ? ActorInfo->AvatarActor.Get() : nullptr;
+	const AActor* const AvatarActor = ActorInfo ? ActorInfo->AvatarActor.Get() : nullptr;
 	if (AvatarActor == nullptr)
 	{
 		return false;
@@ -44,13 +44,13 @@ bool UPushPawn_Ability::CanActivateAbility(const FGameplayAbilitySpecHandle Hand
 	}
 
 	// Make sure the ability system component is valid, if not bail out.
-	UAbilitySystemComponent* const AbilitySystemComponent = ActorInfo->AbilitySystemComponent.Get();
+	const UAbilitySystemComponent* const AbilitySystemComponent = ActorInfo->AbilitySystemComponent.Get();
 	if (!AbilitySystemComponent)
 	{
 		return false;
 	}
-	
-	FGameplayAbilitySpec* Spec = AbilitySystemComponent->FindAbilitySpecFromHandle(Handle);
+
+	const FGameplayAbilitySpec* Spec = AbilitySystemComponent->FindAbilitySpecFromHandle(Handle);
 	if (!Spec)
 	{
 		ABILITY_LOG(Warning, TEXT("CanActivateAbility %s failed, called with invalid Handle"), *GetName());
