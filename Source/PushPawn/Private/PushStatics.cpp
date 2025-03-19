@@ -545,7 +545,8 @@ float UPushStatics::GetMaxDefaultCollisionShapeSize(const AActor* Actor, EPushCo
 	if (Actor)
 	{
 		FQuat ShapeRotation;
-		FCollisionShape CollisionShape = GetDefaultPusheeCollisionShape(Actor, ShapeRotation, SpecificShapeType, nullptr);
+		
+		const FCollisionShape CollisionShape = GetDefaultPusheeCollisionShape(Actor, ShapeRotation, SpecificShapeType, nullptr);
 		if (!CollisionShape.IsNearlyZero())
 		{
 			switch (CollisionShape.ShapeType)

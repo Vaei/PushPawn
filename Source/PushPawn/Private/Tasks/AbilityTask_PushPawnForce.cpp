@@ -87,14 +87,14 @@ void UAbilityTask_PushPawnForce::InitSimulatedTask(UGameplayTasksComponent& InGa
 
 void UAbilityTask_PushPawnForce::SharedInitAndApply()
 {
-	UAbilitySystemComponent* ASC = AbilitySystemComponent.Get();
+	const UAbilitySystemComponent* ASC = AbilitySystemComponent.Get();
 	if (ASC && ASC->AbilityActorInfo->MovementComponent.IsValid())
 	{
 		MovementComponent = Cast<UCharacterMovementComponent>(ASC->AbilityActorInfo->MovementComponent.Get());
 
 		if (MovementComponent)
 		{
-			TSharedPtr<FRootMotionSource_ConstantForce> ConstantForce = MakeShared<FRootMotionSource_ConstantForce>();
+			const TSharedPtr<FRootMotionSource_ConstantForce> ConstantForce = MakeShared<FRootMotionSource_ConstantForce>();
 			ConstantForce->InstanceName = TEXT("PushPawnForce");
 			ConstantForce->AccumulateMode = bIsAdditive ? ERootMotionAccumulateMode::Additive : ERootMotionAccumulateMode::Override;
 			ConstantForce->Priority = 2;  // Low priority for pushing
@@ -109,7 +109,7 @@ void UAbilityTask_PushPawnForce::SharedInitAndApply()
 			RootMotionSourceID = MovementComponent->ApplyRootMotionSource(ConstantForce);
 			if (RootMotionSourceID != (uint16)ERootMotionSourceID::Invalid)
 			{
-				FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::EndTask);
+				const FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &ThisClass::EndTask);
 				GetWorld()->GetTimerManager().SetTimer(FinishTimerHandle, TimerDelegate, Duration, false);
 			}
 			else
