@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/Tasks/AbilityTask.h"
-#include "GameFramework/RootMotionSource.h"
 #include "AbilityTask_PushPawnForce.generated.h"
 
+class UCharacterMovementComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FApplyPushPawnForceDelegate);
 
 /**
