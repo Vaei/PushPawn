@@ -77,6 +77,10 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
+### 2.4.3
+* Const-correctness, code tidy
+* Add missing null check
+
 ### 2.4.2
 * Implement support UPusherTargetComponent
 	* PushPawn can now be setup without any C++ (ill-advised)
