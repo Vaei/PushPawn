@@ -71,6 +71,7 @@ protected:
 	/** 
 	 * @return The default collision shape for the pushee
 	 * @param Actor				The actor to get the collision shape for
+	 * @param ShapeRotation		Output parameter for the shape's rotation
 	 * @param OptionalShapeType	The optional shape type to use
 	 * @param OptionalComponent	The optional component to use - if not supplied, the root component from the Actor's defaults will be used
 	 */
