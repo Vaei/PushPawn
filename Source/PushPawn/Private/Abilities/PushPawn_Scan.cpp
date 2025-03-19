@@ -17,8 +17,8 @@ bool UPushPawn_Scan::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Ha
 	if (Super::ActivatePushPawnAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData))
 	{
 		// Gather parameters
-		FPushQuery Query { GetAvatarActorFromActorInfo() };
-		FGameplayAbilityTargetingLocationInfo StartLocation = MakeTargetLocationInfoFromOwnerActor();
+		const FPushQuery Query { GetAvatarActorFromActorInfo() };
+		const FGameplayAbilityTargetingLocationInfo StartLocation = MakeTargetLocationInfoFromOwnerActor();
 
 		// Create the task
 		UAbilityTask_PushPawnScan* Task = UAbilityTask_PushPawnScan::PushPawnScan(

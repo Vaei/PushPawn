@@ -117,9 +117,9 @@ void UPushPawn_Scan_Base::TriggerPush()
 	{
 		// This typically occurs on spawning, when their location is the exact same, if we move them back along their
 		// forward vectors - they may just push forever in the same direction
-		float RandomDegrees = FMath::RandRange(0.f, 360.f);
+		const float RandomDegrees = FMath::RandRange(0.f, 360.f);
 		const float RandAngle = FMath::DegreesToRadians(RandomDegrees);
-		FVector NewDirection { FMath::Cos(RandAngle), FMath::Sin(RandAngle), 0.f };
+		const FVector NewDirection { FMath::Cos(RandAngle), FMath::Sin(RandAngle), 0.f };
 		Direction = NewDirection.GetSafeNormal();
 	}
 	

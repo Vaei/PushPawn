@@ -14,6 +14,6 @@ FPushPawnCollisionShapeHelper UPusheeComponentHelper::K2_GetDefaultPusheeCollisi
 	{
 		return {};
 	}
-	FCollisionShape Shape = UPushStatics::GetDefaultPusheeCollisionShape(Actor, ShapeRotation, OptionalShapeType, OptionalComponent);
+	const FCollisionShape Shape = UPushStatics::GetDefaultPusheeCollisionShape(Actor, ShapeRotation, OptionalShapeType, OptionalComponent);
 	return FPushPawnCollisionShapeHelper { Shape };
 }
