@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "PushTypes.h"
+#include "GameFramework/Actor.h"
 #include "PushStatics.generated.h"
 
 struct FPushQuery;

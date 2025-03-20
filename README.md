@@ -1,4 +1,4 @@
-# Push Pawn <img align="right" width=256, height=256 src="https://github.com/Vaei/PushPawn/blob/main/Resources/Icon128.png">
+# Push Pawn <img align="right" width=128, height=128 src="https://github.com/Vaei/PushPawn/blob/main/Resources/Icon128.png">
 
 > [!IMPORTANT]
 > **Net-predicted soft organic collisions!**
@@ -75,6 +75,7 @@ One day, someone is going to do something surprising with Push Pawn, and I look 
 * Add demo content
 * Const-correctness, code tidy
 * Add missing null check
+* Add missing include
 
 ### 2.4.2
 * Implement support UPusherTargetComponent
