@@ -73,6 +73,7 @@ One day, someone is going to do something surprising with Push Pawn, and I look 
 
 ### 2.5.0
 * Add demo content
+* Replace native pointers with TObjectPtr
 * Const-correctness, code tidy
 * Add missing null check
 * Add missing include

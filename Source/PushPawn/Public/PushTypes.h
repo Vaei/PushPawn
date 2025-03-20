@@ -65,11 +65,11 @@ struct PUSHPAWN_API FPushPawnActionParams
 
 	/** Scale the push strength by the pushee's own velocity */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
-	UCurveFloat* VelocityToStrengthCurve;
+	TObjectPtr<UCurveFloat> VelocityToStrengthCurve;
 
 	/** Scale the push strength by the normalized capsule-distance to the pushee */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
-	UCurveFloat* DistanceToStrengthCurve;
+	TObjectPtr<UCurveFloat> DistanceToStrengthCurve;
 
 	/** How long the push force lasts for */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
@@ -116,7 +116,7 @@ struct PUSHPAWN_API FPushPawnScanParams
 
 	/** Change the size we consider the pusher (the one who pushes us) to be when searching for them based on OUR velocity */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
-	UCurveFloat* RadiusVelocityScalar;
+	TObjectPtr<UCurveFloat> RadiusVelocityScalar;
 	
 	/** How often to test for overlaps */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
