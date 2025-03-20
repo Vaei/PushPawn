@@ -5,8 +5,22 @@
 > <br>Eliminate multiplayer de-sync when moving near other pawns
 > <br>Collisions that feel great for the best player experience possible!
 
+> [!WARNING]
+> Use `git clone` instead of downloading as a zip, or you will not receive content
+> <br>Install this as a project plugin, not an engine plugin
+
 > [!TIP]
 > Suitable for both singleplayer and multiplayer games
+> <br>Supports UE5.3+
+
+## Watch Me
+
+> [!TIP]
+> [Showcase Video Coming Soon]()
+
+## How to Use
+> [!IMPORTANT]
+> [Read the Wiki to Learn How to use Hit React](https://github.com/Vaei/PushPawn/wiki/How-to-Use)
 
 ## Features
 
@@ -54,26 +68,6 @@ Or perhaps you'd like to be able to push AFK players off cliffs... :smiling_imp:
 
 ### Exceptionally Customizable
 One day, someone is going to do something surprising with Push Pawn, and I look forward to it, because the possibilities to adjust behaviour really are endless. That someone might be you! :smiley_cat:
-
-## How To Use
-
-> [!WARNING]
-> ***Due to the use of Git LFS, do not download a zip or your content will be missing***
-> <br>You will need to clone this via `git clone https://github.com/Vaei/PushPawn.git`
-
-> [!IMPORTANT]
-> [Read the Wiki to Learn How to use Push Pawn](https://github.com/Vaei/PushPawn/wiki)
-
-## Example
-_Examples are based on 1.0.0_
-
-Here is the preview from the included minimal Third Person Example project. This footage was obtained with >200ms and `p.netshowcorrections 1` - as you can see, it doesn't de-sync abnormally.
-
-![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview.gif)
-
-This was initially created for a personal project that would make the AI play a push animation and yell at the player, which is not included, however the helper functions for building this are included.
-
-![example usage](https://github.com/Vaei/repo_files/blob/main/PushPawn/preview_isekai.gif)
 
 ## Changelog
 
