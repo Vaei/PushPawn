@@ -77,7 +77,8 @@ This was initially created for a personal project that would make the AI play a 
 
 ## Changelog
 
-### 2.4.3
+### 2.5.0
+* Add demo content
 * Const-correctness, code tidy
 * Add missing null check
 
