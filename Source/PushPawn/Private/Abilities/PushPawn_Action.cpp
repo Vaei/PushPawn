@@ -57,11 +57,12 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 	static constexpr bool bForce2D = true;
 	FVector PushDirection = FVector::ZeroVector;
 	float DistanceBetween = 0.f;
-	UPushStatics::GetPushDirectionAndDistanceBetweenFromEventData(EventData, bForce2D, PushDirection, DistanceBetween);
+	float StrengthScalar = 1.f;
+	UPushStatics::GetPushDataFromEventData(EventData, bForce2D, PushDirection, DistanceBetween, StrengthScalar);
 	
 	// Gather Push Strength
 	const float NormalizedDistance = UPushStatics::GetNormalizedPushDistance(Pushee, Pusher, DistanceBetween);
-	const float Strength = UPushStatics::GetPushStrength(Pushee, NormalizedDistance, PushParams);
+	const float Strength = UPushStatics::GetPushStrength(Pushee, NormalizedDistance, PushParams) * StrengthScalar;
 
 #if UE_ENABLE_DEBUG_DRAWING
 	if (FPushPawnCVars::PushPawnActionDebugDraw > 0)  // Use WantsPushPawnActionDebugDraw() in derived classes

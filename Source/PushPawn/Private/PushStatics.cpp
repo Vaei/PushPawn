@@ -77,7 +77,8 @@ void UPushStatics::K2_GetPusheePawnFromEventData(AActor*& Pushee, const FGamepla
 	}
 }
 
-FVector UPushStatics::GetPushDirectionFromEventData(const FGameplayEventData& EventData, bool bForce2D)
+void UPushStatics::GetPushDataFromEventData(const FGameplayEventData& EventData, bool bForce2D, FVector& PushDirection, float& DistanceBetween, float&
+	StrengthScalar)
 {
 	// Get the target data from the event data
 	const FGameplayAbilityTargetData* RawData = EventData.TargetData.Get(0);
@@ -87,30 +88,18 @@ FVector UPushStatics::GetPushDirectionFromEventData(const FGameplayEventData& Ev
 	// Normalize the direction
 	if (bForce2D)
 	{
-		return PushTargetData.Direction.GetSafeNormal2D();
-	}
-	return PushTargetData.Direction.GetSafeNormal();
-}
-
-void UPushStatics::GetPushDirectionAndDistanceBetweenFromEventData(const FGameplayEventData& EventData, bool bForce2D, FVector& OutPushDirection, float& OutDistanceBetween)
-{
-	// Get the target data from the event data
-	const FGameplayAbilityTargetData* RawData = EventData.TargetData.Get(0);
-	check(RawData);
-	const FPushPawnAbilityTargetData& PushTargetData = static_cast<const FPushPawnAbilityTargetData&>(*RawData);
-
-	// Normalize the direction
-	if (bForce2D)
-	{
-		OutPushDirection = PushTargetData.Direction.GetSafeNormal2D();
+		PushDirection = PushTargetData.Direction.GetSafeNormal2D();
 	}
 	else
 	{
-		OutPushDirection = PushTargetData.Direction.GetSafeNormal();
+		PushDirection = PushTargetData.Direction.GetSafeNormal();
 	}
 
 	// Extract distance
-	OutDistanceBetween = PushTargetData.Distance;
+	DistanceBetween = PushTargetData.Distance;
+
+	// Extract strength scalar
+	StrengthScalar = PushTargetData.StrengthScalar;
 }
 
 bool UPushStatics::GetDefaultCapsuleRootComponent(const AActor* Actor, float& CapsuleRadius, float& CapsuleHalfHeight)
@@ -230,12 +219,12 @@ float UPushStatics::GetPushStrengthSimple(const APawn* Pushee, const UCurveFloat
 	{
 		bool bEvaluateVelocityToStrengthCurve = true;
 
-		#if !UE_BUILD_SHIPPING
+#if !UE_BUILD_SHIPPING
 		if (FPushPawnCVars::bPushPawnVelocityStrengthScalarDisabled)
 		{
 			bEvaluateVelocityToStrengthCurve = false;
 		}
-		#endif
+#endif
 
 		if (bEvaluateVelocityToStrengthCurve)
 		{

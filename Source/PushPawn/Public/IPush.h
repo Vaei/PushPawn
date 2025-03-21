@@ -62,6 +62,9 @@ public:
 	/** @return True if we can currently be pushed by the PusherActor */
 	virtual bool CanBePushedBy(const AActor* PusherActor) const = 0;
 
+	/** @return Optional runtime strength scaling to change how much the pushee is pushed */
+	virtual float GetPusheeStrengthScalar() const { return 1.f; }
+
 	/**
 	 * Get the acceleration of the Pushee, will be normalized post-retrieval
 	 * UCharacterMovementComponent::GetCurrentAcceleration()
@@ -133,4 +136,7 @@ public:
 
 	/** @return True if we can currently push the PusheeActor */
 	virtual bool CanPushPawn(const AActor* PusheeActor) const = 0;
+
+	/** @return Optional runtime strength scaling to change how much the pusher pushes the pushee */
+	virtual float GetPusherStrengthScalar() const { return 1.f; }
 };

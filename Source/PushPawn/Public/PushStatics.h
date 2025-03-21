@@ -50,25 +50,17 @@ public:
 	/** Extract Pushee Pawn from EventData */
 	UFUNCTION(BlueprintCallable, Category=PushPawn, meta=(DisplayName="Get Pushee Pawn From Event Data", DeterminesOutputType="PawnClass", DynamicOutputParam="Pushee"))
 	static void K2_GetPusheePawnFromEventData(AActor*& Pushee, const FGameplayEventData& EventData, TSubclassOf<APawn> PawnClass);
-	
-	/**
-	 * Extracts the push direction from the event data and normalizes it
-	 * @param EventData		The event data to extract the push direction from
-	 * @param bForce2D		Whether to force the direction to be 2D
-	 * @return The normalized push direction from the event data
-	 */
-	UFUNCTION(BlueprintCallable, Category=PushPawn)
-	static FVector GetPushDirectionFromEventData(const FGameplayEventData& EventData, bool bForce2D = true);
 
 	/**
 	 * Extracts the push direction and distance between from the event data
 	 * @param EventData		The event data to extract the push direction from
 	 * @param bForce2D		Whether to force the direction to be 2D
-	 * @param OutPushDirection The normalized push direction from the event data 
-	 * @param OutDistanceBetween The distance between pusher & pushee at the time of the event.
+	 * @param PushDirection The normalized push direction from the event data 
+	 * @param DistanceBetween The distance between pusher & pushee at the time of the event.
+	 * @param StrengthScalar The scalar to apply to the push strength.
 	 */
 	UFUNCTION(BlueprintCallable, Category=PushPawn)
-	static void GetPushDirectionAndDistanceBetweenFromEventData(const FGameplayEventData& EventData, bool bForce2D, FVector& OutPushDirection, float& OutDistanceBetween);
+	static void GetPushDataFromEventData(const FGameplayEventData& EventData, bool bForce2D, FVector& PushDirection, float& DistanceBetween, float& StrengthScalar);
 
 public:
 	//--------------------------------------------------------------
