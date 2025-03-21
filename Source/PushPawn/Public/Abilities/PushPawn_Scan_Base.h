@@ -53,7 +53,7 @@ protected:
 	 * Set to 0 to disable
 	 * @see ShouldWaitForNetSync(), TriggeredPushesSinceLastNetSync, MinNetSyncDelay
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync", meta=(ClampMin="0", UIMin="0", EditCondition="bEnableWaitForNetSync", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync", meta=(ClampMin="0", UIMin="0", ForceUnits="x", EditCondition="bEnableWaitForNetSync", EditConditionHides))
 	int32 MaxPushesUntilNetSync = 6;
 
 	/**
@@ -61,7 +61,7 @@ protected:
 	 * Set to 0 to disable
 	 * @see ShouldWaitForNetSync(), LastPushTime
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync", meta=(ClampMin="0.0", UIMin="0.0", EditCondition="bEnableWaitForNetSync", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync", meta=(ClampMin="0.0", UIMin="0.0", Delta="0.1", ForceUnits="s", EditCondition="bEnableWaitForNetSync", EditConditionHides))
 	float MinNetSyncDelay = 1.0f;
 	
 	/**
@@ -69,7 +69,7 @@ protected:
 	 * Set to 0 to disable
 	 * @see ShouldWaitForNetSync(), LastPushTime
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync", meta=(ClampMin="0.0", UIMin="0.0", EditCondition="bEnableWaitForNetSync", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync", meta=(ClampMin="0.0", UIMin="0.0", Delta="0.1", ForceUnits="s", EditCondition="bEnableWaitForNetSync", EditConditionHides))
 	float NetSyncDelayAfterPush = 5.0f;
 	
 	/**
@@ -77,7 +77,7 @@ protected:
 	 * Set to 0 to disable
 	 * @see ShouldWaitForNetSync(), LastPushTime
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync", meta=(ClampMin="0.0", UIMin="0.0", EditCondition="bEnableWaitForNetSync", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="PushPawn|Net Sync", meta=(ClampMin="0.0", UIMin="0.0", Delta="0.1", ForceUnits="s", EditCondition="bEnableWaitForNetSync", EditConditionHides))
 	float NetSyncDelayWithoutPush = 12.0f;
 	
 	/**
