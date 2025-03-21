@@ -26,12 +26,6 @@ namespace FPushPawnCVars
 #endif
 }
 
-float SafeDivide(float A, float B)
-{
-	// Prevent potential divide by zero issues
-	return B != 0.f ? (A / B) : 0.f;
-}
-
 bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
@@ -64,12 +58,9 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 	FVector PushDirection = FVector::ZeroVector;
 	float DistanceBetween = 0.f;
 	UPushStatics::GetPushDirectionAndDistanceBetweenFromEventData(EventData, bForce2D, PushDirection, DistanceBetween);
-
-	// Normalize DistanceBetween (might be able to move concept this into the scan and simplify it as CapsuleOverlapPct or something).
-	float CombinedRadius = Pushee->GetSimpleCollisionRadius() +  Pusher->GetSimpleCollisionRadius();
-	float NormalizedDistance = SafeDivide(DistanceBetween, CombinedRadius);
 	
 	// Gather Push Strength
+	const float NormalizedDistance = UPushStatics::GetNormalizedPushDistance(Pushee, Pusher, DistanceBetween);
 	const float Strength = UPushStatics::GetPushStrength(Pushee, NormalizedDistance, PushParams);
 
 #if UE_ENABLE_DEBUG_DRAWING

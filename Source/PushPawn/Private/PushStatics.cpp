@@ -37,6 +37,12 @@ namespace FPushPawnCVars
 #endif
 }
 
+float SafeDivide(float A, float B)
+{
+	// Prevent potential divide by zero issues
+	return B != 0.f ? (A / B) : 0.f;
+}
+
 void UPushStatics::GetPushActorsFromEventData(const FGameplayEventData& EventData, const AActor*& Pushee, const AActor*& Pusher)
 {
 	Pushee = EventData.Instigator.Get();
@@ -158,6 +164,13 @@ float UPushStatics::GetPusheeGroundSpeed(const IPusheeInstigator* Pushee)
 {
 	// Factor incline into the velocity when on the ground
 	return GetPusheeGroundVelocity(Pushee).Size();
+}
+
+float UPushStatics::GetNormalizedPushDistance(const AActor* Pushee, const AActor* Pusher, float DistanceBetween)
+{
+	const float CombinedRadius = Pushee->GetSimpleCollisionRadius() + Pusher->GetSimpleCollisionRadius();
+	const float NormalizedDistance = SafeDivide(DistanceBetween, CombinedRadius);
+	return NormalizedDistance;
 }
 
 float UPushStatics::GetPushStrength(const APawn* Pushee, float Distance, const FPushPawnActionParams& Params)
