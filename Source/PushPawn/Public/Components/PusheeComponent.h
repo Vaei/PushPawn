@@ -31,6 +31,9 @@ public:
 	/** @return True if we can currently be pushed by the PusherActor */
 	virtual bool CanBePushedBy(const AActor* PusherActor) const override PURE_VIRTUAL(UPusheeComponent::CanBePushedBy, return false;);
 
+	/** @return Optional runtime strength scaling to change how much the pushee is pushed */
+	virtual float GetPusheeStrengthScalar() const override { return 1.f; }
+	
 	/**
 	 * Get the acceleration of the Pushee, will be normalized post-retrieval
 	 * UCharacterMovementComponent::GetCurrentAcceleration()

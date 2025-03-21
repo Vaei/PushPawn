@@ -133,10 +133,15 @@ void UPushPawn_Scan_Base::TriggerPush()
 		// we want to dictate the direction to something that makes sense for our use-case
 		Direction = -PushOption.PusheeForwardVector;
 	}
+
+	// Runtime strength scalar
+	const float PusheeStrengthScalar = PusheeInstigator->GetPusheeStrengthScalar();
+	const float PusherStrengthScalar = PusherTarget->GetPusherStrengthScalar();
+	const float StrengthScalar = PusheeStrengthScalar * PusherStrengthScalar;
 	
 	// Allow the target to customize the event data we're about to pass in, in case the ability needs custom data
 	// that only the actor knows.
-	FPushPawnAbilityTargetData* TargetData = new FPushPawnAbilityTargetData(Direction, Distance);
+	FPushPawnAbilityTargetData* TargetData = new FPushPawnAbilityTargetData(Direction, Distance, StrengthScalar);
 
 	// The payload data for the Push ability
 	FGameplayEventData Payload;

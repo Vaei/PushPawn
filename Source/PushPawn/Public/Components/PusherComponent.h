@@ -31,4 +31,7 @@ public:
 
 	/** @return True if we can currently push the PusheeActor */
 	virtual bool CanPushPawn(const AActor* PusheeActor) const override PURE_VIRTUAL(UPusheeComponent::CanPushPawn, return false;);
+
+	/** @return Optional runtime strength scaling to change how much the pusher pushes the pushee */
+	virtual float GetPusherStrengthScalar() const override { return 1.f; }
 };
