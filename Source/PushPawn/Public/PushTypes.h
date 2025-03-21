@@ -48,6 +48,14 @@ enum class EPushPawnPauseType : uint8
 	ActivationFailed,
 };
 
+UENUM(BlueprintType)
+enum class EPushPawnOverrideHandling : uint8
+{
+	Min				UMETA(ToolTip="When both Pusher and Pushee want to override, take the minimum result"),
+	Max				UMETA(ToolTip="When both Pusher and Pushee want to override, take the maximum result"),
+	Average			UMETA(ToolTip="When both Pusher and Pushee want to override, average the results"),
+};
+
 /**
  * Customize the behavior of the pawn when it is pushed
  */
@@ -125,6 +133,10 @@ struct PUSHPAWN_API FPushPawnScanParams
 	/** How often to test for overlaps under acceleration */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn, meta=(ClampMin="0", UIMin="0", Delta="0.1", ForceUnits="s"))
 	float ScanRateAccel;
+
+	/** How to handle multiple strength overrides */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
+	EPushPawnOverrideHandling StrengthOverrideHandling;
 };
 
 /**
