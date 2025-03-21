@@ -98,6 +98,9 @@ public:
 	static float GetPusheeGroundSpeed(const IPusheeInstigator* Pushee);
 
 public:
+	UFUNCTION(BlueprintPure, Category=PushPawn)
+	static float GetNormalizedPushDistance(const AActor* Pushee, const AActor* Pusher, float DistanceBetween);
+	
 	/** 
 	 * Returns the push strength based on the push parameters
 	 * @param Pushee	The pawn being pushed
