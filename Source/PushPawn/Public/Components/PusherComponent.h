@@ -34,4 +34,10 @@ public:
 
 	/** @return Optional runtime strength scaling to change how much the pusher pushes the pushee */
 	virtual float GetPusherStrengthScalar() const override { return 1.f; }
+
+	/**
+	 * @param Strength The strength to push the pushee
+	 * @return True if Strength should override the applied strength
+	 */
+	virtual bool GetPusherStrengthOverride(float& Strength) const { return false; }
 };

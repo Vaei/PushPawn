@@ -58,9 +58,11 @@ public:
 	 * @param PushDirection The normalized push direction from the event data 
 	 * @param DistanceBetween The distance between pusher & pushee at the time of the event.
 	 * @param StrengthScalar The scalar to apply to the push strength.
+	 * @param bOverrideStrength If true, the strength scalar should override the strength calculation
 	 */
 	UFUNCTION(BlueprintCallable, Category=PushPawn)
-	static void GetPushDataFromEventData(const FGameplayEventData& EventData, bool bForce2D, FVector& PushDirection, float& DistanceBetween, float& StrengthScalar);
+	static void GetPushDataFromEventData(const FGameplayEventData& EventData, bool bForce2D, FVector& PushDirection,
+		float& DistanceBetween, float& StrengthScalar, bool& bOverrideStrength);
 
 public:
 	//--------------------------------------------------------------

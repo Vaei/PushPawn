@@ -58,11 +58,14 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 	FVector PushDirection = FVector::ZeroVector;
 	float DistanceBetween = 0.f;
 	float StrengthScalar = 1.f;
-	UPushStatics::GetPushDataFromEventData(EventData, bForce2D, PushDirection, DistanceBetween, StrengthScalar);
+	bool bOverrideStrength = false;
+	UPushStatics::GetPushDataFromEventData(EventData, bForce2D, PushDirection, DistanceBetween, StrengthScalar,
+		bOverrideStrength);
 	
 	// Gather Push Strength
 	const float NormalizedDistance = UPushStatics::GetNormalizedPushDistance(Pushee, Pusher, DistanceBetween);
-	const float Strength = UPushStatics::GetPushStrength(Pushee, NormalizedDistance, PushParams) * StrengthScalar;
+	const float Strength = bOverrideStrength ? StrengthScalar
+		: UPushStatics::GetPushStrength(Pushee, NormalizedDistance, PushParams) * StrengthScalar;
 
 #if UE_ENABLE_DEBUG_DRAWING
 	if (FPushPawnCVars::PushPawnActionDebugDraw > 0)  // Use WantsPushPawnActionDebugDraw() in derived classes
@@ -70,7 +73,9 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 		const bool bIsLocalPlayer = ActorInfo->IsLocallyControlled();
 		if (FPushPawnCVars::PushPawnActionDebugDraw == 1 || bIsLocalPlayer)
 		{
-			DrawDebugDirectionalArrow(Pushee->GetWorld(), Pushee->GetActorLocation(), Pushee->GetActorLocation() + PushDirection * 100.f, 40.f, FColor::Magenta, false, 1.0f);
+			DrawDebugDirectionalArrow(Pushee->GetWorld(), Pushee->GetActorLocation(),
+				Pushee->GetActorLocation() + PushDirection * 100.f, 40.f, FColor::Magenta,
+				false, 1.0f);
 		}
 	}
 #endif
