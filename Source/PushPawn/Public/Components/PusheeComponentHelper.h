@@ -33,6 +33,11 @@ public:
 	bool K2_CanBePushedBy(const AActor* PusherActor) const;
 	virtual bool CanBePushedBy(const AActor* PusherActor) const override { return K2_CanBePushedBy(PusherActor); }
 
+	/** @return Optional runtime strength scaling to change how much the pushee is pushed */
+	UFUNCTION(BlueprintPure, BlueprintImplementableEvent, Category=PushPawn, meta=(DisplayName="Get Pushee Strength Scalar"))
+	float K2_GetPusheeStrengthScalar() const;
+	virtual float GetPusheeStrengthScalar() const override { return K2_GetPusheeStrengthScalar(); }
+	
 	/**
 	 * Get the acceleration of the Pushee, will be normalized post-retrieval
 	 * UCharacterMovementComponent::GetCurrentAcceleration()
