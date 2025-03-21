@@ -78,7 +78,7 @@ void UPushStatics::K2_GetPusheePawnFromEventData(AActor*& Pushee, const FGamepla
 }
 
 void UPushStatics::GetPushDataFromEventData(const FGameplayEventData& EventData, bool bForce2D, FVector& PushDirection, float& DistanceBetween, float&
-	StrengthScalar)
+	StrengthScalar, bool& bOverrideStrength)
 {
 	// Get the target data from the event data
 	const FGameplayAbilityTargetData* RawData = EventData.TargetData.Get(0);
@@ -100,6 +100,9 @@ void UPushStatics::GetPushDataFromEventData(const FGameplayEventData& EventData,
 
 	// Extract strength scalar
 	StrengthScalar = PushTargetData.StrengthScalar;
+
+	// Extract strength override
+	bOverrideStrength = PushTargetData.bOverrideStrength;
 }
 
 bool UPushStatics::GetDefaultCapsuleRootComponent(const AActor* Actor, float& CapsuleRadius, float& CapsuleHalfHeight)

@@ -18,6 +18,7 @@ FPushPawnScanParams::FPushPawnScanParams()
     , RadiusVelocityScalar(nullptr)
     , ScanRate(0.1f)
     , ScanRateAccel(0.05f)
+	, StrengthOverrideHandling(EPushPawnOverrideHandling::Min)
 {}
 
 FCollisionShape FPushPawnCollisionShapeHelper::ToCollisionShape() const

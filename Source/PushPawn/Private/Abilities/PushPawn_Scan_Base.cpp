@@ -137,11 +137,53 @@ void UPushPawn_Scan_Base::TriggerPush()
 	// Runtime strength scalar
 	const float PusheeStrengthScalar = PusheeInstigator->GetPusheeStrengthScalar();
 	const float PusherStrengthScalar = PusherTarget->GetPusherStrengthScalar();
-	const float StrengthScalar = PusheeStrengthScalar * PusherStrengthScalar;
+	float StrengthScalar;
+
+	// Runtime strength scalar override
+	float PusheeStrengthScalarOverride = 0.f;
+	float PusherStrengthScalarOverride = 0.f;
+	const bool bOverridePusheeStrength = PusheeInstigator->GetPusheeStrengthOverride(PusheeStrengthScalarOverride);
+	const bool bOverridePusherStrength = PusherTarget->GetPusherStrengthOverride(PusherStrengthScalarOverride);
+	const bool bStrengthOverride = bOverridePusheeStrength || bOverridePusherStrength;
+
+	// Compute strength scalar
+	if (bStrengthOverride)
+	{
+		if (bOverridePusheeStrength && bOverridePusherStrength)
+		{
+			switch (ScanParams.StrengthOverrideHandling)
+			{
+			case EPushPawnOverrideHandling::Average:
+				StrengthScalar = (PusheeStrengthScalarOverride + PusherStrengthScalarOverride) / 2.f;
+				break;
+			case EPushPawnOverrideHandling::Max:
+				StrengthScalar = FMath::Max(PusheeStrengthScalarOverride, PusherStrengthScalarOverride);
+				break;
+			case EPushPawnOverrideHandling::Min:
+				StrengthScalar = FMath::Min(PusheeStrengthScalarOverride, PusherStrengthScalarOverride);
+				break;
+			default:
+				StrengthScalar = PusheeStrengthScalar * PusherStrengthScalar;
+			}
+		}
+		else if (bOverridePusheeStrength)
+		{
+			StrengthScalar = PusheeStrengthScalarOverride;
+		}
+		else
+		{
+			StrengthScalar = PusherStrengthScalarOverride;
+		}
+	}
+	else
+	{
+		StrengthScalar = PusheeStrengthScalar * PusherStrengthScalar;
+	}
 	
 	// Allow the target to customize the event data we're about to pass in, in case the ability needs custom data
 	// that only the actor knows.
-	FPushPawnAbilityTargetData* TargetData = new FPushPawnAbilityTargetData(Direction, Distance, StrengthScalar);
+	FPushPawnAbilityTargetData* TargetData = new FPushPawnAbilityTargetData(Direction, Distance,
+		StrengthScalar, bStrengthOverride);
 
 	// The payload data for the Push ability
 	FGameplayEventData Payload;

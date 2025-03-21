@@ -19,12 +19,14 @@ struct FPushPawnAbilityTargetData : public FGameplayAbilityTargetData
 		: Direction(FVector::ZeroVector)
 		, Distance(0.f)
 		, StrengthScalar(1.f)
+		, bOverrideStrength(false)
 	{}
 
-	FPushPawnAbilityTargetData(const FVector& InDirection, float InDistance, float InStrength)
+	FPushPawnAbilityTargetData(const FVector& InDirection, float InDistance, float InStrength, bool bInOverrideStrength)
 		: Direction(InDirection)
 		, Distance(InDistance)
 		, StrengthScalar(InStrength)
+		, bOverrideStrength(bInOverrideStrength)
 	{}
 
 	/** Direction of the push */
@@ -38,12 +40,17 @@ struct FPushPawnAbilityTargetData : public FGameplayAbilityTargetData
 	/** The scalar to apply to the push strength */
 	UPROPERTY(BlueprintReadOnly, Category=Character)
 	float StrengthScalar;
+
+	/** If true then the strength scalar should override the strength calculation */
+	UPROPERTY(BlueprintReadOnly, Category=Character)
+	bool bOverrideStrength;
 	
 	bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
 	{
 		Direction.NetSerialize(Ar, Map, bOutSuccess);
 		Ar << Distance;
 		Ar << StrengthScalar;
+		Ar << bOverrideStrength;
 		return true;
 	}
 	

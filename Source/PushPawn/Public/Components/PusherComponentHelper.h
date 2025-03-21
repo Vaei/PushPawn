@@ -45,4 +45,9 @@ public:
 	UFUNCTION(BlueprintPure, BlueprintImplementableEvent, Category=PushPawn, meta=(DisplayName="Get Pusher Strength Scalar"))
 	float K2_GetPusherStrengthScalar() const;
 	virtual float GetPusherStrengthScalar() const override { return K2_GetPusherStrengthScalar(); }
+
+	/** @return Optional runtime strength override to change how much the pusher pushes the pushee */
+	UFUNCTION(BlueprintPure, BlueprintImplementableEvent, Category=PushPawn, meta=(DisplayName="Get Pusher Strength Override"))
+	bool K2_GetPusherStrengthOverride(float& Strength) const;
+	virtual bool GetPusherStrengthOverride(float& Strength) const override { return K2_GetPusherStrengthOverride(Strength); }
 };
