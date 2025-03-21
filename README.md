@@ -75,6 +75,7 @@ One day, someone is going to do something surprising with Push Pawn, and I look 
 * Add demo content
 * Add runtime `GetPusheeStrengthScalar()` and `GetPusherStrengthScalar()` interface functions
 * Extract `GetNormalizedPushDistance()` to statics and bring BP implementation to parity
+* Better meta property specifiers
 * Replace native pointers with TObjectPtr
 * Const-correctness, code tidy
 * Add missing null check
