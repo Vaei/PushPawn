@@ -69,6 +69,7 @@ struct PUSHPAWN_API FPushPawnActionParams
 		, DistanceToStrengthCurve(nullptr)
 		, Duration(0.1f)
 		, StrengthScalar(1.f)
+		, bDistanceCheck2D(true)
 	{}
 
 	/** Scale the push strength by the pushee's own velocity */
@@ -86,6 +87,10 @@ struct PUSHPAWN_API FPushPawnActionParams
 	/** Scales VelocityToStrengthCurve if available, otherwise directly sets the Strength of the push */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn, meta=(ClampMin="0", UIMin="0", Delta="0.1", ForceUnits="x"))
 	float StrengthScalar;
+
+	/** If true, the distance check will be handled in 2D space */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
+	bool bDistanceCheck2D;
 };
 
 /**

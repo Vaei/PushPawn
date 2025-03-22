@@ -24,6 +24,34 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PushPawn)
 	FPushPawnActionParams PushParams;
 
+protected:
+	// Cache transient data so derived classes can access it
+
+	UPROPERTY(BlueprintReadOnly, Transient, DuplicateTransient, Category=PushPawn)
+	TObjectPtr<const ACharacter> Pushee = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, Transient, DuplicateTransient, Category=PushPawn)
+	TObjectPtr<const ACharacter> Pusher = nullptr;
+	
+	UPROPERTY(BlueprintReadOnly, Transient, DuplicateTransient, Category=PushPawn)
+	FVector PushDirection = FVector::ZeroVector;
+	
+	UPROPERTY(BlueprintReadOnly, Transient, DuplicateTransient, Category=PushPawn)
+	float DistanceBetween = 0.f;
+
+	UPROPERTY(BlueprintReadOnly, Transient, DuplicateTransient, Category=PushPawn)
+	float NormalizedDistance = 0.f;
+
+	UPROPERTY(BlueprintReadOnly, Transient, DuplicateTransient, Category=PushPawn)
+	float StrengthScalar = 0.f;
+
+	UPROPERTY(BlueprintReadOnly, Transient, DuplicateTransient, Category=PushPawn)
+	float Strength = 0.f;
+
+	UPROPERTY(BlueprintReadOnly, Transient, DuplicateTransient, Category=PushPawn)
+	bool bOverrideStrength = false;
+	
+protected:
 	virtual bool ActivatePushPawnAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 

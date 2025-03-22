@@ -37,11 +37,11 @@ protected:
 public:
 	/** Extract Pawns from EventData */
 	template <typename PusheeT, typename PusherT>
-	static void GetPushPawnsFromEventData(const FGameplayEventData& EventData, const PusheeT*& Pushee, const PusherT*& Pusher);
+	static void GetPushPawnsFromEventData(const FGameplayEventData& EventData, TObjectPtr<const PusheeT>& Pushee, TObjectPtr<const PusherT>& Pusher);
 
 	/** Extract Pawns from EventData using CastChecked - will crash if type is incorrect */
 	template <typename PusheeT, typename PusherT>
-	static void GetPushPawnsFromEventDataChecked(const FGameplayEventData& EventData, const PusheeT*& Pushee, const PusherT*& Pusher);
+	static void GetPushPawnsFromEventDataChecked(const FGameplayEventData& EventData, TObjectPtr<const PusheeT>& Pushee, TObjectPtr<const PusherT>& Pusher);
 
 	/** Extract Pusher Pawn from EventData */
 	UFUNCTION(BlueprintCallable, Category=PushPawn, meta=(DisplayName="Get Pusher Pawn From Event Data", DeterminesOutputType="PawnClass", DynamicOutputParam="Pusher"))
@@ -107,6 +107,20 @@ public:
 
 	/** 
 	 * Returns the push strength based on the push parameters
+	 * @param Pushee				The pawn being pushed
+	 * @param bOverrideStrength		Whether to override the strength calculation
+	 * @param StrengthScalar		The scalar to apply to the push strength
+	 * @param NormalizedDistance	The normalized distance between the pushee and pusher
+	 * @param Params				The push parameters
+	 * @return The push strength
+	 */
+	UFUNCTION(BlueprintPure, Category=PushPawn)
+	static float CalculatePushStrength(const APawn* Pushee, bool bOverrideStrength, float StrengthScalar,
+		float NormalizedDistance, const FPushPawnActionParams& Params);
+
+	
+	/** 
+	 * Returns the push strength based on the push parameters
 	 * @param Pushee					The pawn being pushed
 	 * @param VelocityToStrengthCurve	The curve mapping velocity to push strength
 	 * @param DistanceToStrengthCurve	The curve mapping distance to push strength
@@ -115,7 +129,8 @@ public:
 	 * @return The push strength
 	 */
 	UFUNCTION(BlueprintPure, Category=PushPawn)
-	static float GetPushStrengthSimple(const APawn* Pushee, const UCurveFloat* VelocityToStrengthCurve = nullptr, const UCurveFloat* DistanceToStrengthCurve = nullptr, float Distance = 0.f, float StrengthScalar = 1.f);
+	static float GetPushStrengthSimple(const APawn* Pushee, const UCurveFloat* VelocityToStrengthCurve = nullptr,
+		const UCurveFloat* DistanceToStrengthCurve = nullptr, float Distance = 0.f, float StrengthScalar = 1.f);
 
 public:
 	/** 
@@ -154,7 +169,8 @@ public:
 	static float GetPushPawnScanRange(const FVector& Acceleration, float BaseScanRange, const FPushPawnScanParams& ScanParams);
 
 	/** Default implementation of IPusherTarget::GatherPushOptions for convenience */
-	static bool GatherPushOptions(const TSubclassOf<UGameplayAbility>& PushAbilityToGrant, const APawn* PusherPawn, const FPushQuery& PushQuery, const FPushOptionBuilder& OptionBuilder);
+	static bool GatherPushOptions(const TSubclassOf<UGameplayAbility>& PushAbilityToGrant, const APawn* PusherPawn,
+		const FPushQuery& PushQuery, const FPushOptionBuilder& OptionBuilder);
 	
 	static EPushCollisionType GetPusheeCollisionShapeType(const AActor* Actor);
 
@@ -165,14 +181,16 @@ public:
 	 * @param OptionalShapeType		The optional shape type to use
 	 * @param OptionalComponent		The optional component to use - if not supplied, the root component from the Actor's defaults will be used
 	 */
-	static FCollisionShape GetDefaultPusheeCollisionShape(const AActor* Actor, FQuat& OutShapeRotation, EPushCollisionType OptionalShapeType = EPushCollisionType::None, USceneComponent* OptionalComponent = nullptr);
+	static FCollisionShape GetDefaultPusheeCollisionShape(const AActor* Actor, FQuat& OutShapeRotation,
+		EPushCollisionType OptionalShapeType = EPushCollisionType::None, USceneComponent* OptionalComponent = nullptr);
 	
 	/**
 	 * @return The max of the collision shape size. For ACharacter: ScaledCapsuleHalfHeight or ScaledCapsuleRadius - whichever is larger - taken from class defaults (i.e. ignores crouching character)
 	 * @see ActivateAbility - this does not update if changed after ActivateAbility
 	 */
 	UFUNCTION(BlueprintPure, Category=PushPawn)
-	static float GetMaxDefaultCollisionShapeSize(const AActor* ActorWithSuitableRootComponent, EPushCollisionType SpecificShapeType = EPushCollisionType::None);
+	static float GetMaxDefaultCollisionShapeSize(const AActor* ActorWithSuitableRootComponent,
+		EPushCollisionType SpecificShapeType = EPushCollisionType::None);
 	
 	/**
 	 * Retrieves the AActor associated with the given PushTarget
@@ -196,7 +214,8 @@ public:
 	 * @param OverlapResults The array of overlap results to process.
 	 * @param OutPushTargets The array to populate with found push targets.
 	 */
-	static void AppendPushTargetsFromOverlapResults(const TArray<FOverlapResult>& OverlapResults, TArray<TScriptInterface<IPusherTarget>>& OutPushTargets);
+	static void AppendPushTargetsFromOverlapResults(const TArray<FOverlapResult>& OverlapResults,
+		TArray<TScriptInterface<IPusherTarget>>& OutPushTargets);
 
 	/**
 	 * Appends push targets from the given hit result to the output array.
@@ -207,7 +226,7 @@ public:
 };
 
 template <typename PusheeT, typename PusherT>
-void UPushStatics::GetPushPawnsFromEventData(const FGameplayEventData& EventData, const PusheeT*& Pushee, const PusherT*& Pusher)
+void UPushStatics::GetPushPawnsFromEventData(const FGameplayEventData& EventData, TObjectPtr<const PusheeT>& Pushee, TObjectPtr<const PusherT>& Pusher)
 {
 	const AActor* PusheeActor = nullptr;
 	const AActor* PusherActor = nullptr;
@@ -218,7 +237,7 @@ void UPushStatics::GetPushPawnsFromEventData(const FGameplayEventData& EventData
 }
 
 template <typename PusheeT, typename PusherT>
-void UPushStatics::GetPushPawnsFromEventDataChecked(const FGameplayEventData& EventData, const PusheeT*& Pushee, const PusherT*& Pusher)
+void UPushStatics::GetPushPawnsFromEventDataChecked(const FGameplayEventData& EventData, TObjectPtr<const PusheeT>& Pushee, TObjectPtr<const PusherT>& Pusher)
 {
 	const AActor* PusheeActor = nullptr;
 	const AActor* PusherActor = nullptr;
