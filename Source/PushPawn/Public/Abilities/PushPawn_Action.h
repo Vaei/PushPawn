@@ -7,6 +7,8 @@
 #include "PushTypes.h"
 #include "PushPawn_Action.generated.h"
 
+class ACharacter;
+
 /**
  * A completed C++ implementation of the PushPawn_Action_Base class
  * This is significantly cheaper performance-wise than using Blueprint
