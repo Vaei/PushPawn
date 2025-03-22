@@ -10,7 +10,7 @@
 
 bool UPushPawn_Action_Base::CanActivatePushPawnAbility(const AActor* AvatarActor) const
 {
-	if (!AvatarActor)
+	if (!IsValid(AvatarActor))
 	{
 		return false;
 	}
