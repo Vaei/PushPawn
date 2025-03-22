@@ -20,7 +20,7 @@
 
 ## How to Use
 > [!IMPORTANT]
-> [Read the Wiki to Learn How to use Hit React](https://github.com/Vaei/PushPawn/wiki/How-to-Use)
+> [Read the Wiki to Learn How to use Push Pawn](https://github.com/Vaei/PushPawn/wiki/How-to-Use)
 
 ## Features
 
