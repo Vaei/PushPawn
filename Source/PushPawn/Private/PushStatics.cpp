@@ -308,7 +308,42 @@ float UPushStatics::CalculatePushDirection(const FVector& Direction, const FRota
 	return 0.f;
 }
 
-EPushCardinal UPushStatics::GetPushDirection(const AActor* FromActor, const AActor* ToActor,
+EPushCardinal_4Way UPushStatics::GetPushDirection_4Way(const AActor* FromActor, const AActor* ToActor,
+	EValidPushDirection& ValidPushDirection)
+{ 
+	ValidPushDirection = EValidPushDirection::InvalidDirection;
+
+	// Get the direction from the pushee to the pusher
+	const FVector Direction = (FromActor->GetActorLocation() - ToActor->GetActorLocation()).GetSafeNormal2D();
+
+	// If the direction is nearly zero, default to forward
+	if (Direction.IsNearlyZero())
+	{
+		return EPushCardinal_4Way::Forward;
+	}
+
+	ValidPushDirection = EValidPushDirection::ValidDirection;
+
+	const float Rotation = CalculatePushDirection(Direction, ToActor->GetActorRotation());
+	const float RotationAbs = FMath::Abs(Rotation);
+
+	// Left or Right
+	if (RotationAbs >= 45.f && RotationAbs <= 135.f)
+	{
+		return Rotation > 0.f ? EPushCardinal_4Way::Right : EPushCardinal_4Way::Left;
+	}
+
+	// Forward
+	if (RotationAbs <= 45.f)
+	{
+		return EPushCardinal_4Way::Forward;
+	}
+
+	// Backward
+	return EPushCardinal_4Way::Backward;
+}
+
+EPushCardinal_8Way UPushStatics::GetPushDirection_8Way(const AActor* FromActor, const AActor* ToActor,
 	EValidPushDirection& ValidPushDirection)
 {
 	ValidPushDirection = EValidPushDirection::InvalidDirection;
@@ -319,7 +354,7 @@ EPushCardinal UPushStatics::GetPushDirection(const AActor* FromActor, const AAct
 	// If the direction is nearly zero, default to forward
 	if (Direction.IsNearlyZero())
 	{
-		return EPushCardinal::Forward;
+		return EPushCardinal_8Way::Forward;
 	}
 
 	ValidPushDirection = EValidPushDirection::ValidDirection;
@@ -330,35 +365,35 @@ EPushCardinal UPushStatics::GetPushDirection(const AActor* FromActor, const AAct
 	// Left or Right
 	if (RotationAbs >= 67.5 && RotationAbs <= 112.5)
 	{
-		return Rotation > 0.f ? EPushCardinal::Right : EPushCardinal::Left;
+		return Rotation > 0.f ? EPushCardinal_8Way::Right : EPushCardinal_8Way::Left;
 	}
 
 	// Forward
 	if (RotationAbs <= 22.5f)
 	{
-		return EPushCardinal::Forward;
+		return EPushCardinal_8Way::Forward;
 	}
 	
 	// Backward
 	if (RotationAbs >= 157.5f)
 	{
-		return EPushCardinal::Backward;
+		return EPushCardinal_8Way::Backward;
 	}
 
 	// ForwardLeft or ForwardRight
 	if (RotationAbs <= 67.5f)
 	{
-		return Rotation > 0.f ? EPushCardinal::ForwardRight : EPushCardinal::ForwardLeft;
+		return Rotation > 0.f ? EPushCardinal_8Way::ForwardRight : EPushCardinal_8Way::ForwardLeft;
 	}
 
 	// BackwardLeft or BackwardRight
 	if (RotationAbs >= 112.5f)
 	{
-		return Rotation > 0.f ? EPushCardinal::BackwardRight : EPushCardinal::BackwardLeft;
+		return Rotation > 0.f ? EPushCardinal_8Way::BackwardRight : EPushCardinal_8Way::BackwardLeft;
 	}
 
 	// Default to forward
-	return EPushCardinal::Forward;
+	return EPushCardinal_8Way::Forward;
 }
 
 IPusheeInstigator* UPushStatics::GetPusheeInstigator(AActor* Actor)
