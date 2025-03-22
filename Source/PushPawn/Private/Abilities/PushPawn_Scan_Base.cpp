@@ -182,8 +182,7 @@ void UPushPawn_Scan_Base::TriggerPush()
 	
 	// Allow the target to customize the event data we're about to pass in, in case the ability needs custom data
 	// that only the actor knows.
-	FPushPawnAbilityTargetData* TargetData = new FPushPawnAbilityTargetData(Direction, Distance,
-		StrengthScalar, bStrengthOverride);
+	FPushPawnAbilityTargetData* TargetData = new FPushPawnAbilityTargetData(Direction, Distance);
 
 	// The payload data for the Push ability
 	FGameplayEventData Payload;
@@ -191,6 +190,13 @@ void UPushPawn_Scan_Base::TriggerPush()
 	Payload.Instigator = PusheeInstigatorActor;
 	Payload.Target = PusherTargetActor;
 	Payload.TargetData.Add(TargetData);
+
+	// We only send the strength scalar if it's not 1.f to save on bandwidth
+	if (bStrengthOverride || !FMath::IsNearlyEqual(StrengthScalar, 1.f))
+	{
+		FPushPawnStrengthTargetData* StrengthTargetData = new FPushPawnStrengthTargetData(StrengthScalar, bStrengthOverride);
+		Payload.TargetData.Add(StrengthTargetData);
+	}
 
 	// If needed we allow the Push target to manipulate the event data
 	PushOption.PusherTarget->CustomizePushEventData(FPushPawnTags::PushPawn_PushAbility_Activate, Payload);
