@@ -22,7 +22,19 @@ enum class EPushCollisionType : uint8
  * The direction the pawn is pushed in, used for selecting a directional montage
  */
 UENUM(BlueprintType)
-enum class EPushCardinal : uint8
+enum class EPushCardinal_4Way : uint8
+{
+	Forward,
+	Backward,
+	Left,
+	Right,
+};
+
+/**
+ * The direction the pawn is pushed in, used for selecting a directional montage
+ */
+UENUM(BlueprintType)
+enum class EPushCardinal_8Way : uint8
 {
 	Forward,
 	Backward,

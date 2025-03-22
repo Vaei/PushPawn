@@ -141,8 +141,11 @@ public:
 	 */
 	static float CalculatePushDirection(const FVector& Direction, const FRotator& BaseRotation);
 
-	UFUNCTION(BlueprintCallable, Category=PushPawn, meta=(ExpandEnumAsExecs="ValidPushDirection"))
-	static EPushCardinal GetPushDirection(const AActor* FromActor, const AActor* ToActor, EValidPushDirection& ValidPushDirection);
+	UFUNCTION(BlueprintCallable, Category=PushPawn, meta=(ExpandEnumAsExecs="ValidPushDirection", DisplayName="Get Push Direction 4-Way"))
+	static EPushCardinal_4Way GetPushDirection_4Way(const AActor* FromActor, const AActor* ToActor, EValidPushDirection& ValidPushDirection);
+	
+	UFUNCTION(BlueprintCallable, Category=PushPawn, meta=(ExpandEnumAsExecs="ValidPushDirection", DisplayName="Get Push Direction 8-Way"))
+	static EPushCardinal_8Way GetPushDirection_8Way(const AActor* FromActor, const AActor* ToActor, EValidPushDirection& ValidPushDirection);
 
 public:
 	//--------------------------------------------------------------
