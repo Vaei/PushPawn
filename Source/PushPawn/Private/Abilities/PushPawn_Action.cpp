@@ -37,8 +37,8 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 	// Gather Pusher and Pushee
 	UPushStatics::GetPushPawnsFromEventDataChecked<ACharacter, ACharacter>(EventData, Pushee, Pusher);
 
-	// Check for null
-	if (!Pushee || !Pusher)
+	// Check for null -- we can be destroyed during ability activation and crash!
+	if (!IsValid(Pushee) || !IsValid(Pusher))
 	{
 		ABILITY_LOG(Error, TEXT("PushPawn_Action: Pushee or Pusher is null!"));
 		CancelAbility(Handle, ActorInfo, ActivationInfo, false);
