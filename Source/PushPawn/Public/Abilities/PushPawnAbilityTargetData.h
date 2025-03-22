@@ -11,22 +11,18 @@
  * Ability target data that holds a direction vector, used for push abilities to send the direction of the push
  */
 USTRUCT(BlueprintType)
-struct FPushPawnAbilityTargetData : public FGameplayAbilityTargetData
+struct PUSHPAWN_API FPushPawnAbilityTargetData : public FGameplayAbilityTargetData
 {
 	GENERATED_BODY()
 
 	FPushPawnAbilityTargetData()
 		: Direction(FVector::ZeroVector)
 		, Distance(0.f)
-		, StrengthScalar(1.f)
-		, bOverrideStrength(false)
 	{}
 
-	FPushPawnAbilityTargetData(const FVector& InDirection, float InDistance, float InStrength, bool bInOverrideStrength)
+	FPushPawnAbilityTargetData(const FVector& InDirection, float InDistance)
 		: Direction(InDirection)
 		, Distance(InDistance)
-		, StrengthScalar(InStrength)
-		, bOverrideStrength(bInOverrideStrength)
 	{}
 
 	/** Direction of the push */
@@ -36,6 +32,46 @@ struct FPushPawnAbilityTargetData : public FGameplayAbilityTargetData
 	/** How far the pusher and pushee are from each other */
 	UPROPERTY(BlueprintReadOnly, Category=Character)
 	float Distance;
+
+	bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
+	{
+		Direction.NetSerialize(Ar, Map, bOutSuccess);
+		Ar << Distance;
+		return true;
+	}
+	
+	virtual UScriptStruct* GetScriptStruct() const override
+	{
+		return StaticStruct();
+	}
+};
+
+template<>
+struct TStructOpsTypeTraits<FPushPawnAbilityTargetData> : public TStructOpsTypeTraitsBase2<FPushPawnAbilityTargetData>
+{
+	enum
+	{
+		WithNetSerializer = true	// For now this is REQUIRED for FGameplayAbilityTargetDataHandle net serialization to work
+	};
+};
+
+/**
+ * Ability target data that holds a strength scalar, used for push abilities to send the strength of the push
+ */
+USTRUCT(BlueprintType)
+struct PUSHPAWN_API FPushPawnStrengthTargetData : public FGameplayAbilityTargetData
+{
+	GENERATED_BODY()
+
+	FPushPawnStrengthTargetData()
+		: StrengthScalar(1.f)
+		, bOverrideStrength(false)
+	{}
+
+	FPushPawnStrengthTargetData(float InStrength, bool bInOverrideStrength)
+		: StrengthScalar(InStrength)
+		, bOverrideStrength(bInOverrideStrength)
+	{}
 
 	/** The scalar to apply to the push strength */
 	UPROPERTY(BlueprintReadOnly, Category=Character)
@@ -47,8 +83,6 @@ struct FPushPawnAbilityTargetData : public FGameplayAbilityTargetData
 	
 	bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
 	{
-		Direction.NetSerialize(Ar, Map, bOutSuccess);
-		Ar << Distance;
 		Ar << StrengthScalar;
 		Ar << bOverrideStrength;
 		return true;
@@ -61,7 +95,7 @@ struct FPushPawnAbilityTargetData : public FGameplayAbilityTargetData
 };
 
 template<>
-struct TStructOpsTypeTraits<FPushPawnAbilityTargetData> : public TStructOpsTypeTraitsBase2<FPushPawnAbilityTargetData>
+struct TStructOpsTypeTraits<FPushPawnStrengthTargetData> : public TStructOpsTypeTraitsBase2<FPushPawnStrengthTargetData>
 {
 	enum
 	{

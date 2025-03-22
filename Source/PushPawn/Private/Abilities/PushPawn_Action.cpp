@@ -35,10 +35,9 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 	const FGameplayEventData& EventData = *TriggerEventData;
 
 	// Gather Pusher and Pushee
-	const ACharacter* Pushee = nullptr;
-	const AActor* Pusher = nullptr;
-	UPushStatics::GetPushPawnsFromEventDataChecked<ACharacter, AActor>(EventData, Pushee, Pusher);
+	UPushStatics::GetPushPawnsFromEventDataChecked<ACharacter, ACharacter>(EventData, Pushee, Pusher);
 
+	// Check for null
 	if (!Pushee || !Pusher)
 	{
 		ABILITY_LOG(Error, TEXT("PushPawn_Action: Pushee or Pusher is null!"));
@@ -46,6 +45,7 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 		return false;
 	}
 
+	// Check for valid movement component and mode
 	const UCharacterMovementComponent* MovementComponent = Pushee->GetCharacterMovement();
 	if (!MovementComponent || MovementComponent->MovementMode == MOVE_None)
 	{
@@ -53,19 +53,13 @@ bool UPushPawn_Action::ActivatePushPawnAbility(const FGameplayAbilitySpecHandle 
 		return false;
 	}
 	
-	// Gather Push Direction
-	static constexpr bool bForce2D = true;
-	FVector PushDirection = FVector::ZeroVector;
-	float DistanceBetween = 0.f;
-	float StrengthScalar = 1.f;
-	bool bOverrideStrength = false;
-	UPushStatics::GetPushDataFromEventData(EventData, bForce2D, PushDirection, DistanceBetween, StrengthScalar,
-		bOverrideStrength);
+	// Gather Push Data
+	UPushStatics::GetPushDataFromEventData(EventData, PushParams.bDistanceCheck2D, PushDirection,
+		DistanceBetween, StrengthScalar, bOverrideStrength);
 	
-	// Gather Push Strength
-	const float NormalizedDistance = UPushStatics::GetNormalizedPushDistance(Pushee, Pusher, DistanceBetween);
-	const float Strength = bOverrideStrength ? StrengthScalar
-		: UPushStatics::GetPushStrength(Pushee, NormalizedDistance, PushParams) * StrengthScalar;
+	// Push Strength
+	NormalizedDistance = UPushStatics::GetNormalizedPushDistance(Pushee, Pusher, DistanceBetween);
+	Strength = UPushStatics::CalculatePushStrength(Pushee, bOverrideStrength, StrengthScalar, NormalizedDistance, PushParams);
 
 #if UE_ENABLE_DEBUG_DRAWING
 	if (FPushPawnCVars::PushPawnActionDebugDraw > 0)  // Use WantsPushPawnActionDebugDraw() in derived classes

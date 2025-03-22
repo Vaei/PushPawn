@@ -98,11 +98,22 @@ void UPushStatics::GetPushDataFromEventData(const FGameplayEventData& EventData,
 	// Extract distance
 	DistanceBetween = PushTargetData.Distance;
 
-	// Extract strength scalar
-	StrengthScalar = PushTargetData.StrengthScalar;
+	// Get the strength target data from the event data if available
+	if (const FGameplayAbilityTargetData* RawStrengthData = EventData.TargetData.Get(1))
+	{
+		const FPushPawnStrengthTargetData& PushStrengthTargetData = static_cast<const FPushPawnStrengthTargetData&>(*RawStrengthData);
+		
+		// Extract strength scalar
+		StrengthScalar = PushStrengthTargetData.StrengthScalar;
 
-	// Extract strength override
-	bOverrideStrength = PushTargetData.bOverrideStrength;
+		// Extract strength override
+		bOverrideStrength = PushStrengthTargetData.bOverrideStrength;
+	}
+	else
+	{
+		StrengthScalar = 1.f;
+		bOverrideStrength = false;
+	}
 }
 
 bool UPushStatics::GetDefaultCapsuleRootComponent(const AActor* Actor, float& CapsuleRadius, float& CapsuleHalfHeight)
@@ -211,6 +222,16 @@ float UPushStatics::GetPushStrength(const APawn* Pushee, float Distance, const F
 	}
 
 	return Strength;
+}
+
+float UPushStatics::CalculatePushStrength(const APawn* Pushee, bool bOverrideStrength, float StrengthScalar,
+	float NormalizedDistance, const FPushPawnActionParams& Params)
+{
+	if (bOverrideStrength)
+	{
+		return StrengthScalar;
+	}
+	return GetPushStrength(Pushee, NormalizedDistance, Params) * StrengthScalar;
 }
 
 float UPushStatics::GetPushStrengthSimple(const APawn* Pushee, const UCurveFloat* VelocityToStrengthCurve, const UCurveFloat* DistanceToStrengthCurve, float Distance, float StrengthScalar)
