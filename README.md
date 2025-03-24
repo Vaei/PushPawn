@@ -80,6 +80,7 @@ One day, someone is going to do something surprising with Push Pawn, and I look 
 * Const-correctness, code tidy
 * Add missing null check
 * Add missing include
+* MakeCapsule maxes half height and radius
 
 ### 2.4.2
 * Implement support UPusherTargetComponent
