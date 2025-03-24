@@ -585,7 +585,9 @@ FCollisionShape UPushStatics::GetDefaultPusheeCollisionShape(const AActor* Actor
 		case EPushCollisionType::Capsule:
 		{
 			const UCapsuleComponent* CapsuleComponent = CastChecked<UCapsuleComponent>(Component);
-			return FCollisionShape::MakeCapsule(CapsuleComponent->GetScaledCapsuleRadius(), CapsuleComponent->GetScaledCapsuleHalfHeight());
+			const float Radius = CapsuleComponent->GetScaledCapsuleRadius();
+			const float HalfHeight = FMath::Max<float>(Radius, CapsuleComponent->GetScaledCapsuleHalfHeight());
+			return FCollisionShape::MakeCapsule(Radius, HalfHeight);
 		}
 		case EPushCollisionType::Box:
 		{
