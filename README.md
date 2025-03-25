@@ -16,7 +16,7 @@
 ## Watch Me
 
 > [!TIP]
-> [Showcase Video Coming Soon]()
+> [Showcase Video](https://youtu.be/5qwzVjDvSMs)
 
 ## How to Use
 > [!IMPORTANT]
