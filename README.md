@@ -6,7 +6,7 @@
 > <br>Collisions that feel great for the best player experience possible!
 
 > [!WARNING]
-> Use `git clone` instead of downloading as a zip, or you will not receive content
+> Get the Demo content from [Releases](https://github.com/Vaei/PushPawn/releases/tag/release)
 > <br>Install this as a project plugin, not an engine plugin
 
 > [!TIP]
