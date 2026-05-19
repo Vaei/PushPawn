@@ -71,6 +71,9 @@ One day, someone is going to do something surprising with Push Pawn, and I look 
 
 ## Changelog
 
+### 2.5.1
+* Add `UPushStatics::GetPushActorsFromEventData()` for mutable AActors
+
 ### 2.5.0
 * Add demo content
 * Add runtime `GetPusheeStrengthScalar()`, `GetPusheeStrengthOverride()`, `GetPusherStrengthScalar()`, `GetPusherStrengthOverride()` interface functions

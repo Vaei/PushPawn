@@ -49,6 +49,12 @@ void UPushStatics::GetPushActorsFromEventData(const FGameplayEventData& EventDat
 	Pusher = EventData.Target.Get();
 }
 
+void UPushStatics::GetPushActorsFromEventData(const FGameplayEventData& EventData, AActor*& Pushee, AActor*& Pusher)
+{
+	Pushee = const_cast<AActor*>(EventData.Instigator.Get());
+	Pusher = const_cast<AActor*>(EventData.Target.Get());
+}
+
 void UPushStatics::K2_GetPusherPawnFromEventData(AActor*& Pusher, const FGameplayEventData& EventData,
 	TSubclassOf<APawn> PawnClass)
 {

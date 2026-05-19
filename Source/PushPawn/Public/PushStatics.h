@@ -33,6 +33,7 @@ protected:
 	//--------------------------------------------------------------
 
 	static void GetPushActorsFromEventData(const FGameplayEventData& EventData, const AActor*& Pushee, const AActor*& Pusher);
+	static void GetPushActorsFromEventData(const FGameplayEventData& EventData, AActor*& Pushee, AActor*& Pusher);
 	
 public:
 	/** Extract Pawns from EventData */
@@ -42,6 +43,14 @@ public:
 	/** Extract Pawns from EventData using CastChecked - will crash if type is incorrect */
 	template <typename PusheeT, typename PusherT>
 	static void GetPushPawnsFromEventDataChecked(const FGameplayEventData& EventData, TObjectPtr<const PusheeT>& Pushee, TObjectPtr<const PusherT>& Pusher);
+	
+	/** Extract Pawns from EventData */
+	template <typename PusheeT, typename PusherT>
+	static void GetPushPawnsFromEventData(const FGameplayEventData& EventData, TObjectPtr<PusheeT>& Pushee, TObjectPtr<PusherT>& Pusher);
+
+	/** Extract Pawns from EventData using CastChecked - will crash if type is incorrect */
+	template <typename PusheeT, typename PusherT>
+	static void GetPushPawnsFromEventDataChecked(const FGameplayEventData& EventData, TObjectPtr<PusheeT>& Pushee, TObjectPtr<PusherT>& Pusher);
 
 	/** Extract Pusher Pawn from EventData */
 	UFUNCTION(BlueprintCallable, Category=PushPawn, meta=(DisplayName="Get Pusher Pawn From Event Data", DeterminesOutputType="PawnClass", DynamicOutputParam="Pusher"))
@@ -244,6 +253,37 @@ void UPushStatics::GetPushPawnsFromEventDataChecked(const FGameplayEventData& Ev
 {
 	const AActor* PusheeActor = nullptr;
 	const AActor* PusherActor = nullptr;
+	GetPushActorsFromEventData(EventData, PusheeActor, PusherActor);
+
+	if (IsValid(PusheeActor))
+	{
+		Pushee = CastChecked<PusheeT>(PusheeActor);
+	}
+	
+	if (IsValid(PusherActor))
+	{
+		Pusher = CastChecked<PusherT>(PusherActor);
+	}
+}
+
+template <typename PusheeT, typename PusherT>
+void UPushStatics::GetPushPawnsFromEventData(const FGameplayEventData& EventData, TObjectPtr<PusheeT>& Pushee,
+	TObjectPtr<PusherT>& Pusher)
+{
+	AActor* PusheeActor = nullptr;
+	AActor* PusherActor = nullptr;
+	GetPushActorsFromEventData(EventData, PusheeActor, PusherActor);
+
+	Pushee = Cast<PusheeT>(PusheeActor);
+	Pusher = Cast<PusherT>(PusherActor);
+}
+
+template <typename PusheeT, typename PusherT>
+void UPushStatics::GetPushPawnsFromEventDataChecked(const FGameplayEventData& EventData, TObjectPtr<PusheeT>& Pushee,
+	TObjectPtr<PusherT>& Pusher)
+{
+	AActor* PusheeActor = nullptr;
+	AActor* PusherActor = nullptr;
 	GetPushActorsFromEventData(EventData, PusheeActor, PusherActor);
 
 	if (IsValid(PusheeActor))
