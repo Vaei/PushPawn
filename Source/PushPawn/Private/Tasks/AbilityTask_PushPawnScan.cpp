@@ -96,16 +96,16 @@ void UAbilityTask_PushPawnScan::ActivateTimer(EPushPawnPauseType PauseType)
 {
 	TRACE_CPUPROFILER_EVENT_SCOPE(UAbilityTask_PushPawnScan::ActivateTimer);
 
-	// Wait for net sync if necessary, this prevents the ability from activating until the server has caught up
-	if (PushScanAbility && PushScanAbility->ShouldWaitForNetSync())
+	// If we don't have an avatar actor, we can't wait for net sync, so retry after the failure delay instead
+	const bool bWaitForNetSync = PushScanAbility && PushScanAbility->ShouldWaitForNetSync();
+	if (bWaitForNetSync && !GetAvatarActor())
 	{
-		// If we don't have an avatar actor, we can't wait for net sync
-		if (!GetAvatarActor())
-		{
-			ActivateTimer(EPushPawnPauseType::ActivationFailed);
-			return;
-		}
+		PauseType = EPushPawnPauseType::ActivationFailed;
+	}
 
+	// Wait for net sync if necessary, this prevents the ability from activating until the server has caught up
+	if (bWaitForNetSync && GetAvatarActor())
+	{
 		// Consumes the wait for net sync
 		PushScanAbility->ConsumeWaitForNetSync();
 

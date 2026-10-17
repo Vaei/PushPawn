@@ -71,6 +71,9 @@ One day, someone is going to do something surprising with Push Pawn, and I look 
 
 ## Changelog
 
+### 2.5.2
+* Fixed a bug where losing avatar actor caused overflow
+
 ### 2.5.1
 * Add `UPushStatics::GetPushActorsFromEventData()` for mutable AActors
 
