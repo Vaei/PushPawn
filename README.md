@@ -1,5 +1,7 @@
 # Push Pawn <img align="right" width=128, height=128 src="https://github.com/Vaei/PushPawn/blob/main/Resources/Icon128.png">
 
+_From the same author: [Lila](https://lila-3d.github.io/)_
+
 > [!IMPORTANT]
 > **Net-predicted soft organic collisions!**
 > <br>Eliminate multiplayer de-sync when moving near other pawns
